@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>注音符號考試版</title>
+  <title>英文字母考試</title>
   <link rel="stylesheet" href="css/common.css">
   <style>
     body {
@@ -157,30 +157,6 @@
       justify-content: center;
     }
 
-    @media (max-width: 1100px) {
-      .choice-btn {
-        font-size: 1.2rem;
-        padding: 0.14em 0.5em;
-        min-width: 2em;
-      }
-
-      .choices {
-        gap: 0.7rem;
-      }
-    }
-
-    @media (max-width: 600px) {
-      .choice-btn {
-        font-size: 1rem;
-        padding: 0.12em 0.3em;
-        min-width: 1.5em;
-      }
-
-      .choices {
-        gap: 0.5rem;
-      }
-    }
-
     .choice-btn:hover {
       background: #ffecb3;
       color: #fff;
@@ -269,6 +245,16 @@
         padding: 1rem 0.2rem 1.5rem 0.2rem;
         min-height: 90vh;
       }
+
+      .choice-btn {
+        font-size: 1.2rem;
+        padding: 0.14em 0.5em;
+        min-width: 2em;
+      }
+
+      .choices {
+        gap: 0.7rem;
+      }
     }
 
     @media (max-width: 600px) {
@@ -278,8 +264,13 @@
       }
 
       .choice-btn {
-        font-size: 2rem;
-        padding: 0.3em 0.8em;
+        font-size: 1rem;
+        padding: 0.12em 0.3em;
+        min-width: 1.5em;
+      }
+
+      .choices {
+        gap: 0.5rem;
       }
 
       h1 {
@@ -291,65 +282,54 @@
 
 <body>
   <div style="margin: 1.2em 0 0 1.2em;">
-    <button onclick="location.href='index.html'" class="back-btn">
-      ← 返回首頁
-    </button>
+    <button onclick="location.href='index.html'" class="back-btn">← 返回首頁</button>
   </div>
   <div id="firework-container"></div>
   <div class="main-flex">
-    <!-- 左邊：作答區 -->
     <div class="container" style="flex:1;min-width:320px;">
-      <h1>注音符號考試</h1>
-      <div class="setting" id="setting">
-        題數：<input type="number" id="totalQ" min="1" max="100" value="20">
-        <button onclick="startQuiz()">開始考試</button>
+      <h1>英文字母考試</h1>
+      <div class="setting" id="engSetting">
+        題數：<input type="number" id="engTotalQ" min="1" max="100" value="20">
+        <button onclick="startEngQuiz()">開始英文考試</button>
       </div>
-      <div id="quizArea" class="hide">
+      <div id="engQuizArea" class="hide">
         <div class="question-audio">
-          <button class="audio-btn" id="playAudioBtn" onclick="playAudio()">🔊</button>
-          <audio id="questionAudio"></audio>
+          <button class="audio-btn" id="playEngAudioBtn" onclick="playEngAudio()">🔊</button>
+          <audio id="engQuestionAudio"></audio>
         </div>
-        <div class="choices" id="choices"></div>
-        <div class="result" id="result"></div>
+        <div class="choices" id="engChoices"></div>
+        <div class="result" id="engResult"></div>
       </div>
-      <div id="finishArea" class="hide">
-        <div class="result" id="finalScore"></div>
-        <div class="wrong-list" id="wrongList"></div>
+      <div id="engFinishArea" class="hide">
+        <div class="result" id="engFinalScore"></div>
+        <div class="wrong-list" id="engWrongList"></div>
         <div style="text-align:center;margin-top:1em;">
           <button onclick="location.reload()" class="retry-btn">再考一次</button>
         </div>
       </div>
     </div>
-    <!-- 右邊：計分與抽獎區 -->
     <div style="width:340px;max-width:100%;margin-left:2rem;">
-      <div class="scoreboard" id="scoreboard" style="position:static;margin-bottom:2rem;">
+      <div class="scoreboard" id="engScoreboard" style="position:static;margin-bottom:2rem;">
         0/0　✔️0 ❌0<br>
-        總分：<span id="score">0</span>
+        總分：<span id="engScore">0</span>
       </div>
-      <div id="rewardArea" style="margin-top:1em; text-align:center;"></div>
+      <div id="engRewardArea" style="margin-top:1em; text-align:center;"></div>
     </div>
   </div>
-
   <script>
-    let quizFinished = false;
-    let rewardLabel = ""; // 儲存本次獎賞
-
-    // 注音符號題庫
-    const boinList = [
-      "ㄅ", "ㄆ", "ㄇ", "ㄈ", "ㄉ", "ㄊ", "ㄋ", "ㄌ",
-      "ㄍ", "ㄎ", "ㄏ", "ㄐ", "ㄑ", "ㄒ", "ㄓ", "ㄔ",
-      "ㄕ", "ㄖ", "ㄗ", "ㄘ", "ㄙ", "ㄧ", "ㄨ", "ㄩ",
-      "ㄚ", "ㄛ", "ㄜ", "ㄝ", "ㄞ", "ㄟ", "ㄠ", "ㄡ",
-      "ㄢ", "ㄣ", "ㄤ", "ㄥ", "ㄦ"
-    ];
-    let total = 20;
-    let current = 0;
-    let correct = 0;
-    let wrong = 0;
-    let questions = [];
-    let wrongQuestions = [];
-    let currentAnswer = "";
-    const REWARD_THRESHOLD = 15; // 幾題以上可抽獎
+    // 英文考試邏輯
+    let engQuizFinished = false;
+    let engRewardLabel = "";
+    const englishList = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+    let engTotal = 20;
+    let engCurrent = 0;
+    let engCorrect = 0;
+    let engWrong = 0;
+    let engQuestions = [];
+    let engWrongQuestions = [];
+    let engCurrentAnswer = "";
+    let engCurrentCase = "upper";
+    const REWARD_THRESHOLD = 0; // 幾題以上可抽獎
     const CHOICES_COUNT = 6; // 每題選項數
 
     function shuffle(arr) {
@@ -360,54 +340,63 @@
       return arr;
     }
 
-    function startQuiz() {
-      total = parseInt(document.getElementById('totalQ').value) || 20;
-      questions = [];
-      for (let i = 0; i < total; i++) {
-        questions.push(boinList[Math.floor(Math.random() * boinList.length)]);
+    function startEngQuiz() {
+      engTotal = parseInt(document.getElementById('engTotalQ').value) || 20;
+      engQuestions = [];
+      for (let i = 0; i < engTotal; i++) {
+        const letter = englishList[Math.floor(Math.random() * englishList.length)];
+        const letterCase = Math.random() < 0.5 ? "upper" : "lower";
+        engQuestions.push({
+          letter,
+          letterCase
+        });
       }
-      current = 0;
-      correct = 0;
-      wrong = 0;
-      wrongQuestions = [];
-      document.getElementById('setting').classList.add('hide');
-      document.getElementById('quizArea').classList.remove('hide');
-      document.getElementById('finishArea').classList.add('hide');
-      updateScore();
-      showQuestion();
+      engCurrent = 0;
+      engCorrect = 0;
+      engWrong = 0;
+      engWrongQuestions = [];
+      document.getElementById('engSetting').classList.add('hide');
+      document.getElementById('engQuizArea').classList.remove('hide');
+      document.getElementById('engFinishArea').classList.add('hide');
+      updateEngScore();
+      showEngQuestion();
     }
 
-    function showQuestion() {
-      if (current >= total) {
-        finishQuiz();
+    function showEngQuestion() {
+      if (engCurrent >= engTotal) {
+        finishEngQuiz();
         return;
       }
-      currentAnswer = questions[current];
-      // 設定聲音
-      const audio = document.getElementById('questionAudio');
-      audio.src = `audio/${currentAnswer}.mp3`;
-      // 顯示選項
-      let choices = [currentAnswer];
+      const q = engQuestions[engCurrent];
+      engCurrentAnswer = q.letter;
+      engCurrentCase = q.letterCase;
+      // 不顯示題目字母，只設音檔
+      const audio = document.getElementById('engQuestionAudio');
+      audio.src = `audio/abc/${q.letter}.mp3`;
+      // 選項（大小寫隨機）
+      let choices = [q.letter];
       while (choices.length < CHOICES_COUNT) {
-        let c = boinList[Math.floor(Math.random() * boinList.length)];
+        let c = englishList[Math.floor(Math.random() * englishList.length)];
         if (!choices.includes(c)) choices.push(c);
       }
       shuffle(choices);
-      const choicesDiv = document.getElementById('choices');
+      const choicesDiv = document.getElementById('engChoices');
       choicesDiv.innerHTML = "";
       choices.forEach(choice => {
+        // 隨機決定顯示大寫或小寫
+        const display = Math.random() < 0.5 ? choice.toUpperCase() : choice.toLowerCase();
         const btn = document.createElement('button');
         btn.className = "choice-btn";
-        btn.textContent = choice;
-        btn.onclick = () => submitAnswer(choice);
+        btn.textContent = display;
+        btn.onclick = () => submitEngAnswer(choice);
         choicesDiv.appendChild(btn);
       });
-      document.getElementById('result').textContent = "";
-      playAudio(); // 進入題目時自動發音
+      document.getElementById('engResult').textContent = "";
+      playEngAudio();
     }
 
-    function playAudio() {
-      const audio = document.getElementById('questionAudio');
+    function playEngAudio() {
+      const audio = document.getElementById('engQuestionAudio');
       audio.currentTime = 0;
       audio.play();
     }
@@ -431,62 +420,60 @@
       }
     }
 
-    function submitAnswer(ans) {
-      if (ans === currentAnswer) {
-        correct++;
-        document.getElementById('result').textContent = "✔️ 答對了！";
+    function submitEngAnswer(ans) {
+      if (ans.toUpperCase() === engCurrentAnswer.toUpperCase()) {
+        engCorrect++;
+        document.getElementById('engResult').textContent = "✔️ 答對了！";
         showFirework();
       } else {
-        wrong++;
-        document.getElementById('result').textContent = `❌ 答錯，正確答案是：${currentAnswer}`;
-        wrongQuestions.push({
-          num: current + 1,
-          correct: currentAnswer,
+        engWrong++;
+        document.getElementById('engResult').textContent = `❌ 答錯，正確答案請聽語音`;
+        engWrongQuestions.push({
+          num: engCurrent + 1,
+          correct: engCurrentAnswer,
           input: ans
         });
       }
-      current++;
-      updateScore();
-      setTimeout(showQuestion, 1000);
+      engCurrent++;
+      updateEngScore();
+      setTimeout(showEngQuestion, 1000);
     }
 
-    function updateScore() {
-      // 一題5分，總分最高 total*5
-      let score = correct * 5;
-      document.getElementById('scoreboard').innerHTML =
-        `${current}/${total}　✔️${correct} ❌${wrong}<br>總分：<span id="score">${score}</span>`;
+    function updateEngScore() {
+      let score = engCorrect * 5;
+      document.getElementById('engScoreboard').innerHTML =
+        `${engCurrent}/${engTotal}　✔️${engCorrect} ❌${engWrong}<br>總分：<span id="engScore">${score}</span>`;
     }
 
-
-    function finishQuiz() {
-      if (quizFinished) return;
-      quizFinished = true;
-      document.getElementById('quizArea').classList.add('hide');
-      document.getElementById('finishArea').classList.remove('hide');
-      let score = correct * 5;
-      document.getElementById('finalScore').innerHTML =
-        `<b>考試結束！</b><br>總分：<span style="color:#ff6f61;font-size:2rem">${score}</span> 分<br>答對 ${correct} 題，答錯 ${wrong} 題`;
-      if (wrongQuestions.length > 0) {
+    function finishEngQuiz() {
+      if (engQuizFinished) return;
+      engQuizFinished = true;
+      document.getElementById('engQuizArea').classList.add('hide');
+      document.getElementById('engFinishArea').classList.remove('hide');
+      let score = engCorrect * 5;
+      document.getElementById('engFinalScore').innerHTML =
+        `<b>考試結束！</b><br>總分：<span style="color:#ff6f61;font-size:2rem">${score}</span> 分<br>答對 ${engCorrect} 題，答錯 ${engWrong} 題`;
+      if (engWrongQuestions.length > 0) {
         let html = "<b>錯誤題目：</b><ul>";
-        wrongQuestions.forEach(q => {
+        engWrongQuestions.forEach(q => {
           html += `<li>第${q.num}題：正確答案 <b>${q.correct}</b>，你選 <b style="color:#d84315">${q.input}</b></li>`;
         });
         html += "</ul>";
-        document.getElementById('wrongList').innerHTML = html;
+        document.getElementById('engWrongList').innerHTML = html;
       } else {
-        document.getElementById('wrongList').innerHTML = "<b>全部答對，太棒了！</b>";
+        document.getElementById('engWrongList').innerHTML = "<b>全部答對，太棒了！</b>";
       }
       // 轉盤獎勵(抽獎)
-      if (correct >= REWARD_THRESHOLD) { // 如果答對15題以上
-        showRewardWheel(); // 抽獎結束後再儲存紀錄
+      if (engCorrect >= REWARD_THRESHOLD) {
+        showEngRewardWheel();
       } else {
-        rewardLabel = "無獎勵";
-        saveRecord(); // 直接儲存紀錄
+        engRewardLabel = "無獎勵";
+        saveEngRecord();
       }
     }
 
-    // 轉盤獎勵
-    function showRewardWheel() {
+    // 英文抽獎轉盤
+    function showEngRewardWheel() {
       const rewards = [{
           label: "1枚印章",
           value: 1
@@ -505,24 +492,24 @@
         }
       ];
       const colors = ["#ffd600", "#ff6f61", "#00e676", "#2979ff"];
-      const rewardArea = document.getElementById('rewardArea');
+      const rewardArea = document.getElementById('engRewardArea');
       rewardArea.innerHTML = `
         <div style="font-size:1.3rem;margin-bottom:1em;">🎉 恭喜你答對15題以上！抽獎獲得印章：</div>
-        <canvas id="rewardWheel" width="260" height="260" style="background:#fff8e1;border-radius:50%;box-shadow:0 2px 12px #ffd180;"></canvas>
+        <canvas id="engRewardWheel" width="260" height="260" style="background:#fff8e1;border-radius:50%;box-shadow:0 2px 12px #ffd180;"></canvas>
         <div style="margin-top:1em;">
-          <button id="spinBtn" style="font-size:1.2rem;padding:0.5em 2em;border-radius:1em;background:#ffb300;color:#fff;border:none;cursor:pointer;font-weight:bold;">轉動轉盤</button>
+          <button id="engSpinBtn" style="font-size:1.2rem;padding:0.5em 2em;border-radius:1em;background:#ffb300;color:#fff;border:none;cursor:pointer;font-weight:bold;">轉動轉盤</button>
         </div>
-        <div id="rewardResult" style="font-size:1.4rem;color:#d84315;margin-top:1.2em;min-height:2em;"></div>
+        <div id="engRewardResult" style="font-size:1.4rem;color:#d84315;margin-top:1.2em;min-height:2em;"></div>
       `;
-      drawWheel(-1, 0); // -1代表沒有選中任何區塊，0度
+      drawEngWheel(-1, 0);
 
-      document.getElementById('spinBtn').onclick = function () {
+      document.getElementById('engSpinBtn').onclick = function () {
         this.disabled = true;
-        spinWheel();
+        spinEngWheel();
       };
 
-      function drawWheel(selectedIdx = -1, angle = 0) {
-        const canvas = document.getElementById('rewardWheel');
+      function drawEngWheel(selectedIdx = -1, angle = 0) {
+        const canvas = document.getElementById('engRewardWheel');
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, 260, 260);
         const cx = 130,
@@ -562,15 +549,15 @@
         ctx.fill();
       }
 
-      function spinWheel() {
-        const canvas = document.getElementById('rewardWheel');
+      function spinEngWheel() {
+        const canvas = document.getElementById('engRewardWheel');
         const ctx = canvas.getContext('2d');
         let angle = 0;
         let speed = Math.random() * 0.1 + 0.35;
         let decel = 0.995;
         let rounds = Math.floor(Math.random() * 2) + 4;
         let targetIdx = Math.floor(Math.random() * 4);
-        let targetAngle = targetIdx * Math.PI / 2 + Math.PI / 4; // 指針對齊區塊中央
+        let targetAngle = targetIdx * Math.PI / 2 + Math.PI / 4;
         let spinning = true;
         let totalAngle = rounds * 2 * Math.PI + targetAngle;
 
@@ -613,12 +600,11 @@
               requestAnimationFrame(animate);
             } else {
               spinning = false;
-              // 讓指針正中央對到區塊中央
-              drawWheel(targetIdx, totalAngle % (2 * Math.PI));
-              document.getElementById('rewardResult').innerHTML =
+              drawEngWheel(targetIdx, totalAngle % (2 * Math.PI));
+              document.getElementById('engRewardResult').innerHTML =
                 `🎁 你獲得 <b style="color:#ff6f61">${rewards[targetIdx].label}</b>！`;
-              rewardLabel = rewards[targetIdx].label;
-              saveRecord();
+              engRewardLabel = rewards[targetIdx].label;
+              saveEngRecord();
             }
           }
         }
@@ -626,8 +612,8 @@
       }
     }
 
-    function saveRecord() {
-      let records = JSON.parse(localStorage.getItem('testRecords') || '[]');
+    function saveEngRecord() {
+      let records = JSON.parse(localStorage.getItem('engTestRecords') || '[]');
       const now = new Date();
       const dateStr = now.getFullYear() + '-' +
         String(now.getMonth() + 1).padStart(2, '0') + '-' +
@@ -636,13 +622,13 @@
         String(now.getMinutes()).padStart(2, '0');
       records.push({
         date: dateStr,
-        score: correct * 5,
-        correct: correct,
-        wrong: wrong,
-        total: total,
-        reward: rewardLabel
+        score: engCorrect * 5,
+        correct: engCorrect,
+        wrong: engWrong,
+        total: engTotal,
+        reward: engRewardLabel
       });
-      localStorage.setItem('testRecords', JSON.stringify(records));
+      localStorage.setItem('engTestRecords', JSON.stringify(records));
     }
   </script>
 </body>

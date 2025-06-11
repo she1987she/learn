@@ -172,58 +172,137 @@
     <div class="main-flex">
         <!-- 左側選單 -->
         <nav class="menu">
-            <h2>功能選單</h2>
-            <ul class="menu-list">
-                <li onclick="location.href='learn.html'">
-                    <span class="menu-icon">📖</span>
-                    <span>注音學習</span>
-                </li>
-                <li onclick="location.href='test.html'">
-                    <span class="menu-icon">📝</span>
-                    <span>注音測驗</span>
-                </li>
-            </ul>
+            <!-- <h2>功能選單</h2> -->
+            <div class="menu-group">
+                <div class="menu-group-title">學習</div>
+                <ul class="menu-list">
+                    <li onclick="location.href='learn.html'">
+                        <span class="menu-icon">📖</span>
+                        <span>注音學習</span>
+                    </li>
+                    <li onclick="location.href='learnEnglish.html'">
+                        <span class="menu-icon">📖</span>
+                        <span>英文學習</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="menu-group">
+                <div class="menu-group-title">測驗</div>
+                <ul class="menu-list">
+                    <li onclick="location.href='test.html'">
+                        <span class="menu-icon">📝</span>
+                        <span>注音測驗</span>
+                    </li>
+                    <li onclick="location.href='testEnglish.html'">
+                        <span class="menu-icon">📝</span>
+                        <span>英文測驗</span>
+                    </li>
+                </ul>
+            </div>
         </nav>
         <!-- 右側紀錄 -->
         <div class="records">
-            <h2>考試紀錄清單</h2>
-            <ul class="record-list" id="recordList">
+            <h2>注音考試紀錄</h2>
+            <ul class="record-list" id="recordListZhuyin">
                 <!-- JS 動態產生 -->
             </ul>
             <div style="text-align:center;">
-                <button class="clear-btn" onclick="clearRecords()">🗑️ 清除所有紀錄</button>
+                <button class="clear-btn" onclick="clearRecords('testRecords', 'recordListZhuyin')">🗑️ 清除注音紀錄</button>
+                <button class="clear-btn" onclick="showAllRecords('testRecords', '注音考試紀錄')">🔍 查看全部</button>
+            </div>
+            <hr style="margin:2em 0;">
+            <h2>英文考試紀錄</h2>
+            <ul class="record-list" id="recordListEnglish">
+                <!-- JS 動態產生 -->
+            </ul>
+            <div style="text-align:center;">
+                <button class="clear-btn" onclick="clearRecords('engTestRecords', 'recordListEnglish')">🗑️
+                    清除英文紀錄</button>
+                <button class="clear-btn" onclick="showAllRecords('engTestRecords', '英文考試紀錄')">🔍 查看全部</button>
+            </div>
+            <!-- Modal 彈窗 -->
+            <div id="recordModal"
+                style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:#0008;z-index:999;align-items:center;justify-content:center;">
+                <div
+                    style="background:#fff;padding:2em 1.5em;border-radius:0;max-width:100vw;max-height:100vh;width:100vw;height:100vh;overflow:auto;box-shadow:none;display:flex;flex-direction:column;">
+                    <div style="text-align:right;">
+                        <button onclick="closeModal()"
+                            style="font-size:1.2em;background:none;border:none;cursor:pointer;">✖</button>
+                    </div>
+                    <h2 id="modalTitle" style="color:#ff6f61;text-align:center;"></h2>
+                    <ul id="modalRecordList" style="list-style:none;padding:0;margin:0;flex:1 1 auto;overflow:auto;">
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
-    <script>
-        // 假設紀錄存在 localStorage，格式如下
-        // [{date: "2024-06-11 10:30", score: 85, correct: 17, wrong: 3, total: 20}]
-        function loadRecords() {
-            let records = JSON.parse(localStorage.getItem('testRecords') || '[]');
-            const list = document.getElementById('recordList');
-            if (records.length === 0) {
-                list.innerHTML = '<li style="background:#fff3e0;color:#888;">尚無紀錄</li>';
-                return;
+        <script>
+            // 只顯示最新三筆
+            function loadRecords(key, listId) {
+                let records = JSON.parse(localStorage.getItem(key) || '[]');
+                const list = document.getElementById(listId);
+                if (records.length === 0) {
+                    list.innerHTML = '<li style="background:#fff3e0;color:#888;">尚無紀錄</li>';
+                    return;
+                }
+                list.innerHTML = '';
+                records.slice(-3).reverse().forEach(r => {
+                    const isReward = r.reward && r.reward !== "無獎勵";
+                    const rewardHtml = isReward ?
+                        `<span style="color:#2196f3;font-weight:bold;background:#bbdefb;padding:0.2em 0.8em;border-radius:1em;">🎁${r.reward}</span>` :
+                        (r.reward ? `<span style="color:#ffb300;font-weight:bold;">🎁${r.reward}</span>` : "");
+                    list.innerHTML += `<li${isReward ? ' style="background:#e3f2fd;border:2.5px solid #1565c0;"' : ''}>
+        <span>${r.date}</span>
+        <span class="score">${r.score}分</span>
+        <span>✔️${r.correct} ❌${r.wrong} / ${r.total}</span>
+        ${rewardHtml}
+    </li>`;
+                });
             }
-            list.innerHTML = '';
-            records.slice(-10).reverse().forEach(r => {
-                list.innerHTML += `<li>
-  <span>${r.date}</span>
-  <span class="score">${r.score}分</span>
-  <span>✔️${r.correct} ❌${r.wrong} / ${r.total}</span>
-  ${r.reward ? `<span style="color:#ffb300;font-weight:bold;">🎁${r.reward}</span>` : ""}
-</li>`;
-            });
-        }
 
-        function clearRecords() {
-            if (confirm('確定要清除所有紀錄嗎？')) {
-                localStorage.removeItem('testRecords');
-                loadRecords();
+            // 查看全部紀錄（彈窗）
+            function showAllRecords(key, title) {
+                let records = JSON.parse(localStorage.getItem(key) || '[]');
+                const modal = document.getElementById('recordModal');
+                const modalList = document.getElementById('modalRecordList');
+                const modalTitle = document.getElementById('modalTitle');
+                modalTitle.textContent = title;
+                if (records.length === 0) {
+                    modalList.innerHTML = '<li style="background:#fff3e0;color:#888;">尚無紀錄</li>';
+                } else {
+                    modalList.innerHTML = '';
+                    records.slice().reverse().forEach(r => {
+                        const hasReward = r.reward && r.reward !== "無獎勵";
+                        const rewardHtml = hasReward ?
+                            `<div style="color:#2196f3;font-weight:bold;background:#bbdefb;padding:0.2em 0.8em;border-radius:1em;display:inline-block;margin-top:0.5em;">🎁${r.reward}</div>` :
+                            (r.reward ? `<div style="color:#ffb300;font-weight:bold;">🎁${r.reward}</div>` :
+                            "");
+                        modalList.innerHTML += `<li style="background:${hasReward ? '#e3f2fd' : '#ffe0b2'};${hasReward ? 'border:2.5px solid #1565c0;' : ''}border-radius:1.2em;margin-bottom:1.2em;padding:1.2em 1.5em;color:#d84315;font-size:1.05rem;display:flex;flex-direction:column;gap:0.3em;">
+        <div><b>日期：</b>${r.date}</div>
+        <div><b>分數：</b>${r.score}分</div>
+        <div><b>正確：</b>✔️${r.correct}　<b>錯誤：</b>❌${r.wrong}　<b>總題數：</b>${r.total}</div>
+        ${rewardHtml}
+    </li>`;
+                    });
+                }
+                modal.style.display = 'flex';
             }
-        }
-        loadRecords();
-    </script>
+
+            function closeModal() {
+                document.getElementById('recordModal').style.display = 'none';
+            }
+
+            // 清除紀錄
+            function clearRecords(key, listId) {
+                if (confirm('確定要清除所有紀錄嗎？')) {
+                    localStorage.removeItem(key);
+                    loadRecords(key, listId);
+                }
+            }
+
+            // 頁面載入時載入兩種紀錄
+            loadRecords('testRecords', 'recordListZhuyin');
+            loadRecords('engTestRecords', 'recordListEnglish');
+        </script>
 </body>
 
 </html>

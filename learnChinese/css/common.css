@@ -1,4 +1,4 @@
-/* 預設藍色主題 */
+/* ====== 全站預設主題與字體 ====== */
 body {
   font-family: "Comic Sans MS", "DFKai-SB", "Microsoft JhengHei", sans-serif;
   background: linear-gradient(135deg, #e3f2fd 60%, #bbdefb 100%);
@@ -6,6 +6,8 @@ body {
   margin: 0;
   transition: background 0.5s;
 }
+
+/* ====== 標題樣式 ====== */
 h1 {
   text-align: center;
   color: #1976d2;
@@ -14,6 +16,8 @@ h1 {
   margin-bottom: 1.5rem;
   text-shadow: 2px 2px 8px #e3f2fd;
 }
+
+/* ====== 卡片區塊（注音用） ====== */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -66,13 +70,15 @@ h1 {
   margin-bottom: 0.2em;
   box-shadow: 0 1px 3px #90caf9;
 }
+
+/* ====== 彈跳動畫 ====== */
 @keyframes popin {
   0% { transform: scale(0.7); opacity: 0.2; }
   80% { transform: scale(1.15); opacity: 1; }
   100% { transform: scale(1); }
 }
 
-/* 粉紅主題 */
+/* ====== 主題色切換（粉紅） ====== */
 body.pink {
   background: linear-gradient(135deg, #fffceb 60%, #ffe0f0 100%);
 }
@@ -103,7 +109,7 @@ body.pink .label {
   box-shadow: 0 1px 3px #ffe0b2;
 }
 
-/* 紅色主題 */
+/* ====== 主題色切換（紅色） ====== */
 body.red {
   background: linear-gradient(135deg, #ffeaea 60%, #ffb3b3 100%);
 }
@@ -134,7 +140,7 @@ body.red .label {
   box-shadow: 0 1px 3px #ffcdd2;
 }
 
-/* 黑白主題 */
+/* ====== 主題色切換（黑白） ====== */
 body.bw {
   background: #fff;
 }
@@ -165,6 +171,7 @@ body.bw .label {
   box-shadow: none;
 }
 
+/* ====== 返回首頁按鈕 ====== */
 .back-btn {
   font-size: 1.1rem;
   padding: 0.4em 1.4em;
@@ -183,4 +190,163 @@ body.bw .label {
   background: linear-gradient(90deg, #ffb300 60%, #ffd180 100%);
   color: #fffde7;
   transform: scale(1.06);
+}
+
+/* ====== 英文學習卡片專用 ====== */
+.abc-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  background: #e3f2fd;
+  border-radius: 1.5rem;
+  box-shadow: 0 6px 16px rgba(33, 150, 243, 0.10), 0 1.5px 4px rgba(0,0,0,0.08);
+  padding: 1.2rem 0.5rem 1rem 0.5rem;
+  margin: 0.5em;
+  border: 3px solid #90caf9;
+  cursor: pointer;
+  min-width: 90px;
+  min-height: 110px;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.5s, border 0.5s;
+}
+.abc-card:hover {
+  transform: scale(1.06) rotate(-2deg);
+  box-shadow: 0 12px 32px rgba(33, 150, 243, 0.13), 0 3px 8px rgba(0,0,0,0.10);
+  background: #bbdefb;
+}
+/* 英文卡片字母顏色與字型 */
+.abc-letter.upper,
+.abc-letter.lower {
+  font-size: 2.5em;
+  color: #222;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  font-family: 'Segoe UI', Arial, 'Calibri', 'Noto Sans', sans-serif;
+}
+/* 主題色對應英文卡片字母 */
+body.pink .abc-letter.upper,
+body.pink .abc-letter.lower {
+  color: #ff6f61;
+}
+body.red .abc-letter.upper,
+body.red .abc-letter.lower {
+  color: #d32f2f;
+}
+body.bw .abc-letter.upper,
+body.bw .abc-letter.lower {
+  color: #222;
+}
+
+/* ====== 主題切換按鈕（共用） ====== */
+.theme-btn {
+  font-size: 1.1rem;
+  background: #fff;
+  color: #1976d2;
+  border: 2px solid #90caf9;
+  border-radius: 1em;
+  padding: 0.4em 1.2em;
+  margin: 0 0.3em 1.2em 0.3em;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.theme-btn.active,
+.theme-btn:hover {
+  background: #1976d2;
+  color: #fff;
+  border: 2px solid #1976d2;
+}
+body.pink .theme-btn.active,
+body.pink .theme-btn:hover {
+  background: #ff6f61;
+  color: #fff;
+  border: 2px solid #ff6f61;
+}
+body.red .theme-btn.active,
+body.red .theme-btn:hover {
+  background: #d32f2f;
+  color: #fff;
+  border: 2px solid #d32f2f;
+}
+body.bw .theme-btn.active,
+body.bw .theme-btn:hover {
+  background: #222;
+  color: #fff;
+  border: 2px solid #222;
+}
+
+/* ====== 模式切換按鈕（大寫/小寫/大小寫併存） ====== */
+.mode-btn {
+  font-size: 1.1rem;
+  background: #fff;
+  color: #1976d2;
+  border: 2px solid #90caf9;
+  border-radius: 1em;
+  padding: 0.4em 1.2em;
+  margin: 0 0.3em 1.2em 0.3em;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.mode-btn.active,
+.mode-btn:hover {
+  background: #1976d2;
+  color: #fff;
+  border: 2px solid #1976d2;
+}
+body.pink .mode-btn.active,
+body.pink .mode-btn:hover {
+  background: #ff6f61;
+  color: #fff;
+  border: 2px solid #ff6f61;
+}
+body.red .mode-btn.active,
+body.red .mode-btn:hover {
+  background: #d32f2f;
+  color: #fff;
+  border: 2px solid #d32f2f;
+}
+body.bw .mode-btn.active,
+body.bw .mode-btn:hover {
+  background: #222;
+  color: #fff;
+  border: 2px solid #222;
+}
+
+/* ====== 左側選單分群樣式 ====== */
+.menu-group {
+  margin-bottom: 2.2em;
+}
+.menu-group-title {
+  font-size: 1.1em;
+  color: #ff6f61;
+  font-weight: bold;
+  margin-bottom: 0.7em;
+  letter-spacing: 0.15em;
+  padding-left: 0.2em;
+}
+.menu-group:last-child {
+  margin-bottom: 0;
+}
+
+/* ====== 重試按鈕樣式 ====== */
+.retry-btn {
+  font-size: 1.3rem;
+  padding: 0.5em 2.2em;
+  border-radius: 2em;
+  background: linear-gradient(90deg, #ffb300 60%, #ff6f61 100%);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 2px 12px #ffd180;
+  transition: background 0.2s, transform 0.15s;
+  margin-top: 0.5em;
+  letter-spacing: 0.1em;
+}
+.retry-btn:hover {
+  background: linear-gradient(90deg, #ff6f61 60%, #ffb300 100%);
+  transform: scale(1.07);
+  color: #fffbe6;
 }
