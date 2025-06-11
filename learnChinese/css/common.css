@@ -164,3 +164,23 @@ body.bw .label {
   background: #eee;
   box-shadow: none;
 }
+
+.back-btn {
+  font-size: 1.1rem;
+  padding: 0.4em 1.4em;
+  border-radius: 1.2em;
+  background: linear-gradient(90deg, #ffd180 60%, #ffb300 100%);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 2px 8px #ffd18066;
+  transition: background 0.18s, color 0.18s, transform 0.15s;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5em;
+}
+.back-btn:hover {
+  background: linear-gradient(90deg, #ffb300 60%, #ffd180 100%);
+  color: #fffde7;
+  transform: scale(1.06);
+}
