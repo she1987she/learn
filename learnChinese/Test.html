@@ -393,6 +393,7 @@
         choicesDiv.appendChild(btn);
       });
       document.getElementById('result').textContent = "";
+      playAudio(); // 進入題目時自動發音
     }
 
     function playAudio() {
@@ -464,26 +465,26 @@
         document.getElementById('wrongList').innerHTML = "<b>全部答對，太棒了！</b>";
       }
       // 轉盤獎勵
-      if (correct >= 1) showRewardWheel(); // 這裡改成1題即可抽獎
+      if (correct >= 15) showRewardWheel(); // 這裡改成15題即可抽獎
     }
 
     // 轉盤獎勵
     function showRewardWheel() {
       const rewards = [{
-          label: "0.5枚印章",
-          value: 0.5
-        },
-        {
           label: "1枚印章",
           value: 1
         },
         {
-          label: "1.5枚印章",
-          value: 1.5
+          label: "1枚印章",
+          value: 2
+        },
+        {
+          label: "1枚印章",
+          value: 3
         },
         {
           label: "2枚印章",
-          value: 2
+          value: 4
         }
       ];
       const colors = ["#ffd600", "#ff6f61", "#00e676", "#2979ff"];
