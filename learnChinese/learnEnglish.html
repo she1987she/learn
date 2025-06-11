@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>ABC Letter Learning</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/common.css">
+</head>
+
+<body>
+  <div style="margin: 1.2em 0 0 1.2em;">
+    <button onclick="location.href='index.html'" class="back-btn">
+      ← Back to Home
+    </button>
+  </div>
+  <div style="text-align:center; margin-bottom: 1.2rem;">
+    <button onclick="setTheme('')" id="blueBtn" class="theme-btn active">Blue</button>
+    <button onclick="setTheme('pink')" id="pinkBtn" class="theme-btn">Pink</button>
+    <button onclick="setTheme('red')" id="redBtn" class="theme-btn">Red</button>
+    <button onclick="setTheme('bw')" id="bwBtn" class="theme-btn">B/W</button>
+  </div>
+  <div style="text-align:center; margin-bottom: 1.2rem;">
+    <button id="upperBtn" class="mode-btn active" onclick="setMode('upper')">大寫</button>
+    <button id="lowerBtn" class="mode-btn" onclick="setMode('lower')">小寫</button>
+    <button id="bothBtn" class="mode-btn" onclick="setMode('both')">大小寫</button>
+  </div>
+  <h1 style="text-align:center;">ABC Letter Learning</h1>
+  <div id="abcGrid" class="grid" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1.2em;"></div>
+  <script>
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let mode = 'upper'; // 預設大寫
+
+    function renderCards() {
+      const grid = document.getElementById('abcGrid');
+      grid.innerHTML = '';
+      for (let i = 0; i < letters.length; i++) {
+        let html = '';
+        if (mode === 'upper') {
+          html = `<div class="abc-card" onclick="playLetter('${letters[i]}')">
+                    <span class="abc-letter upper">${letters[i]}</span>
+                    <audio id="audio${letters[i]}" src="audio/abc/${letters[i]}.mp3"></audio>
+                  </div>`;
+        } else if (mode === 'lower') {
+          html = `<div class="abc-card" onclick="playLetter('${letters[i]}')">
+                    <span class="abc-letter lower">${letters[i].toLowerCase()}</span>
+                    <audio id="audio${letters[i]}" src="audio/abc/${letters[i]}.mp3"></audio>
+                  </div>`;
+        } else {
+          html = `<div class="abc-card" onclick="playLetter('${letters[i]}')">
+                    <span class="abc-letter upper">${letters[i]}</span>
+                    <span class="abc-letter lower">${letters[i].toLowerCase()}</span>
+                    <audio id="audio${letters[i]}" src="audio/abc/${letters[i]}.mp3"></audio>
+                  </div>`;
+        }
+        grid.innerHTML += html;
+      }
+    }
+
+    function playLetter(letter) {
+      document.getElementById('audio' + letter).play();
+    }
+
+    function setTheme(theme) {
+      document.body.className = theme;
+      document.getElementById('blueBtn').classList.remove('active');
+      document.getElementById('pinkBtn').classList.remove('active');
+      document.getElementById('redBtn').classList.remove('active');
+      document.getElementById('bwBtn').classList.remove('active');
+      if (theme === 'pink') {
+        document.getElementById('pinkBtn').classList.add('active');
+      } else if (theme === 'red') {
+        document.getElementById('redBtn').classList.add('active');
+      } else if (theme === 'bw') {
+        document.getElementById('bwBtn').classList.add('active');
+      } else {
+        document.getElementById('blueBtn').classList.add('active');
+      }
+    }
+
+    function setMode(newMode) {
+      mode = newMode;
+      document.getElementById('upperBtn').classList.remove('active');
+      document.getElementById('lowerBtn').classList.remove('active');
+      document.getElementById('bothBtn').classList.remove('active');
+      if (mode === 'upper') {
+        document.getElementById('upperBtn').classList.add('active');
+      } else if (mode === 'lower') {
+        document.getElementById('lowerBtn').classList.add('active');
+      } else {
+        document.getElementById('bothBtn').classList.add('active');
+      }
+      renderCards();
+    }
+
+    // 初始渲染
+    renderCards();
+  </script>
+  <style>
+    .mode-btn {
+      font-size: 1.1rem;
+      background: #fff;
+      color: #1976d2;
+      border: 2px solid #90caf9;
+      border-radius: 1em;
+      padding: 0.4em 1.2em;
+      margin: 0 0.3em 1.2em 0.3em;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s, color 0.2s, border 0.2s;
+    }
+    .mode-btn.active,
+    .mode-btn:hover {
+      background: #1976d2;
+      color: #fff;
+      border: 2px solid #1976d2;
+    }
+  </style>
+</body>
+
+</html>
