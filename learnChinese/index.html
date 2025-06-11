@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="css/common.css">
     <style>
         body {
-            background: linear-gradient(135deg, #fffceb 60%, #ffe0f0 100%);
             min-height: 100vh;
             margin: 0;
             padding: 0;
@@ -165,10 +164,35 @@
                 max-width: 98vw;
             }
         }
+
+        #bgSwitchBtn {
+            position: fixed;
+            top: 18px;
+            right: 28px;
+            z-index: 9999;
+            font-size: 1.25rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #1976d2 60%, #64b5f6 100%);
+            color: #fff;
+            border: none;
+            border-radius: 2em;
+            padding: 0.7em 2.2em;
+            box-shadow: 0 2px 12px #90caf9;
+            cursor: pointer;
+            letter-spacing: 0.12em;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        #bgSwitchBtn:hover {
+            background: linear-gradient(90deg, #1565c0 60%, #1976d2 100%);
+            transform: scale(1.07);
+            color: #e3f2fd;
+        }
     </style>
 </head>
 
 <body>
+    <button id="bgSwitchBtn" style="position:fixed;top:18px;right:28px;z-index:9999;">切換風格</button>
     <div class="main-flex">
         <!-- 左側選單 -->
         <nav class="menu">
@@ -275,7 +299,7 @@
                         const rewardHtml = hasReward ?
                             `<div style="color:#2196f3;font-weight:bold;background:#bbdefb;padding:0.2em 0.8em;border-radius:1em;display:inline-block;margin-top:0.5em;">🎁${r.reward}</div>` :
                             (r.reward ? `<div style="color:#ffb300;font-weight:bold;">🎁${r.reward}</div>` :
-                            "");
+                                "");
                         modalList.innerHTML += `<li style="background:${hasReward ? '#e3f2fd' : '#ffe0b2'};${hasReward ? 'border:2.5px solid #1565c0;' : ''}border-radius:1.2em;margin-bottom:1.2em;padding:1.2em 1.5em;color:#d84315;font-size:1.05rem;display:flex;flex-direction:column;gap:0.3em;">
         <div><b>日期：</b>${r.date}</div>
         <div><b>分數：</b>${r.score}分</div>
@@ -302,6 +326,11 @@
             // 頁面載入時載入兩種紀錄
             loadRecords('testRecords', 'recordListZhuyin');
             loadRecords('engTestRecords', 'recordListEnglish');
+
+            // 切換背景風格
+            document.getElementById('bgSwitchBtn').onclick = function () {
+                document.body.classList.toggle('poli2');
+            };
         </script>
 </body>
 
