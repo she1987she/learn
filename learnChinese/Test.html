@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>注音符號考試版</title>
+  <link rel="stylesheet" href="css/common.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #fffceb 60%, #ffe0f0 100%);
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .main-flex {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: center;
+      width: 100vw;
+      max-width: 1100px;
+      gap: 2.5rem;
+      margin-top: 2rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      background: #fff8e1;
+      border-radius: 2rem;
+      box-shadow: 0 6px 24px rgba(255, 111, 97, 0.15), 0 1.5px 4px rgba(0, 0, 0, 0.08);
+      padding: 2.5rem 1.5rem 2.5rem 1.5rem;
+      min-height: 600px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .scoreboard {
+      min-width: 180px;
+      max-width: 220px;
+      background: #fff3e0;
+      border-radius: 1.5em;
+      box-shadow: 0 1px 4px #ffd180;
+      font-weight: bold;
+      text-align: center;
+      font-size: 1.3rem;
+      color: #ff6f61;
+      padding: 2.5em 0.5em 2.5em 0.5em;
+      margin-top: 0.5em;
+      line-height: 2.1;
+      position: sticky;
+      top: 2rem;
+      z-index: 2;
+      height: fit-content;
+      align-self: flex-start;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.4rem;
+      margin: 0 0 2.2rem 0;
+      color: #ff6f61;
+      letter-spacing: 0.15em;
+      font-weight: bold;
+    }
+
+    .setting {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .setting input[type="number"] {
+      width: 4em;
+      font-size: 1.2rem;
+      border-radius: 0.5em;
+      border: 1.5px solid #ffd180;
+      padding: 0.2em 0.4em;
+      margin-left: 0.5em;
+      text-align: center;
+    }
+
+    .setting button {
+      font-size: 1.1rem;
+      background: #ffb300;
+      color: #fff;
+      border: none;
+      border-radius: 1em;
+      padding: 0.4em 1.2em;
+      margin-left: 0.8em;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 2px 6px #ffd180;
+      transition: background 0.2s;
+    }
+
+    .setting button:hover {
+      background: #ff6f61;
+    }
+
+    .question-audio {
+      text-align: center;
+      margin: 2.5rem 0 2.2rem 0;
+    }
+
+    .audio-btn {
+      font-size: 4.2rem;
+      background: #ffb300;
+      color: #fff;
+      border: none;
+      border-radius: 2.5em;
+      padding: 0.6em 1.7em;
+      cursor: pointer;
+      box-shadow: 0 2px 6px #ffd180;
+      transition: background 0.2s;
+      margin-bottom: 0.5em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .audio-btn:hover {
+      background: #ff6f61;
+    }
+
+    .choices {
+      display: flex;
+      justify-content: center;
+      gap: 2.2rem;
+      margin-bottom: 1.8rem;
+      text-align: center;
+      flex-wrap: wrap;
+    }
+
+    .choice-btn {
+      font-size: 3.2rem;
+      background: #fff;
+      color: #ff6f61;
+      border: 2.5px solid #ffd180;
+      border-radius: 1.2em;
+      padding: 0.5em 1.6em;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s, color 0.2s, border 0.2s;
+      min-width: 2.8em;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.5em;
+      box-shadow: 0 2px 8px #ffe0b2;
+    }
+
+    .choice-btn:hover {
+      background: #ffecb3;
+      color: #fff;
+      border: 2.5px solid #ffb300;
+    }
+
+    .result,
+    .scoreboard,
+    .wrong-list {
+      text-align: center;
+    }
+
+    .result {
+      font-size: 1.5rem;
+      min-height: 2.5em;
+      margin-bottom: 0.5em;
+      color: #d84315;
+      font-weight: bold;
+    }
+
+    .wrong-list {
+      margin-top: 1.5rem;
+      background: #ffe0b2;
+      border-radius: 1em;
+      padding: 1em;
+      color: #d84315;
+      font-size: 1.1rem;
+    }
+
+    .hide {
+      display: none;
+    }
+
+    /* 煙火動畫 */
+    #firework-container {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .firework-dot {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ff6f61;
+      opacity: 0.85;
+      animation: firework-dot-move 1.7s linear forwards;
+    }
+
+    @keyframes firework-dot-move {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      80% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(var(--x), var(--y)) scale(0.7);
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .main-flex {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .scoreboard {
+        position: static;
+        margin: 0 auto 1.2rem auto;
+        top: unset;
+        right: unset;
+      }
+
+      .container {
+        max-width: 98vw;
+        padding: 1rem 0.2rem 1.5rem 0.2rem;
+        min-height: 90vh;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .audio-btn {
+        font-size: 2.5rem;
+        padding: 0.4em 1em;
+      }
+
+      .choice-btn {
+        font-size: 2rem;
+        padding: 0.3em 0.8em;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="firework-container"></div>
+  <div class="main-flex">
+    <!-- 左邊：作答區 -->
+    <div class="container" style="flex:1;min-width:320px;">
+      <h1>注音符號考試</h1>
+      <div class="setting" id="setting">
+        題數：<input type="number" id="totalQ" min="1" max="100" value="20">
+        <button onclick="startQuiz()">開始考試</button>
+      </div>
+      <div id="quizArea" class="hide">
+        <div class="question-audio">
+          <button class="audio-btn" id="playAudioBtn" onclick="playAudio()">🔊</button>
+          <audio id="questionAudio"></audio>
+        </div>
+        <div class="choices" id="choices"></div>
+        <div class="result" id="result"></div>
+      </div>
+      <div id="finishArea" class="hide">
+        <div class="result" id="finalScore"></div>
+        <div class="wrong-list" id="wrongList"></div>
+        <div style="text-align:center;margin-top:1em;">
+          <button onclick="location.reload()">再考一次</button>
+        </div>
+      </div>
+    </div>
+    <!-- 右邊：計分與抽獎區 -->
+    <div style="width:340px;max-width:100%;margin-left:2rem;">
+      <div class="scoreboard" id="scoreboard" style="position:static;margin-bottom:2rem;">
+        0/0　✔️0 ❌0<br>
+        總分：<span id="score">0</span>
+      </div>
+      <div id="rewardArea" style="margin-top:1em; text-align:center;"></div>
+    </div>
+  </div>
+
+  <script>
+    // 注音符號題庫
+    const boinList = [
+      "ㄅ", "ㄆ", "ㄇ", "ㄈ", "ㄉ", "ㄊ", "ㄋ", "ㄌ",
+      "ㄍ", "ㄎ", "ㄏ", "ㄐ", "ㄑ", "ㄒ", "ㄓ", "ㄔ",
+      "ㄕ", "ㄖ", "ㄗ", "ㄘ", "ㄙ", "ㄧ", "ㄨ", "ㄩ",
+      "ㄚ", "ㄛ", "ㄜ", "ㄝ", "ㄞ", "ㄟ", "ㄠ", "ㄡ",
+      "ㄢ", "ㄣ", "ㄤ", "ㄥ", "ㄦ"
+    ];
+    let total = 20;
+    let current = 0;
+    let correct = 0;
+    let wrong = 0;
+    let questions = [];
+    let wrongQuestions = [];
+    let currentAnswer = "";
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function startQuiz() {
+      total = parseInt(document.getElementById('totalQ').value) || 20;
+      questions = [];
+      for (let i = 0; i < total; i++) {
+        questions.push(boinList[Math.floor(Math.random() * boinList.length)]);
+      }
+      current = 0;
+      correct = 0;
+      wrong = 0;
+      wrongQuestions = [];
+      document.getElementById('setting').classList.add('hide');
+      document.getElementById('quizArea').classList.remove('hide');
+      document.getElementById('finishArea').classList.add('hide');
+      updateScore();
+      showQuestion();
+    }
+
+    function showQuestion() {
+      if (current >= total) {
+        finishQuiz();
+        return;
+      }
+      currentAnswer = questions[current];
+      // 設定聲音
+      const audio = document.getElementById('questionAudio');
+      audio.src = `audio/${currentAnswer}.mp3`;
+      // 顯示選項
+      let choices = [currentAnswer];
+      while (choices.length < 4) {
+        let c = boinList[Math.floor(Math.random() * boinList.length)];
+        if (!choices.includes(c)) choices.push(c);
+      }
+      shuffle(choices);
+      const choicesDiv = document.getElementById('choices');
+      choicesDiv.innerHTML = "";
+      choices.forEach(choice => {
+        const btn = document.createElement('button');
+        btn.className = "choice-btn";
+        btn.textContent = choice;
+        btn.onclick = () => submitAnswer(choice);
+        choicesDiv.appendChild(btn);
+      });
+      document.getElementById('result').textContent = "";
+    }
+
+    function playAudio() {
+      const audio = document.getElementById('questionAudio');
+      audio.currentTime = 0;
+      audio.play();
+    }
+
+    function showFirework() {
+      const container = document.getElementById('firework-container');
+      const colors = ['#ff6f61', '#ffd600', '#00e676', '#2979ff', '#d500f9', '#ff4081'];
+      const count = 22;
+      for (let i = 0; i < count; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'firework-dot';
+        const angle = (2 * Math.PI / count) * i;
+        const r = 140 + Math.random() * 50;
+        dot.style.setProperty('--x', `${Math.cos(angle)*r}px`);
+        dot.style.setProperty('--y', `${Math.sin(angle)*r}px`);
+        dot.style.background = colors[Math.floor(Math.random() * colors.length)];
+        dot.style.left = 'calc(50vw - 10px)';
+        dot.style.top = 'calc(50vh - 10px)';
+        container.appendChild(dot);
+        setTimeout(() => dot.remove(), 1700);
+      }
+    }
+
+    function submitAnswer(ans) {
+      if (ans === currentAnswer) {
+        correct++;
+        document.getElementById('result').textContent = "✔️ 答對了！";
+        showFirework();
+      } else {
+        wrong++;
+        document.getElementById('result').textContent = `❌ 答錯，正確答案是：${currentAnswer}`;
+        wrongQuestions.push({
+          num: current + 1,
+          correct: currentAnswer,
+          input: ans
+        });
+      }
+      current++;
+      updateScore();
+      setTimeout(showQuestion, 1000);
+    }
+
+    function updateScore() {
+      // 一題5分，總分最高 total*5
+      let score = correct * 5;
+      document.getElementById('scoreboard').innerHTML =
+        `${current}/${total}　✔️${correct} ❌${wrong}<br>總分：<span id="score">${score}</span>`;
+    }
+
+
+    function finishQuiz() {
+      document.getElementById('quizArea').classList.add('hide');
+      document.getElementById('finishArea').classList.remove('hide');
+      let score = correct * 5;
+      document.getElementById('finalScore').innerHTML =
+        `<b>考試結束！</b><br>總分：<span style="color:#ff6f61;font-size:2rem">${score}</span> 分<br>答對 ${correct} 題，答錯 ${wrong} 題`;
+      if (wrongQuestions.length > 0) {
+        let html = "<b>錯誤題目：</b><ul>";
+        wrongQuestions.forEach(q => {
+          html += `<li>第${q.num}題：正確答案 <b>${q.correct}</b>，你選 <b style="color:#d84315">${q.input}</b></li>`;
+        });
+        html += "</ul>";
+        document.getElementById('wrongList').innerHTML = html;
+      } else {
+        document.getElementById('wrongList').innerHTML = "<b>全部答對，太棒了！</b>";
+      }
+      // 轉盤獎勵
+      if (correct >= 1) showRewardWheel(); // 這裡改成1題即可抽獎
+    }
+
+    // 轉盤獎勵
+    function showRewardWheel() {
+      const rewards = [{
+          label: "0.5枚印章",
+          value: 0.5
+        },
+        {
+          label: "1枚印章",
+          value: 1
+        },
+        {
+          label: "1.5枚印章",
+          value: 1.5
+        },
+        {
+          label: "2枚印章",
+          value: 2
+        }
+      ];
+      const colors = ["#ffd600", "#ff6f61", "#00e676", "#2979ff"];
+      const rewardArea = document.getElementById('rewardArea');
+      rewardArea.innerHTML = `
+        <div style="font-size:1.3rem;margin-bottom:1em;">🎉 恭喜你答對15題以上！抽獎獲得印章：</div>
+        <canvas id="rewardWheel" width="260" height="260" style="background:#fff8e1;border-radius:50%;box-shadow:0 2px 12px #ffd180;"></canvas>
+        <div style="margin-top:1em;">
+          <button id="spinBtn" style="font-size:1.2rem;padding:0.5em 2em;border-radius:1em;background:#ffb300;color:#fff;border:none;cursor:pointer;font-weight:bold;">轉動轉盤</button>
+        </div>
+        <div id="rewardResult" style="font-size:1.4rem;color:#d84315;margin-top:1.2em;min-height:2em;"></div>
+      `;
+      drawWheel(-1, 0); // -1代表沒有選中任何區塊，0度
+
+      document.getElementById('spinBtn').onclick = function () {
+        this.disabled = true;
+        spinWheel();
+      };
+
+      function drawWheel(selectedIdx = -1, angle = 0) {
+        const canvas = document.getElementById('rewardWheel');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, 260, 260);
+        const cx = 130,
+          cy = 130,
+          r = 120;
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(angle);
+        ctx.translate(-cx, -cy);
+        for (let i = 0; i < 4; i++) {
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.arc(cx, cy, r, i * Math.PI / 2, (i + 1) * Math.PI / 2);
+          ctx.closePath();
+          ctx.fillStyle = colors[i];
+          ctx.globalAlpha = (selectedIdx === i) ? 0.7 : 1;
+          ctx.fill();
+          ctx.globalAlpha = 1;
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.rotate((i + 0.5) * Math.PI / 2);
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.font = "bold 1.3rem Microsoft JhengHei";
+          ctx.fillStyle = "#333";
+          ctx.fillText(rewards[i].label, r * 0.65, 0);
+          ctx.restore();
+        }
+        ctx.restore();
+        // 畫指針
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - 110);
+        ctx.lineTo(cx - 15, cy - 140);
+        ctx.lineTo(cx + 15, cy - 140);
+        ctx.closePath();
+        ctx.fillStyle = "#d84315";
+        ctx.fill();
+      }
+
+      function spinWheel() {
+        const canvas = document.getElementById('rewardWheel');
+        const ctx = canvas.getContext('2d');
+        let angle = 0;
+        let speed = Math.random() * 0.1 + 0.35;
+        let decel = 0.995;
+        let rounds = Math.floor(Math.random() * 2) + 4;
+        let targetIdx = Math.floor(Math.random() * 4);
+        let targetAngle = (3 - targetIdx) * Math.PI / 2; // 指針在上方
+        let spinning = true;
+        let totalAngle = rounds * 2 * Math.PI + targetAngle;
+
+        function animate() {
+          ctx.save();
+          ctx.clearRect(0, 0, 260, 260);
+          ctx.translate(130, 130);
+          ctx.rotate(angle);
+          ctx.translate(-130, -130);
+          for (let i = 0; i < 4; i++) {
+            ctx.beginPath();
+            ctx.moveTo(130, 130);
+            ctx.arc(130, 130, 120, i * Math.PI / 2, (i + 1) * Math.PI / 2);
+            ctx.closePath();
+            ctx.fillStyle = colors[i];
+            ctx.fill();
+            ctx.save();
+            ctx.translate(130, 130);
+            ctx.rotate((i + 0.5) * Math.PI / 2);
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.font = "bold 1.3rem Microsoft JhengHei";
+            ctx.fillStyle = "#333";
+            ctx.fillText(rewards[i].label, 120 * 0.65, 0);
+            ctx.restore();
+          }
+          // 指針
+          ctx.restore();
+          ctx.beginPath();
+          ctx.moveTo(130, 20);
+          ctx.lineTo(115, 0);
+          ctx.lineTo(145, 0);
+          ctx.closePath();
+          ctx.fillStyle = "#d84315";
+          ctx.fill();
+          if (spinning) {
+            if (angle < totalAngle) {
+              angle += speed;
+              speed *= decel;
+              requestAnimationFrame(animate);
+            } else {
+              spinning = false;
+              // 讓指針正中央對到區塊中央
+              drawWheel(targetIdx, (totalAngle + Math.PI / 4) % (2 * Math.PI));
+              document.getElementById('rewardResult').innerHTML =
+                `🎁 你獲得 <b style="color:#ff6f61">${rewards[targetIdx].label}</b>！`;
+            }
+          }
+        }
+        animate();
+      }
+    }
+  </script>
+</body>
+
+</html>
