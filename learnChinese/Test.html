@@ -139,22 +139,36 @@
     }
 
     .choice-btn {
-      font-size: 3.2rem;
+      font-size: 2.2rem;
       background: #fff;
       color: #ff6f61;
       border: 2.5px solid #ffd180;
       border-radius: 1.2em;
-      padding: 0.5em 1.6em;
+      padding: 0.25em 0.8em;
       cursor: pointer;
       font-weight: bold;
       transition: background 0.2s, color 0.2s, border 0.2s;
-      min-width: 2.8em;
+      min-width: 1.8em;
       text-align: center;
       display: flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 0.5em;
       box-shadow: 0 2px 8px #ffe0b2;
+    }
+    @media (max-width: 1100px) {
+      .choice-btn {
+        font-size: 1.5rem;
+        padding: 0.18em 0.5em;
+        min-width: 1.2em;
+      }
+    }
+    @media (max-width: 600px) {
+      .choice-btn {
+        font-size: 1.1rem;
+        padding: 0.12em 0.3em;
+        min-width: 1em;
+      }
     }
 
     .choice-btn:hover {
