@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注音符號學習樂園</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 導航欄 -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <i class="fas fa-graduation-cap"></i>
+                <h1>學習樂園</h1>
+            </div>
+            <div class="nav-menu">
+                <button class="nav-btn active" data-section="home"><i class="fas fa-home"></i>首頁</button>
+                <button class="nav-btn" data-section="learn"><i class="fas fa-book"></i>注音</button>
+                <button class="nav-btn" data-section="english"><i class="fas fa-language"></i>英文</button>
+                <button class="nav-btn" data-section="quiz"><i class="fas fa-question-circle"></i>測驗</button>
+                <button class="nav-btn" data-section="game"><i class="fas fa-gamepad"></i>遊戲</button>
+                <button class="nav-btn" data-section="records"><i class="fas fa-chart-line"></i>成績</button>
+                <button class="nav-btn" data-section="rewards"><i class="fas fa-gift"></i>獎勵</button>
+                
+            </div>
+            <button class="profile-btn" id="profile-btn" title="個人設定" onclick="openProfileModal()">
+                <span id="profile-avatar" class="profile-avatar"><i class="fas fa-user-circle"></i></span>
+                <span id="profile-nickname" class="profile-nickname">暱稱</span>
+            </button>
+        </nav>
+
+        <!-- 個人設定 Modal -->
+        <div class="modal" id="profile-modal" style="display:none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeProfileModal()">&times;</span>
+                <h2>個人設定</h2>
+                <div class="modal-section">
+                    <label for="nickname-input">暱稱：</label>
+                    <input type="text" id="nickname-input" maxlength="8" placeholder="請輸入暱稱">
+                </div>
+                <div class="modal-section">
+                    <label>選擇頭像：</label>
+                    <div class="avatar-list" id="avatar-list"></div>
+                </div>
+                <button class="btn btn-primary" onclick="saveProfile()">儲存</button>
+            </div>
+        </div>
+
+        
+
+        <!-- 首頁 -->
+        <section id="home" class="section active">
+            <div class="hero">
+                <div class="hero-content">
+                    <h2>歡迎來到學習樂園！</h2>
+                    <p>讓我們一起快樂地學習注音符號和英文字母吧！</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary nav-btn" data-section="learn"><i class="fas fa-play"></i>注音學習</button>
+                        <button class="btn btn-success nav-btn" data-section="english"><i class="fas fa-language"></i>英文學習</button>
+                        <button class="btn btn-secondary nav-btn" data-section="quiz"><i class="fas fa-trophy"></i>挑戰測驗</button>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="zhuyin-display">
+                        <span class="zhuyin-char">ㄅ</span>
+                        <span class="zhuyin-char">ㄆ</span>
+                        <span class="zhuyin-char">ㄇ</span>
+                        <span class="zhuyin-char">ㄈ</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 注音學習區 -->
+        <section id="learn" class="section">
+            <h2>注音符號學習</h2>
+            <div class="pinyin-note"><i class="fas fa-info-circle"></i>點擊符號聽發音，學習正確念法</div>
+            <div id="learn-content"></div>
+        </section>
+
+        <!-- 英文學習區 -->
+        <section id="english" class="section">
+            <h2>英文字母學習</h2>
+            <div class="pinyin-note"><i class="fas fa-info-circle"></i>學習26個英文字母的大小寫和發音</div>
+            <div id="english-content"></div>
+        </section>
+
+        <!-- 測驗區 -->
+        <section id="quiz" class="section">
+            <h2>綜合測驗</h2>
+            <div id="quiz-start" class="quiz-start">
+                <div class="quiz-options">
+                    <h3>選擇測驗類型</h3>
+                    <div class="quiz-category">
+                        <h4>注音符號測驗</h4>
+                        <div class="quiz-type-buttons">
+                            <button class="btn btn-primary" onclick="startQuiz('consonants')"><i class="fas fa-music"></i>聲母</button>
+                            <button class="btn btn-primary" onclick="startQuiz('vowels')"><i class="fas fa-volume-up"></i>韻母</button>
+                            <button class="btn btn-primary" onclick="startQuiz('mixed')"><i class="fas fa-brain"></i>綜合</button>
+                        </div>
+                    </div>
+                    <div class="quiz-category">
+                        <h4>英文字母測驗</h4>
+                        <div class="quiz-type-buttons">
+                            <button class="btn btn-success" onclick="startQuiz('uppercase')"><i class="fas fa-font"></i>大寫</button>
+                            <button class="btn btn-success" onclick="startQuiz('lowercase')"><i class="fas fa-text-height"></i>小寫</button>
+                            <button class="btn btn-success" onclick="startQuiz('alphabet-mixed')"><i class="fas fa-language"></i>綜合</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="quiz-game" class="quiz-game hidden">
+                <div class="quiz-header">
+                    <div class="quiz-progress">
+                        <span>題目 <span id="current-question">1</span> / <span id="total-questions">10</span></span>
+                        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+                    </div>
+                    <div class="quiz-score">
+                        分數: <span id="current-score">0</span>
+                    </div>
+                </div>
+                <div class="question-area">
+                    <h3 id="question-text"></h3>
+                    <button id="play-audio" class="btn btn-audio"><i class="fas fa-play"></i></button>
+                </div>
+                <div class="answers-grid" id="answers-grid"></div>
+                <div class="quiz-feedback hidden" id="quiz-feedback">
+                    <div class="feedback-icon"></div>
+                    <div class="feedback-text"></div>
+                </div>
+            </div>
+            
+            <div id="quiz-result" class="quiz-result hidden">
+                <div class="result-card">
+                    <div class="result-icon"><i class="fas fa-trophy"></i></div>
+                    <h3>測驗完成！</h3>
+                    <div class="result-score"><span>您的分數：</span><span id="final-score" class="score-number">0</span><span>/100</span></div>
+                    <div class="result-message" id="result-message"></div>
+                    <div class="result-buttons">
+                        <button class="btn btn-primary" onclick="showSection('quiz')"><i class="fas fa-redo"></i>再次測驗</button>
+                        <button class="btn btn-secondary" onclick="showSection('records')"><i class="fas fa-chart-line"></i>查看記錄</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 成績記錄區 -->
+        <section id="records" class="section">
+            <h2>成績記錄</h2>
+            <div class="records-stats">
+                <div class="stat-card"><i class="fas fa-clipboard-list"></i><div class="stat-info"><div class="stat-number" id="total-tests">0</div><div class="stat-label">總測驗次數</div></div></div>
+                <div class="stat-card"><i class="fas fa-star"></i><div class="stat-info"><div class="stat-number" id="average-score">0</div><div class="stat-label">平均分數</div></div></div>
+                <div class="stat-card"><i class="fas fa-trophy"></i><div class="stat-info"><div class="stat-number" id="high-score">0</div><div class="stat-label">最高分數</div></div></div>
+                <div class="stat-card"><i class="fas fa-gift"></i><div class="stat-info"><div class="stat-number" id="rewards-earned">0</div><div class="stat-label">獲得獎勵</div></div></div>
+            </div>
+            <div class="records-table">
+                <h3>最近測驗記錄</h3>
+                <table id="records-list"><thead><tr><th>日期</th><th>類型</th><th>分數</th><th>獎勵</th></tr></thead><tbody></tbody></table>
+            </div>
+        </section>
+
+        <!-- 獎勵中心 -->
+        <section id="rewards" class="section">
+            <h2>獎勵中心</h2>
+            <div class="rewards-intro"><p>測驗分數超過80分就可以參加抽獎！快來看看有什麼獎勵吧！</p></div>
+            <div class="lottery-section">
+                <div class="lottery-machine">
+                    <div class="lottery-display"><div class="lottery-item" id="lottery-item"><i class="fas fa-question"></i></div></div>
+                    <button class="btn btn-primary" id="lottery-btn" onclick="startLottery()"><i class="fas fa-dice"></i>開始抽獎</button>
+                    <button class="btn btn-secondary" id="free-lottery-btn"><i class="fas fa-gift"></i>免費抽獎</button>
+                </div>
+            </div>
+            <div class="rewards-tabs">
+                <button class="tab-btn active" data-tab="collection"><i class="fas fa-trophy"></i>我的獎勵</button>
+                <button class="tab-btn" data-tab="catalog"><i class="fas fa-list"></i>所有獎勵</button>
+            </div>
+            <div id="rewards-collection"><div class="rewards-grid" id="rewards-grid"></div><button class="btn btn-secondary" id="clear-rewards-btn"><i class="fas fa-trash"></i>清除我的獎勵</button></div>
+            <div id="rewards-catalog" style="display: none;"><div class="catalog-grid" id="catalog-grid"></div></div>
+        </section>
+
+        
+
+        <!-- 遊戲區 -->
+        <section id="game" class="section">
+            <h2>連連看遊戲</h2>
+            <div class="game-intro">
+                <div class="game-mode-switch">
+                    <button class="btn btn-mode active" id="mode-zhuyin" onclick="startMatchingPairsGame('zhuyin')">注音配對</button>
+                    <button class="btn btn-mode" id="mode-alphabet" onclick="startMatchingPairsGame('alphabet')">英文大小寫配對</button>
+                </div>
+                <p>請將卡片兩兩配對！</p>
+                <button class="btn btn-primary" onclick="startMatchingPairsGame(matchingPairsGame.mode)"><i class="fas fa-redo"></i>重新開始</button>
+            </div>
+            <div class="matching-pairs-grid" id="matching-pairs-grid"></div>
+            <div id="matching-pairs-result" style="margin-top:20px;font-size:1.2rem; text-align:center;"></div>
+        </section>
+    </div>
+
+    <!-- 音效 -->
+    <audio id="correct-sound" preload="auto"><source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhESGH3/LNeyoFKn7K9NuQOAkZZrTt56BNCQ1Ip+L1uWseBjiS1/LKeSuGJXfH8N6PQQ==" type="audio/wav"></audio>
+    <audio id="wrong-sound" preload="auto"><source src="data:audio/wav;base64,UklGRp4CAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YXoCAACBhYqFbF1dJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmshESGH3/LNeyoFKn7K9NuQOAkZZrTt56BNCQ1Ip+L1uWseBjiS1/LKeSuGJXfH8N6PQQ==" type="audio/wav"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
