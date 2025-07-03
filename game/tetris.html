@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>俄羅斯方塊｜Mario 主題遊戲</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="mario-bg">
+  <header class="mario-header">
+    <button class="mario-btn mario-back" onclick="location.href='index.html'">返回遊戲首頁</button>
+    <h1 class="mario-title">俄羅斯方塊</h1>
+  </header>
+  <main class="mario-main" style="text-align:center;">
+    <section class="mario-game-area" style="text-align:center;">
+      <p class="mario-desc">經典方塊消除，Mario 主題，挑戰極限分數！</p>
+      <div id="tetris-board" style="margin:2rem auto;text-align:center;"></div>
+      <div id="tetris-result" style="display:none;text-align:center;margin:1rem auto;"></div>
+    </section>
+    <section class="mario-leaderboard" style="text-align:center;margin:2rem auto;">
+      <h2 class="mario-subtitle">排行榜</h2>
+      <ul id="leaderboard-list"></ul>
+    </section>
+    <div id="save-score-area" style="margin:1.5rem auto;text-align:center;"></div>
+  </main>
+  <script src="mario-common.js"></script>
+  <script>
+  // Mario Tetris 主程式
+  const ROWS = 20, COLS = 10;
+  const BLOCK_SIZE = 28;
+  const board = Array.from({length: ROWS},()=>Array(COLS).fill(0));
+  const shapes = [
+    [[1,1,1,1]], // I
+    [[1,1],[1,1]], // O
+    [[0,1,0],[1,1,1]], // T
+    [[1,1,0],[0,1,1]], // S
+    [[0,1,1],[1,1,0]], // Z
+    [[1,0,0],[1,1,1]], // J
+    [[0,0,1],[1,1,1]]  // L
+  ];
+  const colors = ['#e63946','#f7b731','#457b9d','#43aa8b','#b97a1a','#7ec0ee','#c0392b'];
+  let current, curX, curY, curColor, dropTimer, gameOver = false;
+  let score = 0;
+  let startTime = null;
+  let endTime = null;
+  const boardEl = document.getElementById('tetris-board');
+  const resultEl = document.getElementById('tetris-result');
+  function newBlock() {
+    const idx = Math.floor(Math.random()*shapes.length);
+    current = shapes[idx].map(row=>[...row]);
+    curColor = colors[idx];
+    curY = 0;
+    curX = Math.floor((COLS-current[0].length)/2);
+    if(!canMove(0,0,current)) {
+      endGame();
+      return;
+    }
+  }
+  function canMove(dx,dy,shape) {
+    for(let y=0;y<shape.length;y++){
+      for(let x=0;x<shape[0].length;x++){
+        if(shape[y][x]){
+          let nx=curX+x+dx, ny=curY+y+dy;
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS||board[ny][nx]) return false;
+        }
+      }
+    }
+    return true;
+  }
+  function merge() {
+    for(let y=0;y<current.length;y++){
+      for(let x=0;x<current[0].length;x++){
+        if(current[y][x]) board[curY+y][curX+x]=curColor;
+      }
+    }
+  }
+  function clearLines() {
+    let lines=0;
+    for(let y=ROWS-1;y>=0;y--){
+      if(board[y].every(cell=>cell)){
+        board.splice(y,1);
+        board.unshift(Array(COLS).fill(0));
+        lines++;
+        y++;
+      }
+    }
+    if(lines) score+=lines*100;
+  }
+  function draw() {
+    let html = `<div style='display:inline-block;background:#fffbe6;border-radius:10px;padding:8px;box-shadow:0 2px 8px #b97a1a33;'>`;
+    for(let y=0;y<ROWS;y++){
+      html+='<div style="display:flex;">';
+      for(let x=0;x<COLS;x++){
+        let color = board[y][x]||'';
+        let isCur = false;
+        if(current) {
+          let cy = y-curY, cx = x-curX;
+          if(cy>=0&&cy<current.length&&cx>=0&&cx<current[0].length&&current[cy][cx]) {
+            color = curColor; isCur = true;
+          }
+        }
+        html+=`<div style='width:${BLOCK_SIZE}px;height:${BLOCK_SIZE}px;border:1px solid #e09c3a;background:${color?color:'#fffbe6'};border-radius:6px;box-shadow:${color?'0 2px 0 #b97a1a':''};'></div>`;
+      }
+      html+='</div>';
+    }
+    html+='</div>';
+    html+=`<div style='margin:1em 0;font-size:1.2em;color:#e63946;'>分數：${score}</div>`;
+    boardEl.innerHTML = html;
+  }
+  function drop() {
+    if(gameOver) return;
+    if(!canMove(0,1,current)) {
+      merge();
+      clearLines();
+      newBlock();
+    } else {
+      curY++;
+    }
+    draw();
+  }
+  function tick() {
+    drop();
+    if(!gameOver) dropTimer = setTimeout(tick, 400);
+  }
+  function rotate() {
+    let next = current[0].map((_,i)=>current.map(row=>row[i])).reverse();
+    if(canMove(0,0,next)) current = next;
+  }
+  function endGame() {
+    gameOver = true;
+    clearTimeout(dropTimer);
+    endTime = Date.now();
+    resultEl.style.display='block';
+    let timeSec = Math.round((endTime-startTime)/1000);
+    let timeStr = timeSec<60?`${timeSec}秒`:`${Math.floor(timeSec/60)}分${timeSec%60}秒`;
+    resultEl.innerHTML = `<h2 class='mario-title'>遊戲結束</h2><div class='mario-quiz-status'>分數：${score}｜通關時間：<span>${timeStr}</span> <span class='mario-coin'>⏱️</span></div><button class='mario-btn' onclick='location.reload()'>再玩一次</button>`;
+    renderPlayerSelect('save-score-area', function(player) {
+      let list = getLeaderboard();
+      list.push({ player, score, time: Date.now(), clearTime: timeStr });
+      saveLeaderboard(list);
+      renderLeaderboard();
+    });
+  }
+  document.addEventListener('keydown',function(e){
+    if(gameOver) return;
+    if(['ArrowLeft','a','A'].includes(e.key) && canMove(-1,0,current)) curX--;
+    if(['ArrowRight','d','D'].includes(e.key) && canMove(1,0,current)) curX++;
+    if(['ArrowDown','s','S'].includes(e.key) && canMove(0,1,current)) curY++;
+    if(['ArrowUp','w','W',' '].includes(e.key)) rotate();
+    draw();
+  });
+  function startGame() {
+    score = 0;
+    startTime = Date.now();
+    gameOver = false;
+    for(let y=0;y<ROWS;y++) for(let x=0;x<COLS;x++) board[y][x]=0;
+    newBlock();
+    draw();
+    clearTimeout(dropTimer);
+    dropTimer = setTimeout(tick, 400);
+  }
+  startGame();
+  // 排行榜共用
+  const leaderboardKey = 'tetris_leaderboard';
+  function getLeaderboard() {
+    let data = localStorage.getItem(leaderboardKey);
+    if (!data) return [];
+    try { return JSON.parse(data); } catch { return []; }
+  }
+  function saveLeaderboard(list) {
+    localStorage.setItem(leaderboardKey, JSON.stringify(list));
+  }
+  function renderLeaderboard() {
+    const list = getLeaderboard();
+    const ul = document.getElementById('leaderboard-list');
+    if (!ul) return;
+    const rankIcons = ['🥇','🥈','🥉'];
+    ul.innerHTML = list
+      .sort((a, b) => b.score - a.score)
+      .map((item, idx) => {
+        const icon = rankIcons[idx] || `<span style='font-weight:bold;'>${idx+1}</span>`;
+        return `<li>${icon} ${item.player} ${item.score}分 <span style='color:#888;font-size:0.9em;'>${item.clearTime?`｜${item.clearTime}`:''}</span></li>`;
+      })
+      .join('');
+  }
+  renderLeaderboard();
+  </script>
+</body>
+</html>

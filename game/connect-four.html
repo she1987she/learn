@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>四子棋｜Mario 主題遊戲</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="mario-bg">
+  <header class="mario-header">
+    <button class="mario-btn mario-back" onclick="location.href='index.html'">返回遊戲首頁</button>
+    <h1 class="mario-title">四子棋</h1>
+  </header>
+  <main class="mario-main">
+    <section class="mario-game-area">
+      <p class="mario-desc">Mario 主題四子棋，策略對決！</p>
+      <div id="connect4-board" style="margin:2rem auto;text-align:center;"></div>
+      <div id="connect4-result" style="display:none;text-align:center;"></div>
+    </section>
+    <section class="mario-leaderboard">
+      <h2 class="mario-subtitle">排行榜</h2>
+      <ul id="leaderboard-list"></ul>
+    </section>
+    <div id="save-score-area" style="margin:1.5rem 0;text-align:center;"></div>
+  </main>
+  <script src="mario-common.js"></script>
+  <script>
+  // 四子棋主程式
+  const ROWS = 6, COLS = 7;
+  const board = Array.from({length: ROWS}, () => Array(COLS).fill(0));
+  let currentPlayer = 1; // 1=紅, 2=黃
+  let gameActive = true;
+  
+  function renderConnect4() {
+    let html = '<div style="display:inline-block;background:#457b9d;padding:10px;border-radius:10px;">';
+    
+    // 投幣按鈕
+    html += '<div style="display:flex;margin-bottom:5px;">';
+    for(let x=0;x<COLS;x++){
+      html += `<button class="mario-btn" style="width:50px;height:30px;margin:2px;" onclick="dropPiece(${x})" ${!gameActive?'disabled':''}>↓</button>`;
+    }
+    html += '</div>';
+    
+    // 棋盤
+    for(let y=0;y<ROWS;y++){
+      html += '<div style="display:flex;">';
+      for(let x=0;x<COLS;x++){
+        let color = '#fff';
+        if(board[y][x] === 1) color = '#e63946';
+        if(board[y][x] === 2) color = '#f7b731';
+        html += `<div style="width:50px;height:50px;background:${color};border:3px solid #222;border-radius:50%;margin:2px;"></div>`;
+      }
+      html += '</div>';
+    }
+    html += '</div>';
+    
+    html += `<div style="margin:1em 0;font-size:1.2em;color:#e63946;">目前玩家：${currentPlayer===1?'紅色':'黃色'}</div>`;
+    
+    document.getElementById('connect4-board').innerHTML = html;
+  }
+  
+  function dropPiece(col) {
+    if(!gameActive) return;
+    if(startTime === null) startTime = Date.now();
+    
+    // 找到該列最下方的空位
+    for(let row = ROWS-1; row >= 0; row--) {
+      if(board[row][col] === 0) {
+        board[row][col] = currentPlayer;
+        
+        if(checkWin(row, col)) {
+          gameActive = false;
+          endTime = Date.now();
+          showResult(`玩家${currentPlayer===1?'1(紅)':'2(黃)'}勝利！`);
+        } else if(checkDraw()) {
+          gameActive = false;
+          endTime = Date.now();
+          showResult('平手！');
+        } else {
+          currentPlayer = currentPlayer === 1 ? 2 : 1;
+        }
+        
+        renderConnect4();
+        return;
+      }
+    }
+  }
+  
+  function checkWin(row, col) {
+    const player = board[row][col];
+    
+    // 檢查四個方向
+    const directions = [
+      [0,1], [1,0], [1,1], [1,-1] // 水平、垂直、對角線
+    ];
+    
+    for(let [dx, dy] of directions) {
+      let count = 1;
+      
+      // 正方向
+      for(let i=1; i<4; i++) {
+        const newRow = row + dy*i;
+        const newCol = col + dx*i;
+        if(newRow >= 0 && newRow < ROWS && newCol >= 0 && newCol < COLS && board[newRow][newCol] === player) {
+          count++;
+        } else break;
+      }
+      
+      // 反方向
+      for(let i=1; i<4; i++) {
+        const newRow = row - dy*i;
+        const newCol = col - dx*i;
+        if(newRow >= 0 && newRow < ROWS && newCol >= 0 && newCol < COLS && board[newRow][newCol] === player) {
+          count++;
+        } else break;
+      }
+      
+      if(count >= 4) return true;
+    }
+    
+    return false;
+  }
+  
+  function checkDraw() {
+    return board[0].every(cell => cell !== 0);
+  }
+  
+  renderConnect4();
+  let startTime = null;
+  let endTime = null;
+  function showResult(msg) {
+    let timeSec = Math.round((endTime-startTime)/1000);
+    let timeStr = timeSec<60?`${timeSec}秒`:`${Math.floor(timeSec/60)}分${timeSec%60}秒`;
+    document.getElementById('connect4-result').style.display='block';
+    document.getElementById('connect4-result').innerHTML = `<h2 class='mario-title'>${msg}</h2><div class='mario-quiz-status'>通關時間：<span>${timeStr}</span> <span class='mario-coin'>⏱️</span></div><button class='mario-btn' onclick='location.reload()'>再玩一次</button>`;
+    renderPlayerSelect('save-score-area', function(player) {
+      let list = getLeaderboard();
+      list.push({ player, score: msg.includes('勝利')?1:0, time: Date.now(), clearTime: timeStr });
+      saveLeaderboard(list);
+      renderLeaderboard();
+    });
+  }
+  const leaderboardKey = 'connect4_leaderboard';
+  function getLeaderboard() {
+    let data = localStorage.getItem(leaderboardKey);
+    if (!data) return [];
+    try { return JSON.parse(data); } catch { return []; }
+  }
+  function saveLeaderboard(list) {
+    localStorage.setItem(leaderboardKey, JSON.stringify(list));
+  }
+  function renderLeaderboard() {
+    const list = getLeaderboard();
+    const ul = document.getElementById('leaderboard-list');
+    if (!ul) return;
+    const rankIcons = ['🥇','🥈','🥉'];
+    ul.innerHTML = list
+      .sort((a, b) => b.score - a.score)
+      .map((item, idx) => {
+        const icon = rankIcons[idx] || `<span style='font-weight:bold;'>${idx+1}</span>`;
+        return `<li>${icon} ${item.player} ${item.score?'勝利':'平手'} <span style='color:#888;font-size:0.9em;'>${item.clearTime?`｜${item.clearTime}`:''}</span></li>`;
+      })
+      .join('');
+  }
+  renderLeaderboard();
+  </script>
+</body>
+</html>

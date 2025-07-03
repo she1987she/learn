@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>計算機考題測驗｜Mario 主題遊戲</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="mario-bg">
+  <header class="mario-header">
+    <button class="mario-btn mario-back" onclick="location.href='index.html'">返回遊戲首頁</button>
+    <h1 class="mario-title">計算機考題測驗</h1>
+  </header>
+  <main class="mario-main">
+    <section class="mario-game-area mario-quiz-area">
+      <div style="margin-bottom:1.5rem;text-align:center;">
+        <button class="mario-btn" id="btn-addsub" style="margin:0 0.5rem;">加減</button>
+        <button class="mario-btn" id="btn-muldiv" style="margin:0 0.5rem;">乘除</button>
+        <button class="mario-btn" id="btn-all" style="margin:0 0.5rem;">加減乘除</button>
+      </div>
+      <div id="quiz-container">
+        <!-- 題目將由 JS 動態產生 -->
+      </div>
+      <div id="quiz-result" style="display:none;text-align:center;">
+        <h2 class="mario-title">🎉 恭喜完成！</h2>
+        <div class="mario-quiz-status" style="font-size:1.5em;">
+          <span class="mario-quiz-score">總分：<span id="final-score">0</span> <span class="mario-coin">🪙</span></span>
+        </div>
+        <div id="clear-time-area" class="mario-quiz-status"></div>
+        <div id="save-score-area" style="margin:1.5rem 0;"></div>
+        <button class="mario-btn" onclick="location.reload()">再玩一次</button>
+      </div>
+
+    </section>
+    <section class="mario-leaderboard" id="leaderboard-section">
+      <h2 class="mario-subtitle">排行榜</h2>
+      <ul id="leaderboard-list">
+        <!-- 排行榜內容由 JS 產生 -->
+      </ul>
+    </section>
+  </main>
+<script>
+// 全域變數宣告
+let current = 0;
+let score = 0;
+let startTime = null;
+let endTime = null;
+let currentDifficulty = 'normal';
+let quizOrder = [];
+let quizContainer, quizResult, finalScore;
+
+// Mario Quiz 題庫
+// 題庫自動產生：隨機四則運算題，增加難度選擇
+function generateQuizData(count = 10, type = 'all') {
+  const quiz = [];
+  let maxNum = 20;
+  let ops;
+  if(type === 'addsub') {
+    ops = [
+      {s: '+', f: (a,b)=>a+b, weight: 1},
+      {s: '-', f: (a,b)=>a-b, weight: 1}
+    ];
+  } else if(type === 'muldiv') {
+    ops = [
+      {s: '×', f: (a,b)=>a*b, weight: 1},
+      {s: '÷', f: (a,b)=>a/b, weight: 1}
+    ];
+  } else {
+    ops = [
+      {s: '+', f: (a,b)=>a+b, weight: 3},
+      {s: '-', f: (a,b)=>a-b, weight: 3},
+      {s: '×', f: (a,b)=>a*b, weight: 2},
+      {s: '÷', f: (a,b)=>a/b, weight: 2}
+    ];
+  }
+  // 加權隨機選擇
+  function getRandomOp() {
+    const totalWeight = ops.reduce((sum, op) => sum + op.weight, 0);
+    let random = Math.random() * totalWeight;
+    for(let op of ops) {
+      random -= op.weight;
+      if(random <= 0) return op;
+    }
+    return ops[0];
+  }
+  while (quiz.length < count) {
+    const op = getRandomOp();
+    let a = Math.floor(Math.random()*maxNum)+1;
+    let b = Math.floor(Math.random()*maxNum)+1;
+    // 特殊處理除法
+    if(op.s==='÷') {
+      a = a * b;
+      if(b === 0) b = 1;
+    }
+    // 特殊處理減法避免負數
+    if(op.s==='-' && a < b) {
+      [a, b] = [b, a];
+    }
+    let ans = op.f(a,b);
+    if(op.s==='÷') ans = Math.round(ans);
+    // 生成選項
+    const options = [ans];
+    while(options.length<4) {
+      let delta = Math.floor(Math.random()*(maxNum/3))+1;
+      let fake = ans + (Math.random()<0.5?-delta:delta);
+      if(op.s==='÷') fake = Math.max(1, Math.round(fake));
+      if(!options.includes(fake) && fake >= 0) options.push(fake);
+    }
+    // 洗牌
+    for(let i=options.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [options[i],options[j]]=[options[j],options[i]];
+    }
+    quiz.push({
+      q: `${a} ${op.s} ${b} = ?`,
+      options,
+      answer: options.indexOf(ans)
+    });
+  }
+  return quiz;
+}
+
+// 重新開始遊戲函數
+function restartGame(quizType) {
+  try {
+    // 每次都重新抓取 DOM 元素，避免 undefined
+    quizContainer = document.getElementById('quiz-container');
+    quizResult = document.getElementById('quiz-result');
+    finalScore = document.getElementById('final-score');
+
+    if (!quizContainer) {
+      throw new Error('找不到 quiz-container 元素');
+    }
+
+    current = 0;
+    score = 0;
+    startTime = null;
+    endTime = null;
+
+    try {
+      quizOrder = generateQuizData(10, quizType);
+      if (!quizOrder || !Array.isArray(quizOrder) || quizOrder.length === 0) {
+        throw new Error('題庫生成失敗');
+      }
+    } catch (error) {
+      quizContainer.innerHTML = '<div class="mario-quiz-block"><h3>題目載入失敗，請重新整理頁面</h3></div>';
+      return;
+    }
+
+    if (quizResult) quizResult.style.display = 'none';
+    quizContainer.style.display = '';
+
+    try {
+      renderQuiz(current);
+    } catch (error) {
+      quizContainer.innerHTML = '<div class="mario-quiz-block"><h3>遊戲載入失敗，請重新整理頁面</h3></div>';
+    }
+  } catch (e) {
+    if (quizContainer) {
+      quizContainer.innerHTML = `<div class='mario-quiz-block'><h3>初始化失敗：${e.message}</h3></div>`;
+    }
+    console.error(e);
+  }
+}
+
+// 隨機排序題目
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function renderQuiz(idx) {
+  try {
+    // 每次都重新抓取 quizContainer
+    quizContainer = document.getElementById('quiz-container');
+    if (!quizContainer) throw new Error('找不到 quiz-container 元素');
+    if (!quizOrder || idx >= quizOrder.length) throw new Error('題目資料不存在或索引越界');
+    if (idx === 0 && startTime === null) startTime = Date.now();
+    const data = quizOrder[idx];
+    if (!data || !data.q || !data.options || !Array.isArray(data.options)) throw new Error('題目資料格式錯誤');
+
+    quizContainer.innerHTML = `
+      <div class="mario-quiz-block">
+        <div class="mario-quiz-question">
+          <span class="mario-quiz-qnum">第 ${idx+1} 題</span>
+          <span class="mario-quiz-qtext">${data.q}</span>
+        </div>
+        <div class="mario-quiz-options">
+          ${data.options.map((opt,i)=>`<button class='mario-btn mario-option' data-idx='${i}'>${opt}</button>`).join('')}
+        </div>
+        <div class="mario-quiz-status">
+          <span class="mario-quiz-score">分數：<span id="score">${score}</span> <span class="mario-coin">🪙</span></span>
+        </div>
+      </div>
+    `;
+
+    // 綁定事件
+    const block = quizContainer.querySelector('.mario-quiz-block');
+    if (!block) throw new Error('找不到 mario-quiz-block 元素');
+    const optionButtons = block.querySelectorAll('.mario-option');
+    if (optionButtons.length === 0) throw new Error('找不到選項按鈕');
+    optionButtons.forEach(function(btn, i) {
+      btn.addEventListener('click', function() {
+        handleOptionClick(btn, i, data, block);
+      });
+    });
+  } catch (e) {
+    if (quizContainer) {
+      quizContainer.innerHTML = `<div class='mario-quiz-block'><h3>題目載入失敗：${e.message}</h3></div>`;
+    }
+    console.error(e);
+  }
+}
+
+// 將選項點擊邏輯獨立出來
+function handleOptionClick(btn, optionIndex, data, block) {
+  // 防止重複點擊
+  if (btn.disabled) return;
+  
+  // 禁用所有按鈕
+  block.querySelectorAll('.mario-option').forEach(b => b.disabled = true);
+  
+  if (optionIndex === data.answer) {
+    block.classList.remove('wrong');
+    block.classList.add('correct');
+    score += 25;
+    
+    // 更新分數顯示
+    const scoreElement = block.querySelector('#score');
+    if (scoreElement) scoreElement.textContent = score;
+    
+
+    
+    const coin = block.querySelector('.mario-coin');
+    if (coin) {
+      coin.classList.add('coin-bounce');
+      setTimeout(()=>coin.classList.remove('coin-bounce'), 600);
+    }
+  } else {
+    block.classList.remove('correct');
+    block.classList.add('wrong');
+    
+
+  }
+  
+  setTimeout(()=>{
+    block.classList.remove('correct','wrong');
+    nextQuiz();
+  }, 600);
+}
+
+function nextQuiz() {
+  try {
+    current++;
+    if (current < quizOrder.length) {
+      renderQuiz(current);
+    } else {
+      endTime = Date.now();
+      quizContainer = document.getElementById('quiz-container');
+      quizResult = document.getElementById('quiz-result');
+      finalScore = document.getElementById('final-score');
+      if (quizContainer) quizContainer.style.display = 'none';
+      if (quizResult) quizResult.style.display = '';
+      if (finalScore) finalScore.textContent = score;
+      let timeSec = Math.round((endTime - startTime) / 1000);
+      let timeStr = timeSec < 60 ? `${timeSec} 秒` : `${Math.floor(timeSec/60)} 分 ${timeSec%60} 秒`;
+      let timeArea = document.getElementById('clear-time-area');
+      if (!timeArea) {
+        timeArea = document.createElement('div');
+        timeArea.id = 'clear-time-area';
+        timeArea.className = 'mario-quiz-status';
+        if (finalScore && finalScore.parentNode && finalScore.parentNode.parentNode) {
+          finalScore.parentNode.parentNode.appendChild(timeArea);
+        }
+      }
+      timeArea.innerHTML = `通關時間：<span id="final-time">${timeStr}</span> <span class="mario-coin">⏱️</span>`;
+    }
+  } catch (e) {
+    if (quizContainer) {
+      quizContainer.innerHTML = `<div class='mario-quiz-block'><h3>流程異常：${e.message}</h3></div>`;
+    }
+    console.error(e);
+  }
+}
+
+// 排行榜儲存與顯示
+const leaderboardKey = 'mario_quiz_leaderboard';
+function getLeaderboard() {
+  let data = localStorage.getItem(leaderboardKey);
+  if (!data) return [];
+  try { return JSON.parse(data); } catch { return []; }
+}
+function saveLeaderboard(list) {
+  localStorage.setItem(leaderboardKey, JSON.stringify(list));
+}
+function renderLeaderboard() {
+  const list = getLeaderboard();
+  const ul = document.getElementById('leaderboard-list');
+  if (!ul) return;
+  const rankIcons = ['🥇','🥈','🥉'];
+  ul.innerHTML = list
+    .sort((a, b) => b.score - a.score)
+    .map((item, idx) => {
+      const icon = rankIcons[idx] || `<span style='font-weight:bold;'>${idx+1}</span>`;
+      return `<li>${icon} ${item.player} ${item.score}分 <span style=\"color:#888;font-size:0.9em;\">${item.clearTime ? `｜${item.clearTime}` : ''}</span></li>`;
+    })
+    .join('');
+}
+
+// DOM 載入完成後初始化
+document.addEventListener('DOMContentLoaded', function() {
+  try {
+    // 初始化 DOM 元素
+    quizContainer = document.getElementById('quiz-container');
+    quizResult = document.getElementById('quiz-result');
+    finalScore = document.getElementById('final-score');
+
+    if (!quizContainer) throw new Error('找不到 quiz-container 元素');
+
+    // 強制 current 歸零
+    current = 0;
+
+    // 綁定三個題型按鈕
+    const btnAddSub = document.getElementById('btn-addsub');
+    const btnMulDiv = document.getElementById('btn-muldiv');
+    const btnAll = document.getElementById('btn-all');
+    if (btnAddSub) btnAddSub.addEventListener('click', function() { restartGame('addsub'); });
+    if (btnMulDiv) btnMulDiv.addEventListener('click', function() { restartGame('muldiv'); });
+    if (btnAll) btnAll.addEventListener('click', function() { restartGame('all'); });
+
+    // 初始化排行榜
+    try {
+      renderLeaderboard();
+    } catch (error) {
+      console.error('排行榜初始化失敗:', error);
+    }
+
+    // 每次顯示結果時顯示玩家選單
+    const observer = new MutationObserver(() => {
+      if (quizResult && quizResult.style.display !== 'none') {
+        try {
+          if (typeof renderPlayerSelect === 'function') {
+            renderPlayerSelect('save-score-area', function(player) {
+              const scoreVal = parseInt(document.getElementById('final-score').textContent, 10);
+              const timeStr = document.getElementById('final-time')?.textContent || '';
+              let list = getLeaderboard();
+              list.push({ player, score: scoreVal, time: Date.now(), clearTime: timeStr });
+              saveLeaderboard(list);
+              renderLeaderboard();
+            });
+          } else {
+            console.warn('renderPlayerSelect 函數不存在，提供簡單的玩家輸入');
+            // 提供簡單的後備方案
+            const saveArea = document.getElementById('save-score-area');
+            if (saveArea) {
+              saveArea.innerHTML = `
+                <div style="margin:1rem 0;text-align:center;">
+                  <input type="text" id="player-name" placeholder="輸入你的名字" class="mario-btn" style="width:160px;">
+                  <button class="mario-btn" onclick="saveSimpleScore()">儲存分數</button>
+                </div>
+              `;
+            }
+          }
+        } catch (error) {
+          console.error('玩家選單載入失敗:', error);
+        }
+      }
+    });
+    if (quizResult) {
+      observer.observe(quizResult, { attributes: true, attributeFilter: ['style'] });
+    }
+  } catch (e) {
+    if (quizContainer) {
+      quizContainer.innerHTML = `<div class='mario-quiz-block'><h3>初始化失敗：${e.message}</h3></div>`;
+    }
+    console.error(e);
+  }
+});
+
+// 簡單的分數儲存函數（後備方案）
+function saveSimpleScore() {
+  const nameInput = document.getElementById('player-name');
+  if (!nameInput || !nameInput.value.trim()) {
+    alert('請輸入你的名字！');
+    return;
+  }
+  
+  const player = nameInput.value.trim();
+  const scoreVal = parseInt(document.getElementById('final-score').textContent, 10);
+  const timeStr = document.getElementById('final-time')?.textContent || '';
+  
+  let list = getLeaderboard();
+  list.push({ player, score: scoreVal, time: Date.now(), clearTime: timeStr });
+  saveLeaderboard(list);
+  renderLeaderboard();
+  
+  nameInput.disabled = true;
+  nameInput.nextElementSibling.textContent = '已儲存';
+  nameInput.nextElementSibling.disabled = true;
+}
+</script>
+<!-- mario-common.js 放在主程式之後，確保主流程不受影響 -->
+<script src="mario-common.js"></script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>迷宮闖關｜Mario 主題遊戲</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="mario-bg">
+  <header class="mario-header">
+    <button class="mario-btn mario-back" onclick="location.href='index.html'">返回遊戲首頁</button>
+    <h1 class="mario-title">迷宮闖關</h1>
+  </header>
+  <main class="mario-main">
+    <section class="mario-game-area">
+      <p class="mario-desc">Mario 主題迷宮，尋找出口，挑戰自我！</p>
+      <div id="maze-board" style="margin:2rem auto;text-align:center;"></div>
+      <div id="maze-result" style="display:none;text-align:center;"></div>
+    </section>
+    <section class="mario-leaderboard">
+      <h2 class="mario-subtitle">排行榜</h2>
+      <ul id="leaderboard-list"></ul>
+    </section>
+    <div id="save-score-area" style="margin:1.5rem 0;text-align:center;"></div>
+  </main>
+  <script src="mario-common.js"></script>
+  <script>
+  // Mario 迷宮隨機生成
+  function generateMaze() {
+    const mazeTemplates = [
+      [
+        [1,1,1,1,1,1,1,1],
+        [1,2,0,0,1,0,3,1],
+        [1,0,1,0,1,0,1,1],
+        [1,0,1,0,0,0,1,1],
+        [1,0,1,1,1,0,0,1],
+        [1,0,0,0,1,1,0,1],
+        [1,1,1,0,0,0,0,1],
+        [1,1,1,1,1,1,1,1]
+      ],
+      [
+        [1,1,1,1,1,1,1,1],
+        [1,2,0,1,0,0,0,1],
+        [1,1,0,1,0,1,0,1],
+        [1,0,0,0,0,1,0,1],
+        [1,0,1,1,0,1,0,1],
+        [1,0,0,0,0,0,0,1],
+        [1,1,1,0,1,1,3,1],
+        [1,1,1,1,1,1,1,1]
+      ],
+      [
+        [1,1,1,1,1,1,1,1],
+        [1,2,0,0,0,1,0,1],
+        [1,1,1,0,1,1,0,1],
+        [1,0,0,0,0,0,0,1],
+        [1,0,1,1,1,0,1,1],
+        [1,0,0,0,1,0,3,1],
+        [1,1,0,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1]
+      ]
+    ];
+    return mazeTemplates[Math.floor(Math.random() * mazeTemplates.length)];
+  }
+  const maze = generateMaze();
+  let playerPos = {x:1, y:1};
+  let startTime = null;
+  let endTime = null;
+  let finished = false;
+  const boardEl = document.getElementById('maze-board');
+  const resultEl = document.getElementById('maze-result');
+  function renderMaze() {
+    let html = '<div style="display:grid;grid-template-columns:repeat(8,36px);gap:2px;justify-content:center;">';
+    for(let y=0;y<8;y++){
+      for(let x=0;x<8;x++){
+        let cell = maze[y][x];
+        let content = '';
+        let bg = '#fffbe6';
+        if(cell===1) { bg = '#222'; content = ''; }
+        if(cell===2) { bg = '#ffe066'; content = '🚩'; }
+        if(cell===3) { bg = '#e63946'; content = '🏁'; }
+        if(playerPos.x===x&&playerPos.y===y) { content = '👦'; bg = '#7ec0ee'; }
+        html += `<div style='width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:${bg};border-radius:6px;'>${content}</div>`;
+      }
+    }
+    html += '</div>';
+    boardEl.innerHTML = html;
+  }
+  function move(dx,dy) {
+    if(finished) return;
+    const nx = playerPos.x+dx, ny = playerPos.y+dy;
+    if(maze[ny][nx]===1) return;
+    if(startTime===null) startTime=Date.now();
+    playerPos.x=nx; playerPos.y=ny;
+    renderMaze();
+    if(maze[ny][nx]===3) {
+      finished = true;
+      endTime = Date.now();
+      showResult();
+    }
+  }
+  function showResult() {
+    let timeSec = Math.round((endTime-startTime)/1000);
+    let timeStr = timeSec<60?`${timeSec}秒`:`${Math.floor(timeSec/60)}分${timeSec%60}秒`;
+    resultEl.style.display='block';
+    resultEl.innerHTML = `<h2 class='mario-title'>通關成功！</h2><div class='mario-quiz-status'>通關時間：<span>${timeStr}</span> <span class='mario-coin'>⏱️</span></div><button class='mario-btn' onclick='location.reload()'>再玩一次</button>`;
+    renderPlayerSelect('save-score-area', function(player) {
+      let list = getLeaderboard();
+      list.push({ player, score: timeSec, time: Date.now(), clearTime: timeStr });
+      saveLeaderboard(list);
+      renderLeaderboard();
+    });
+  }
+  document.addEventListener('keydown', function(e){
+    if(finished) return;
+    if(['ArrowUp','w','W'].includes(e.key)) move(0,-1);
+    if(['ArrowDown','s','S'].includes(e.key)) move(0,1);
+    if(['ArrowLeft','a','A'].includes(e.key)) move(-1,0);
+    if(['ArrowRight','d','D'].includes(e.key)) move(1,0);
+  });
+  // 排行榜共用
+  const leaderboardKey = 'maze_game_leaderboard';
+  function getLeaderboard() {
+    let data = localStorage.getItem(leaderboardKey);
+    if (!data) return [];
+    try { return JSON.parse(data); } catch { return []; }
+  }
+  function saveLeaderboard(list) {
+    localStorage.setItem(leaderboardKey, JSON.stringify(list));
+  }
+  function renderLeaderboard() {
+    const list = getLeaderboard();
+    const ul = document.getElementById('leaderboard-list');
+    if (!ul) return;
+    const rankIcons = ['🥇','🥈','🥉'];
+    ul.innerHTML = list
+      .sort((a, b) => a.score - b.score)
+      .map((item, idx) => {
+        const icon = rankIcons[idx] || `<span style='font-weight:bold;'>${idx+1}</span>`;
+        return `<li>${icon} ${item.player} ${item.clearTime?item.clearTime:item.score+'秒'}</li>`;
+      })
+      .join('');
+  }
+  renderMaze();
+  renderLeaderboard();
+  </script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>計算機考題測驗（獨立版）｜Mario 主題遊戲</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="mario-bg">
+  <header class="mario-header">
+    <button class="mario-btn mario-back" onclick="location.href='index.html'">返回遊戲首頁</button>
+    <h1 class="mario-title">計算機考題測驗</h1>
+  </header>
+  <main class="mario-main" style="text-align:center;max-width:800px;margin:0 auto;">
+    <section class="mario-game-area mario-quiz-area" style="text-align:center;">
+      <div style="margin-bottom:1.5rem;text-align:center;">
+        <button class="mario-btn" onclick="startQuiz('easy')" style="margin:0 0.5rem;">簡單模式</button>
+        <button class="mario-btn" onclick="startQuiz('normal')" style="margin:0 0.5rem;">普通模式</button>
+        <button class="mario-btn" onclick="startQuiz('hard')" style="margin:0 0.5rem;">困難模式</button>
+      </div>
+      <div id="quiz-container" style="text-align:center;">
+        <div class="mario-quiz-block" style="text-align:center;margin:0 auto;">
+          <h3>🎯 準備開始測驗！</h3>
+          <p>請選擇難度，然後開始挑戰數學題目。</p>
+          <div class="mario-quiz-status" style="text-align:center;">
+            <span class="mario-quiz-score">目前分數：0 <span class="mario-coin">🪙</span></span>
+          </div>
+        </div>
+      </div>
+      <div id="quiz-result" style="display:none;text-align:center;margin:0 auto;">
+        <h2 class="mario-title">🎉 恭喜完成！</h2>
+        <div class="mario-quiz-status" style="font-size:1.5em;text-align:center;">
+          <span class="mario-quiz-score">總分：<span id="final-score">0</span> <span class="mario-coin">🪙</span></span>
+        </div>
+        <div id="clear-time-area" class="mario-quiz-status" style="text-align:center;"></div>
+        <div id="save-score-area" style="margin:1.5rem 0;text-align:center;">
+          <input type="text" id="player-name" placeholder="輸入你的名字" class="mario-btn" style="width:160px;margin:0.5rem;">
+          <button class="mario-btn" onclick="saveScore()" style="margin:0.5rem;">儲存分數</button>
+        </div>
+        <button class="mario-btn" onclick="location.reload()" style="margin:0.5rem;">再玩一次</button>
+      </div>
+    </section>
+    <section class="mario-leaderboard" id="leaderboard-section" style="text-align:center;margin:2rem auto;">
+      <h2 class="mario-subtitle">排行榜</h2>
+      <ul id="leaderboard-list" style="text-align:center;">
+        <!-- 排行榜內容由 JS 產生 -->
+      </ul>
+    </section>
+  </main>
+
+<script>
+// 全域變數
+let currentQuiz = 0;
+let gameScore = 0;
+let gameStartTime = null;
+let quizQuestions = [];
+let currentDifficulty = 'normal';
+
+// 生成題目
+function generateQuestions(difficulty = 'normal', count = 10) {
+  const questions = [];
+  let maxNumber = 10;
+  
+  if (difficulty === 'easy') maxNumber = 10;
+  else if (difficulty === 'normal') maxNumber = 20;
+  else if (difficulty === 'hard') maxNumber = 50;
+  
+  for (let i = 0; i < count; i++) {
+    const operations = ['+', '-', '×', '÷'];
+    const op = operations[Math.floor(Math.random() * operations.length)];
+    
+    let num1 = Math.floor(Math.random() * maxNumber) + 1;
+    let num2 = Math.floor(Math.random() * maxNumber) + 1;
+    
+    // 確保除法能整除
+    if (op === '÷') {
+      num1 = num1 * num2;
+    }
+    
+    // 確保減法不為負數
+    if (op === '-' && num1 < num2) {
+      [num1, num2] = [num2, num1];
+    }
+    
+    let correctAnswer;
+    switch (op) {
+      case '+': correctAnswer = num1 + num2; break;
+      case '-': correctAnswer = num1 - num2; break;
+      case '×': correctAnswer = num1 * num2; break;
+      case '÷': correctAnswer = num1 / num2; break;
+    }
+    
+    // 生成錯誤選項
+    const options = [correctAnswer];
+    while (options.length < 4) {
+      const wrongAnswer = correctAnswer + Math.floor(Math.random() * 20) - 10;
+      if (wrongAnswer > 0 && !options.includes(wrongAnswer)) {
+        options.push(wrongAnswer);
+      }
+    }
+    
+    // 隨機排序選項
+    options.sort(() => Math.random() - 0.5);
+    
+    questions.push({
+      question: `${num1} ${op} ${num2} = ?`,
+      options: options,
+      correctIndex: options.indexOf(correctAnswer)
+    });
+  }
+  
+  return questions;
+}
+
+// 開始測驗
+function startQuiz(difficulty) {
+  console.log('開始測驗，難度:', difficulty);
+  
+  currentDifficulty = difficulty;
+  currentQuiz = 0;
+  gameScore = 0;
+  gameStartTime = Date.now();
+  
+  quizQuestions = generateQuestions(difficulty, 10);
+  
+  document.getElementById('quiz-result').style.display = 'none';
+  showCurrentQuestion();
+}
+
+// 顯示當前問題
+function showCurrentQuestion() {
+  if (currentQuiz >= quizQuestions.length) {
+    showResult();
+    return;
+  }
+  
+  const question = quizQuestions[currentQuiz];
+  const container = document.getElementById('quiz-container');
+  
+  container.innerHTML = `
+    <div class="mario-quiz-block">
+      <div class="mario-quiz-question">
+        <span class="mario-quiz-qnum">第 ${currentQuiz + 1} 題</span>
+        <span class="mario-quiz-qtext">${question.question}</span>
+      </div>
+      <div class="mario-quiz-options">
+        ${question.options.map((option, index) => 
+          `<button class="mario-btn mario-option" onclick="selectAnswer(${index})">${option}</button>`
+        ).join('')}
+      </div>
+      <div class="mario-quiz-status">
+        <span class="mario-quiz-score">分數：${gameScore} <span class="mario-coin">🪙</span></span>
+      </div>
+    </div>
+  `;
+}
+
+// 選擇答案
+function selectAnswer(selectedIndex) {
+  const question = quizQuestions[currentQuiz];
+  const buttons = document.querySelectorAll('.mario-option');
+  
+  // 禁用所有按鈕
+  buttons.forEach(btn => btn.disabled = true);
+  
+  if (selectedIndex === question.correctIndex) {
+    buttons[selectedIndex].style.backgroundColor = '#4CAF50';
+    gameScore += 10;
+    console.log('答對了！當前分數:', gameScore);
+  } else {
+    buttons[selectedIndex].style.backgroundColor = '#f44336';
+    buttons[question.correctIndex].style.backgroundColor = '#4CAF50';
+    console.log('答錯了！正確答案是:', question.options[question.correctIndex]);
+  }
+  
+  // 更新分數顯示
+  document.querySelector('.mario-quiz-score').innerHTML = `分數：${gameScore} <span class="mario-coin">🪙</span>`;
+  
+  // 1.5秒後顯示下一題
+  setTimeout(() => {
+    currentQuiz++;
+    showCurrentQuestion();
+  }, 1500);
+}
+
+// 顯示結果
+function showResult() {
+  const endTime = Date.now();
+  const duration = Math.round((endTime - gameStartTime) / 1000);
+  
+  document.getElementById('quiz-container').style.display = 'none';
+  document.getElementById('final-score').textContent = gameScore;
+  document.getElementById('clear-time-area').innerHTML = `通關時間：${duration} 秒 <span class="mario-coin">⏱️</span>`;
+  document.getElementById('quiz-result').style.display = 'block';
+  
+  console.log('測驗完成！最終分數:', gameScore, '時間:', duration, '秒');
+  loadLeaderboard();
+}
+
+// 儲存分數
+function saveScore() {
+  const nameInput = document.getElementById('player-name');
+  const playerName = nameInput.value.trim();
+  
+  if (!playerName) {
+    alert('請輸入你的名字！');
+    return;
+  }
+  
+  const timeText = document.getElementById('clear-time-area').textContent;
+  const leaderboard = getLeaderboard();
+  
+  leaderboard.push({
+    player: playerName,
+    score: gameScore,
+    time: Date.now(),
+    clearTime: timeText
+  });
+  
+  localStorage.setItem('mario_quiz_leaderboard', JSON.stringify(leaderboard));
+  loadLeaderboard();
+  
+  nameInput.disabled = true;
+  nameInput.nextElementSibling.textContent = '已儲存';
+  nameInput.nextElementSibling.disabled = true;
+}
+
+// 取得排行榜
+function getLeaderboard() {
+  const data = localStorage.getItem('mario_quiz_leaderboard');
+  return data ? JSON.parse(data) : [];
+}
+
+// 載入排行榜
+function loadLeaderboard() {
+  const leaderboard = getLeaderboard();
+  const list = document.getElementById('leaderboard-list');
+  
+  if (leaderboard.length === 0) {
+    list.innerHTML = '<li>還沒有分數紀錄</li>';
+    return;
+  }
+  
+  leaderboard.sort((a, b) => b.score - a.score);
+  list.innerHTML = leaderboard
+    .slice(0, 10)
+    .map(item => `<li>${item.player} ${item.score}分 <span style="color:#888;font-size:0.9em;">${item.clearTime || ''}</span></li>`)
+    .join('');
+}
+
+// 初始化
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('計算機考題測驗載入完成');
+  loadLeaderboard();
+});
+</script>
+</body>
+</html>

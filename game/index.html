@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>超級小柚子主題遊戲網站</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="mario-bg">
+  <header class="mario-header">
+    <h1 class="mario-title">超級小柚子主主題遊戲樂園</h1>
+    <p class="mario-desc">精選益智遊戲，小柚子主風格，適合親子、同學、朋友同樂！</p>
+  </header>
+  <main class="game-list">
+    <div style="display: flex; flex-wrap: wrap; gap: 2.5rem; align-items: flex-start; justify-content: center;">
+      <!-- 玩家管理區塊（Mario 主題） -->
+      <section class="mario-player-manager" id="player-manager-section" style="flex:1 1 320px;min-width:260px;max-width:400px;">
+        <h2>玩家名單管理</h2>
+        <input type="text" id="new-player-input" class="mario-btn" placeholder="輸入新玩家名稱" style="width:100%;max-width:220px;display:block;margin:0 auto 1em auto;background:#fff;">
+        <div id="player-list-area"></div>
+        <div style="margin-top:1em;text-align:center;">
+          <button class="mario-btn" id="add-player-main-btn">新增玩家</button>
+          <button class="mario-btn" id="clear-player-main-btn">清除全部</button>
+        </div>
+      </section>
+      <section class="mario-leaderboard" style="flex:1 1 320px;min-width:260px;max-width:400px;">
+        <h2><a href="all-leaderboards.html" style="color:inherit;text-decoration:none;cursor:pointer;">全站排行榜（前五名）</a></h2>
+        <div id="leaderboard-area">
+          <ol id="leaderboard-list"></ol>
+        </div>
+        <script>
+        // 取得所有遊戲排行榜資料，合併排序
+        function getAllLeaderboards() {
+          const gameKeys = [
+            'calculator-quiz-leaderboard',
+            'tic-tac-toe-leaderboard',
+            'memory-flip-card-leaderboard',
+            'matching-pairs-leaderboard',
+            'tetris-leaderboard',
+            'puzzle-game-leaderboard',
+            'connect-four-leaderboard',
+            'snakes-and-ladders-leaderboard',
+            'ludo-leaderboard',
+            'sudoku-leaderboard',
+            'maze-game-leaderboard',
+            'spot-the-difference-leaderboard',
+            'drawing-board-leaderboard',
+            'game-test-center-leaderboard'
+          ];
+          let all = [];
+          gameKeys.forEach(key => {
+            let arr = [];
+            try {
+              arr = JSON.parse(localStorage.getItem(key) || '[]');
+            } catch(e) {}
+            arr.forEach(item => {
+              all.push({
+                ...item,
+                game: key.replace('-leaderboard','').replace(/-/g,' ').replace('calculator quiz','計算機考題測驗').replace('tic tac toe','井字遊戲').replace('memory flip card','記憶翻牌').replace('matching pairs','連連看').replace('tetris','俄羅斯方塊').replace('puzzle game','拼圖遊戲').replace('connect four','四子棋').replace('snakes and ladders','蛇棋').replace('ludo','飛行棋').replace('sudoku','數獨').replace('maze game','迷宮闖關').replace('spot the difference','找不同').replace('drawing board','塗鴉板').replace('game test center','測試中心')
+              });
+            });
+          });
+          return all;
+        }
+        // 跨遊戲排行榜 UI
+        function renderLeaderboard() {
+          const list = getAllLeaderboards();
+          const ul = document.getElementById('leaderboard-list');
+          if (!ul) return;
+          const rankIcons = ['🥇','🥈','🥉'];
+          ul.innerHTML = list
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 5)
+            .map((item, idx) => {
+              const icon = rankIcons[idx] || `<span style='font-weight:bold;'>${idx+1}</span>`;
+              return `<li>${icon} <span class='mario-lb-game'>[${item.game}]</span> ${item.player} <span class='mario-lb-score'>${item.score}分</span> <span style="color:#888;font-size:0.9em;">${item.clearTime ? `｜${item.clearTime}` : ''}</span></li>`;
+            })
+            .join('');
+        }
+        renderLeaderboard();
+        </script>
+      </section>
+    </div>
+    <section class="game-cards">
+      <!-- 卡片：計算機考題測驗 -->
+      <a href="calculator-quiz.html" class="game-card">
+        <div class="game-icon mario-icon-calculator">📊</div>
+        <h2>計算機考題測驗</h2>
+        <p>選擇題型，挑戰你的計算力！</p>
+        <div class="game-meta">7歲以上｜1人｜5~10分鐘｜家庭/課堂</div>
+        <button class="mario-btn">開始遊戲</button>
+      </a>
+      <!-- 卡片：井字遊戲 -->
+      <a href="tic-tac-toe.html" class="game-card">
+        <div class="game-icon mario-icon-tic-tac-toe">⭕</div>
+        <h2>井字遊戲</h2>
+        <p>經典3x3對戰，策略與觀察力！</p>
+        <div class="game-meta">6歲以上｜2人｜3~5分鐘｜家庭/派對</div>
+        <button class="mario-btn">開始遊戲</button>
+      </a>
+      <!-- 卡片：記憶翻牌 -->
+      <a href="memory-flip-card.html" class="game-card">
+        <div class="game-icon mario-icon-memory">🎯</div>
+        <h2>記憶翻牌</h2>
+        <p>翻牌配對，訓練記憶力！</p>
+        <div class="game-meta">5歲以上｜1人｜5~10分鐘｜家庭/課堂</div>
+        <button class="mario-btn">開始遊戲</button>
+      </a>
+      <!-- 卡片：連連看 -->
+      <a href="matching-pairs.html" class="game-card">
+        <div class="game-icon mario-icon-matching">🔗</div>
+        <h2>連連看</h2>
+        <p>找出相同圖案，考驗觀察力！</p>
+        <div class="game-meta">5歲以上｜1-2人｜5~10分鐘｜家庭/課堂</div>
+        <button class="mario-btn">開始遊戲</button>
+      </a>
+      <!-- 卡片：俄羅斯方塊 -->
+      <a href="tetris.html" class="game-card">
+        <div class="game-icon mario-icon-tetris">🧩</div>
+        <h2>俄羅斯方塊</h2>
+        <p>經典方塊消除，空間邏輯訓練！</p>
+        <div class="game-meta">7歲以上｜1人｜5~10分鐘｜家庭/個人</div>
+        <button class="mario-btn">開始遊戲</button>
+      </a>
+      <!-- 卡片：拼圖遊戲 -->
+      <a href="puzzle-game.html" class="game-card">
+        <div class="game-icon mario-icon-puzzle">🧩</div>
+        <h2>拼圖遊戲</h2>
+        <p>還原瑪莉歐圖片，挑戰觀察力！</p>
+        <div class="game-meta">6歲以上｜1人｜5~10分鐘｜家庭/課堂</div>
+        <button class="mario-btn">開始遊戲</button>
+      </a>
+      <!-- 卡片：四子棋 -->
+      <a href="connect-four.html" class="game-card">
+        <div class="game-icon mario-icon-connect">🔴</div>
+        <h2>四子棋</h2>
+        <p>紅藍對戰，策略與觀察！</p>
+        <div class="game-meta">7歲以上｜2人｜5~10分鐘｜家庭/派對</div>
+        <button class="mario-btn">開始遊戲</button>
+      </a>
+      <!-- 卡片：蛇棋 -->
+      <a href="snakes-and-ladders.html" class="game-card">
+        <div class="game-icon mario-icon-snakes">🐍</div>
+        <h2>蛇棋</h2>
+        <p>擲骰前進，趣味競賽！</p>
+        <div class="game-meta">6歲以上｜2-4人｜5~15分鐘｜家庭/派對</div>
+        <button class="mario-btn">開始遊戲</button>
+      </a>
+      <!-- 卡片：飛行棋 -->
+      <a href="ludo.html" class="game-card">
+        <div class="game-icon mario-icon-ludo">✈️</div>
+        <h2>飛行棋</h2>
+        <p>四色棋子，策略競速！</p>
+        <div class="game-meta">6歲以上｜2-4人｜10~20分鐘｜家庭/派對</div>
+        <button class="mario-btn">開始遊戲</button>
+      </a>
+      <!-- 卡片：數獨 -->
+      <a href="sudoku.html" class="game-card">
+        <div class="game-icon mario-icon-sudoku">🔢</div>
+        <h2>數獨</h2>
+        <p>數字邏輯，腦力激盪！</p>
+        <div class="game-meta">8歲以上｜1人｜5~15分鐘｜個人/課堂</div>
+        <button class="mario-btn">開始遊戲</button>
+      </a>
+      <!-- 卡片：迷宮闖關 -->
+      <a href="maze-game.html" class="game-card">
+        <div class="game-icon mario-icon-maze">🌀</div>
+        <h2>迷宮闖關</h2>
+        <p>操控瑪莉歐，走出迷宮！</p>
+        <div class="game-meta">7歲以上｜1人｜5~10分鐘｜家庭/課堂</div>
+        <button class="mario-btn">開始遊戲</button>
+      </a>
+      <!-- 卡片：找不同 -->
+      <a href="spot-the-difference.html" class="game-card">
+        <div class="game-icon mario-icon-star">⭐</div>
+        <h2>找不同</h2>
+        <p>找出兩圖差異，考驗細心！</p>
+        <div class="game-meta">6歲以上｜1-2人｜5~10分鐘｜家庭/課堂</div>
+        <button class="mario-btn">開始遊戲</button>
+      </a>
+      <!-- 卡片：塗鴉板 -->
+      <a href="drawing-board.html" class="game-card">
+        <div class="game-icon mario-icon-flower">🎨</div>
+        <h2>塗鴉板</h2>
+        <p>像素畫格子，發揮創意！</p>
+        <div class="game-meta">5歲以上｜1人｜不限｜家庭/課堂</div>
+        <button class="mario-btn">開始遊戲</button>
+      </a>
+      <!-- 卡片：測試頁面 -->
+      <a href="game-test-center.html" class="game-card" style="border: 2px dashed #f39c12;">
+        <div class="game-icon mario-icon-star">🔧</div>
+        <h2>遊戲測試中心</h2>
+        <p>檢查所有遊戲功能是否正常</p>
+        <div class="game-meta">開發者｜檢測｜測試｜維護</div>
+        <button class="mario-btn">開始測試</button>
+      </a>
+    </section>
+    <section class="mario-warning">
+      <h3>家長監護建議</h3>
+      <ul>
+        <li>所有遊戲皆為益智、互動性質，適合親子、同學、朋友共同遊玩。</li>
+        <li>建議家長陪同年幼孩童遊玩，並適時引導正確使用電腦與網路。</li>
+        <li>遊戲過程請注意休息，避免長時間用眼。</li>
+        <li>若有網路連線或分享功能，請注意個資安全。</li>
+      </ul>
+    </section>
+  </main>
+  <footer class="mario-footer">
+    <p>© 2025 超級小柚子主題遊戲網站 | 純 HTML + CSS 製作</p>
+  </footer>
+</body>
+</html>

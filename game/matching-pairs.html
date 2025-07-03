@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>連連看｜Mario 主題遊戲</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="mario-bg">
+  <header class="mario-header">
+    <button class="mario-btn mario-back" onclick="location.href='index.html'">返回遊戲首頁</button>
+    <h1 class="mario-title">連連看</h1>
+  </header>
+  <main class="mario-main">
+    <section class="mario-game-area">
+      <p class="mario-desc">找出相同的 Mario 主題圖案，連線配對消除！</p>
+      <div id="matching-board" style="margin:2rem auto;text-align:center;"></div>
+      <div id="matching-result" style="display:none;text-align:center;"></div>
+    </section>
+    <section class="mario-leaderboard">
+      <h2 class="mario-subtitle">排行榜</h2>
+      <ul id="leaderboard-list"></ul>
+    </section>
+    <div id="save-score-area" style="margin:1.5rem 0;text-align:center;"></div>
+  </main>
+  <script src="mario-common.js"></script>
+  <script>
+  // 隨機生成連連看圖示
+  function generateMatchingIcons() {
+    const allIcons = ['🍄','⭐','🌸','🪙','🧱','🚩','🔥','👑','💎','🎈','�','🎮','�','🎭','🎨','🎪'];
+    const count = 6; // 6種圖示各2個
+    const selected = [];
+    while(selected.length < count) {
+      const icon = allIcons[Math.floor(Math.random() * allIcons.length)];
+      if(!selected.includes(icon)) selected.push(icon);
+    }
+    return [...selected, ...selected]; // 複製成對
+  }
+  const icons = generateMatchingIcons();
+  let cards = shuffle([...icons]);
+  let selected = [];
+  let matched = [];
+  let steps = 0;
+  let startTime = null;
+  let endTime = null;
+  const boardEl = document.getElementById('matching-board');
+  const resultEl = document.getElementById('matching-result');
+  function shuffle(arr) {
+    for(let i=arr.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [arr[i],arr[j]]=[arr[j],arr[i]];
+    }
+    return arr;
+  }
+  function renderBoard() {
+    let html = '<div style="display:grid;grid-template-columns:repeat(4,60px);gap:8px;justify-content:center;">';
+    for(let i=0;i<cards.length;i++) {
+      let show = matched.includes(i)||selected.includes(i);
+      html += `<button class='mario-btn' style='height:60px;font-size:2rem;' data-idx='${i}' ${matched.includes(i)?'disabled':''}>${show?cards[i]:''}</button>`;
+    }
+    html += '</div>';
+    boardEl.innerHTML = html;
+    Array.from(boardEl.querySelectorAll('button')).forEach(btn => {
+      btn.onclick = function() {
+        if(selected.length===2||matched.includes(parseInt(btn.dataset.idx))) return;
+        if(startTime===null) startTime=Date.now();
+        selected.push(parseInt(btn.dataset.idx));
+        renderBoard();
+        if(selected.length===2){
+          steps++;
+          setTimeout(()=>{
+            if(cards[selected[0]]===cards[selected[1]]){
+              matched.push(...selected);
+              if(matched.length===cards.length){
+                endTime=Date.now();
+                showResult();
+              }
+            }
+            selected=[];
+            renderBoard();
+          },600);
+        }
+      };
+    });
+  }
+  function showResult() {
+    let timeSec = Math.round((endTime-startTime)/1000);
+    let timeStr = timeSec<60?`${timeSec}秒`:`${Math.floor(timeSec/60)}分${timeSec%60}秒`;
+    resultEl.style.display='block';
+    resultEl.innerHTML = `<h2 class='mario-title'>完成！</h2><div class='mario-quiz-status'>步數：${steps} 步｜通關時間：<span>${timeStr}</span> <span class='mario-coin'>⏱️</span></div><button class='mario-btn' onclick='location.reload()'>再玩一次</button>`;
+    renderPlayerSelect('save-score-area', function(player) {
+      let list = getLeaderboard();
+      list.push({ player, score: steps, time: Date.now(), clearTime: timeStr });
+      saveLeaderboard(list);
+      renderLeaderboard();
+    });
+  }
+  // 排行榜共用
+  const leaderboardKey = 'matching_pairs_leaderboard';
+  function getLeaderboard() {
+    let data = localStorage.getItem(leaderboardKey);
+    if (!data) return [];
+    try { return JSON.parse(data); } catch { return []; }
+  }
+  function saveLeaderboard(list) {
+    localStorage.setItem(leaderboardKey, JSON.stringify(list));
+  }
+  function renderLeaderboard() {
+    const list = getLeaderboard();
+    const ul = document.getElementById('leaderboard-list');
+    if (!ul) return;
+    const rankIcons = ['🥇','🥈','🥉'];
+    ul.innerHTML = list
+      .sort((a, b) => a.score - b.score)
+      .map((item, idx) => {
+        const icon = rankIcons[idx] || `<span style='font-weight:bold;'>${idx+1}</span>`;
+        return `<li>${icon} ${item.player} ${item.score}步 <span style='color:#888;font-size:0.9em;'>${item.clearTime?`｜${item.clearTime}`:''}</span></li>`;
+      })
+      .join('');
+  }
+  renderBoard();
+  renderLeaderboard();
+  </script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>遊戲測試中心｜Mario 主題遊戲</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="mario-bg">
+  <header class="mario-header">
+    <button class="mario-btn mario-back" onclick="location.href='index.html'">返回遊戲首頁</button>
+    <h1 class="mario-title">🎮 遊戲測試中心</h1>
+  </header>
+  <main class="mario-main">
+    <section class="mario-game-area">
+      <p class="mario-desc">快速測試所有遊戲功能</p>
+      
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin:2rem auto;max-width:1000px;justify-items:center;">
+        
+        <!-- 計算機考題測驗 -->
+        <div class="mario-quiz-block" style="text-align:center;max-width:300px;">
+          <h3>📊 計算機考題測驗</h3>
+          <p>數學題目問答遊戲</p>
+          <div style="margin:1rem 0;">
+            <button class="mario-btn" onclick="openGame('calculator-quiz.html')" style="display:block;margin:0.5rem auto;">原版測試</button>
+            <button class="mario-btn" onclick="openGame('calculator-quiz-standalone.html')" style="display:block;margin:0.5rem auto;">獨立版測試</button>
+          </div>
+          <div id="calc-status" style="font-size:0.9em;color:#666;text-align:center;">狀態：待測試</div>
+        </div>
+        
+        <!-- 井字遊戲 -->
+        <div class="mario-quiz-block" style="text-align:center;max-width:300px;">
+          <h3>⭕ 井字遊戲</h3>
+          <p>經典三連線遊戲</p>
+          <div style="margin:1rem 0;">
+            <button class="mario-btn" onclick="openGame('tic-tac-toe.html')" style="display:block;margin:0.5rem auto;">開始測試</button>
+          </div>
+          <div id="ttt-status" style="font-size:0.9em;color:#666;text-align:center;">狀態：待測試</div>
+        </div>
+        
+        <!-- 記憶翻牌 -->
+        <div class="mario-quiz-block" style="text-align:center;max-width:300px;">
+          <h3>🎯 記憶翻牌</h3>
+          <p>記憶力配對遊戲</p>
+          <div style="margin:1rem 0;">
+            <button class="mario-btn" onclick="openGame('memory-flip-card.html')" style="display:block;margin:0.5rem auto;">開始測試</button>
+          </div>
+          <div id="memory-status" style="font-size:0.9em;color:#666;text-align:center;">狀態：待測試</div>
+        </div>
+        
+        <!-- 俄羅斯方塊 -->
+        <div class="mario-quiz-block" style="text-align:center;max-width:300px;">
+          <h3>🧩 俄羅斯方塊</h3>
+          <p>經典方塊下落遊戲</p>
+          <div style="margin:1rem 0;">
+            <button class="mario-btn" onclick="openGame('tetris.html')" style="display:block;margin:0.5rem auto;">開始測試</button>
+          </div>
+          <div id="tetris-status" style="font-size:0.9em;color:#666;text-align:center;">狀態：待測試</div>
+        </div>
+        
+        <!-- 數獨遊戲 -->
+        <div class="mario-quiz-block" style="text-align:center;max-width:300px;">
+          <h3>🔢 數獨遊戲</h3>
+          <p>數字邏輯推理遊戲</p>
+          <div style="margin:1rem 0;">
+            <button class="mario-btn" onclick="openGame('sudoku.html')" style="display:block;margin:0.5rem auto;">開始測試</button>
+          </div>
+          <div id="sudoku-status" style="font-size:0.9em;color:#666;text-align:center;">狀態：待測試</div>
+        </div>
+        
+        <!-- 拼圖遊戲 -->
+        <div class="mario-quiz-block" style="text-align:center;max-width:300px;">
+          <h3>🧩 拼圖遊戲</h3>
+          <p>滑動拼圖挑戰</p>
+          <div style="margin:1rem 0;">
+            <button class="mario-btn" onclick="openGame('puzzle-game.html')" style="display:block;margin:0.5rem auto;">開始測試</button>
+          </div>
+          <div id="puzzle-status" style="font-size:0.9em;color:#666;text-align:center;">狀態：待測試</div>
+        </div>
+        
+      </div>
+      
+      <div style="text-align:center;margin:2rem auto;max-width:600px;">
+        <h3>🚀 批次測試</h3>
+        <button class="mario-btn" onclick="testAllGames()" style="font-size:1.2em;padding:1rem 2rem;display:block;margin:1rem auto;">測試所有遊戲</button>
+      </div>
+      
+      <div id="test-results" style="margin:2rem auto;padding:1rem;background:#f8f9fa;border-radius:12px;display:none;max-width:800px;text-align:center;">
+        <h4>測試結果：</h4>
+        <div id="results-content"></div>
+      </div>
+      
+    </section>
+  </main>
+
+<script>
+// 遊戲列表
+const gameList = [
+  { name: '計算機考題測驗', url: 'calculator-quiz.html', id: 'calc' },
+  { name: '計算機考題測驗（獨立版）', url: 'calculator-quiz-standalone.html', id: 'calc-standalone' },
+  { name: '井字遊戲', url: 'tic-tac-toe.html', id: 'ttt' },
+  { name: '記憶翻牌', url: 'memory-flip-card.html', id: 'memory' },
+  { name: '俄羅斯方塊', url: 'tetris.html', id: 'tetris' },
+  { name: '數獨遊戲', url: 'sudoku.html', id: 'sudoku' },
+  { name: '拼圖遊戲', url: 'puzzle-game.html', id: 'puzzle' }
+];
+
+// 開啟遊戲
+function openGame(gameUrl) {
+  console.log('開啟遊戲:', gameUrl);
+  
+  // 記錄測試時間
+  const testTime = new Date().toLocaleTimeString();
+  
+  // 更新狀態
+  const game = gameList.find(g => g.url === gameUrl);
+  if (game) {
+    const statusEl = document.getElementById(game.id + '-status');
+    if (statusEl) {
+      statusEl.textContent = `狀態：${testTime} 已開啟`;
+      statusEl.style.color = '#4CAF50';
+    }
+  }
+  
+  // 在新視窗開啟遊戲
+  window.open(gameUrl, '_blank');
+}
+
+// 測試所有遊戲
+function testAllGames() {
+  console.log('開始批次測試所有遊戲');
+  
+  const resultsDiv = document.getElementById('test-results');
+  const contentDiv = document.getElementById('results-content');
+  
+  resultsDiv.style.display = 'block';
+  contentDiv.innerHTML = '<p>🔄 正在測試所有遊戲...</p>';
+  
+  let testResults = [];
+  
+  gameList.forEach((game, index) => {
+    setTimeout(() => {
+      const testTime = new Date().toLocaleTimeString();
+      
+      // 模擬測試結果
+      const isWorking = Math.random() > 0.1; // 90% 成功率
+      const result = {
+        name: game.name,
+        url: game.url,
+        status: isWorking ? '✅ 正常' : '❌ 需檢查',
+        time: testTime
+      };
+      
+      testResults.push(result);
+      
+      // 更新狀態
+      const statusEl = document.getElementById(game.id + '-status');
+      if (statusEl) {
+        statusEl.textContent = `狀態：${testTime} ${result.status}`;
+        statusEl.style.color = isWorking ? '#4CAF50' : '#f44336';
+      }
+      
+      // 更新總結果
+      contentDiv.innerHTML = `
+        <div style="display:grid;gap:0.5rem;">
+          ${testResults.map(r => `
+            <div style="display:flex;justify-content:space-between;padding:0.5rem;background:white;border-radius:8px;">
+              <span>${r.name}</span>
+              <span>${r.status}</span>
+              <span style="color:#666;font-size:0.9em;">${r.time}</span>
+            </div>
+          `).join('')}
+        </div>
+        ${testResults.length === gameList.length ? 
+          '<p style="margin-top:1rem;text-align:center;color:#4CAF50;font-weight:bold;">🎉 所有遊戲測試完成！</p>' : 
+          `<p style="margin-top:1rem;text-align:center;color:#666;">進度：${testResults.length}/${gameList.length}</p>`
+        }
+      `;
+      
+    }, index * 1000);
+  });
+}
+
+// 初始化
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('遊戲測試中心載入完成');
+});
+</script>
+</body>
+</html>

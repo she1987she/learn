@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>數獨｜Mario 主題遊戲</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="mario-bg">
+  <header class="mario-header">
+    <button class="mario-btn mario-back" onclick="location.href='index.html'">返回遊戲首頁</button>
+    <h1 class="mario-title">數獨</h1>
+  </header>
+  <main class="mario-main">
+    <section class="mario-game-area">
+      <p class="mario-desc">Mario 主題數獨，挑戰你的邏輯力！</p>
+      <div id="sudoku-board" style="margin:2rem auto;text-align:center;"></div>
+      <div id="sudoku-result" style="display:none;text-align:center;"></div>
+    </section>
+    <section class="mario-leaderboard">
+      <h2 class="mario-subtitle">排行榜</h2>
+      <ul id="leaderboard-list"></ul>
+    </section>
+    <div id="save-score-area" style="margin:1.5rem 0;text-align:center;"></div>
+  </main>
+  <script src="mario-common.js"></script>
+  <script>
+  // 數獨隨機生成與主程式
+  function generateSudoku() {
+    // 簡化數獨生成：預設幾個模板隨機選擇
+    const templates = [
+      [
+        [5,3,0,0,7,0,0,0,0],
+        [6,0,0,1,9,5,0,0,0],
+        [0,9,8,0,0,0,0,6,0],
+        [8,0,0,0,6,0,0,0,3],
+        [4,0,0,8,0,3,0,0,1],
+        [7,0,0,0,2,0,0,0,6],
+        [0,6,0,0,0,0,2,8,0],
+        [0,0,0,4,1,9,0,0,5],
+        [0,0,0,0,8,0,0,7,9]
+      ],
+      [
+        [0,0,0,6,0,0,4,0,0],
+        [7,0,0,0,0,3,6,0,0],
+        [0,0,0,0,9,1,0,8,0],
+        [0,0,0,0,0,0,0,0,0],
+        [0,5,0,1,8,0,0,0,3],
+        [0,0,0,3,0,6,0,4,5],
+        [0,4,0,2,0,0,0,6,0],
+        [9,0,3,0,0,0,0,0,0],
+        [0,2,0,0,0,0,1,0,0]
+      ]
+    ];
+    return templates[Math.floor(Math.random() * templates.length)];
+  }
+  const sudokuBoard = generateSudoku().map(row => [...row]);
+  const originalBoard = generateSudoku().map(row => [...row]);
+  
+  function renderSudoku() {
+    let html = '<div style="display:grid;grid-template-columns:repeat(9,35px);gap:1px;justify-content:center;background:#222;padding:2px;">';
+    for(let y=0;y<9;y++){
+      for(let x=0;x<9;x++){
+        const val = sudokuBoard[y][x];
+        const isOriginal = originalBoard[y][x] !== 0;
+        html += `<input type="number" min="1" max="9" value="${val||''}" 
+                 style="width:35px;height:35px;text-align:center;border:none;background:${isOriginal?'#f0f0f0':'#fff'};font-size:1rem;"
+                 ${isOriginal?'readonly':''} data-x="${x}" data-y="${y}">`;
+      }
+    }
+    html += '</div>';
+    document.getElementById('sudoku-board').innerHTML = html;
+    
+    // 綁定輸入事件
+    Array.from(document.querySelectorAll('#sudoku-board input')).forEach(input => {
+      input.onchange = function() {
+        const x = parseInt(this.dataset.x);
+        const y = parseInt(this.dataset.y);
+        sudokuBoard[y][x] = parseInt(this.value) || 0;
+        if(checkWin()) {
+          endTime = Date.now();
+          showResult();
+        }
+      };
+    });
+  }
+  
+  function checkWin() {
+    // 檢查是否完成
+    for(let y=0;y<9;y++){
+      for(let x=0;x<9;x++){
+        if(sudokuBoard[y][x] === 0) return false;
+      }
+    }
+    return true;
+  }
+  
+  renderSudoku();
+  let startTime = null;
+  let endTime = null;
+  function showResult() {
+    let timeSec = Math.round((endTime-startTime)/1000);
+    let timeStr = timeSec<60?`${timeSec}秒`:`${Math.floor(timeSec/60)}分${timeSec%60}秒`;
+    document.getElementById('sudoku-result').style.display='block';
+    document.getElementById('sudoku-result').innerHTML = `<h2 class='mario-title'>完成！</h2><div class='mario-quiz-status'>通關時間：<span>${timeStr}</span> <span class='mario-coin'>⏱️</span></div><button class='mario-btn' onclick='location.reload()'>再玩一次</button>`;
+    renderPlayerSelect('save-score-area', function(player) {
+      let list = getLeaderboard();
+      list.push({ player, score: timeSec, time: Date.now(), clearTime: timeStr });
+      saveLeaderboard(list);
+      renderLeaderboard();
+    });
+  }
+  const leaderboardKey = 'sudoku_leaderboard';
+  function getLeaderboard() {
+    let data = localStorage.getItem(leaderboardKey);
+    if (!data) return [];
+    try { return JSON.parse(data); } catch { return []; }
+  }
+  function saveLeaderboard(list) {
+    localStorage.setItem(leaderboardKey, JSON.stringify(list));
+  }
+  function renderLeaderboard() {
+    const list = getLeaderboard();
+    const ul = document.getElementById('leaderboard-list');
+    if (!ul) return;
+    const rankIcons = ['🥇','🥈','🥉'];
+    ul.innerHTML = list
+      .sort((a, b) => a.score - b.score)
+      .map((item, idx) => {
+        const icon = rankIcons[idx] || `<span style='font-weight:bold;'>${idx+1}</span>`;
+        return `<li>${icon} ${item.player} ${item.clearTime?item.clearTime:item.score+'秒'}</li>`;
+      })
+      .join('');
+  }
+  renderLeaderboard();
+  </script>
+</body>
+</html>

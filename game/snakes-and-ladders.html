@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>蛇棋｜Mario 主題遊戲</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="mario-bg">
+  <header class="mario-header">
+    <button class="mario-btn mario-back" onclick="location.href='index.html'">返回遊戲首頁</button>
+    <h1 class="mario-title">蛇棋</h1>
+  </header>
+  <main class="mario-main">
+    <section class="mario-game-area">
+      <p class="mario-desc">Mario 主題蛇棋，蘑菇與水管大冒險！</p>
+      <div id="snakes-board" style="margin:2rem auto;text-align:center;"></div>
+      <div id="snakes-result" style="display:none;text-align:center;"></div>
+    </section>
+    <section class="mario-leaderboard">
+      <h2 class="mario-subtitle">排行榜</h2>
+      <ul id="leaderboard-list"></ul>
+    </section>
+    <div id="save-score-area" style="margin:1.5rem 0;text-align:center;"></div>
+  </main>
+  <script src="mario-common.js"></script>
+  <script>
+  // 蛇棋主程式
+  const BOARD_SIZE = 10;
+  let players = [
+    {id: 1, pos: 0, color: '#e63946', name: '玩家1'},
+    {id: 2, pos: 0, color: '#457b9d', name: '玩家2'}
+  ];
+  let currentPlayerIndex = 0;
+  let gameActive = true;
+  let diceValue = 0;
+  
+  // 隨機生成蛇和梯子
+  function generateSnakesAndLadders() {
+    const snakes = {};
+    const ladders = {};
+    
+    // 隨機放置3-4條蛇
+    for(let i=0; i<4; i++) {
+      let head, tail;
+      do {
+        head = Math.floor(Math.random() * 70) + 20; // 20-90
+        tail = Math.floor(Math.random() * head);
+      } while(snakes[head] || ladders[head] || ladders[tail]);
+      snakes[head] = tail;
+    }
+    
+    // 隨機放置3-4個梯子
+    for(let i=0; i<4; i++) {
+      let bottom, top;
+      do {
+        bottom = Math.floor(Math.random() * 70) + 10; // 10-80
+        top = bottom + Math.floor(Math.random() * 20) + 10;
+      } while(top > 99 || snakes[bottom] || ladders[bottom] || snakes[top]);
+      ladders[bottom] = top;
+    }
+    
+    return {snakes, ladders};
+  }
+  
+  const {snakes, ladders} = generateSnakesAndLadders();
+  
+  function rollDice() {
+    if(!gameActive) return;
+    if(startTime === null) startTime = Date.now();
+    
+    diceValue = Math.floor(Math.random() * 6) + 1;
+    const player = players[currentPlayerIndex];
+    const newPos = Math.min(player.pos + diceValue, 99);
+    
+    player.pos = newPos;
+    
+    // 檢查蛇或梯子
+    if(snakes[newPos]) {
+      player.pos = snakes[newPos];
+    } else if(ladders[newPos]) {
+      player.pos = ladders[newPos];
+    }
+    
+    // 檢查勝利
+    if(player.pos >= 99) {
+      gameActive = false;
+      endTime = Date.now();
+      showResult(`${player.name}勝利！`);
+    } else {
+      currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+    }
+    
+    renderSnakesBoard();
+  }
+  
+  function renderSnakesBoard() {
+    let html = '<div style="display:inline-block;background:#fffbe6;padding:10px;border-radius:10px;border:2px solid #e09c3a;">';
+    
+    // 棋盤 (10x10，從左下角開始)
+    for(let row=9; row>=0; row--) {
+      html += '<div style="display:flex;">';
+      const isReverse = row % 2 === 0;
+      
+      for(let col=0; col<10; col++) {
+        const realCol = isReverse ? 9-col : col;
+        const pos = row * 10 + realCol;
+        
+        let cellContent = pos + 1;
+        let bgColor = '#fff';
+        
+        // 檢查是否有蛇或梯子
+        if(snakes[pos]) {
+          cellContent += '🐍';
+          bgColor = '#ffcccb';
+        } else if(ladders[pos]) {
+          cellContent += '🪜';
+          bgColor = '#c8e6c9';
+        }
+        
+        // 檢查玩家位置
+        const playersHere = players.filter(p => p.pos === pos);
+        if(playersHere.length > 0) {
+          cellContent = playersHere.map(p => `<span style="color:${p.color}">●</span>`).join('');
+        }
+        
+        html += `<div style="width:45px;height:45px;border:1px solid #222;background:${bgColor};display:flex;align-items:center;justify-content:center;font-size:0.8rem;">${cellContent}</div>`;
+      }
+      html += '</div>';
+    }
+    html += '</div>';
+    
+    // 遊戲狀態
+    const currentPlayer = players[currentPlayerIndex];
+    html += `<div style="margin:1em 0;">`;
+    html += `<div>目前玩家：<span style="color:${currentPlayer.color}">${currentPlayer.name}</span></div>`;
+    html += `<div>骰子：${diceValue || '?'}</div>`;
+    html += `<button class="mario-btn" onclick="rollDice()" ${!gameActive?'disabled':''}>擲骰子</button>`;
+    html += `</div>`;
+    
+    document.getElementById('snakes-board').innerHTML = html;
+  }
+  
+  renderSnakesBoard();
+  let startTime = null;
+  let endTime = null;
+  function showResult(msg) {
+    let timeSec = Math.round((endTime-startTime)/1000);
+    let timeStr = timeSec<60?`${timeSec}秒`:`${Math.floor(timeSec/60)}分${timeSec%60}秒`;
+    document.getElementById('snakes-result').style.display='block';
+    document.getElementById('snakes-result').innerHTML = `<h2 class='mario-title'>${msg}</h2><div class='mario-quiz-status'>通關時間：<span>${timeStr}</span> <span class='mario-coin'>⏱️</span></div><button class='mario-btn' onclick='location.reload()'>再玩一次</button>`;
+    renderPlayerSelect('save-score-area', function(player) {
+      let list = getLeaderboard();
+      list.push({ player, score: msg.includes('勝利')?1:0, time: Date.now(), clearTime: timeStr });
+      saveLeaderboard(list);
+      renderLeaderboard();
+    });
+  }
+  const leaderboardKey = 'snakes_leaderboard';
+  function getLeaderboard() {
+    let data = localStorage.getItem(leaderboardKey);
+    if (!data) return [];
+    try { return JSON.parse(data); } catch { return []; }
+  }
+  function saveLeaderboard(list) {
+    localStorage.setItem(leaderboardKey, JSON.stringify(list));
+  }
+  function renderLeaderboard() {
+    const list = getLeaderboard();
+    const ul = document.getElementById('leaderboard-list');
+    if (!ul) return;
+    const rankIcons = ['🥇','🥈','🥉'];
+    ul.innerHTML = list
+      .sort((a, b) => b.score - a.score)
+      .map((item, idx) => {
+        const icon = rankIcons[idx] || `<span style='font-weight:bold;'>${idx+1}</span>`;
+        return `<li>${icon} ${item.player} ${item.score?'勝利':'平手'} <span style='color:#888;font-size:0.9em;'>${item.clearTime?`｜${item.clearTime}`:''}</span></li>`;
+      })
+      .join('');
+  }
+  renderLeaderboard();
+  </script>
+</body>
+</html>

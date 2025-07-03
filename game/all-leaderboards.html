@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>所有遊戲排行榜 - 超級小柚子主題遊戲網站</title>
+  <link rel="stylesheet" href="index.css">
+  <style>
+    .mario-lb-block {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 2px 12px #0001;
+      margin: 2rem auto 2.5rem auto;
+      padding: 1.2rem 2.2rem 1.5rem 2.2rem;
+      max-width: 420px;
+      min-width: 260px;
+      text-align: left;
+      position: relative;
+      transition: box-shadow .2s;
+    }
+    .mario-lb-block h3 {
+      color: #e67e22;
+      font-size: 1.3em;
+      margin: 0 0 1em 0;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+    .mario-lb-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .mario-lb-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      font-size: 1.08em;
+      margin-bottom: 0.5em;
+      background: #f8f8ff;
+      border-radius: 8px;
+      padding: 0.4em 0.8em;
+      box-shadow: 0 1px 4px #0001;
+      transition: background .2s;
+    }
+    .mario-lb-list li span.mario-player {
+      color: #b04a02;
+      font-weight: bold;
+      margin-right: 0.3em;
+      letter-spacing: 1px;
+    }
+    .mario-lb-list li span.mario-score {
+      color: #1976d2;
+      font-weight: bold;
+      margin-right: 0.3em;
+    }
+    .mario-lb-list li span.mario-rank {
+      font-size: 1.1em;
+      font-weight: bold;
+      margin-right: 0.2em;
+    }
+    .mario-lb-list li span.mario-time {
+      color: #888;
+      font-size: 0.95em;
+    }
+    @media (max-width: 600px) {
+      .mario-lb-block {
+        padding: 1em 0.5em 1.2em 0.5em;
+        min-width: 0;
+      }
+    }
+  </style>
+</head>
+<body class="mario-bg">
+  <header class="mario-header">
+    <h1 class="mario-title">所有遊戲排行榜</h1>
+    <button class="mario-btn" onclick="window.location.href='index.html'" style="margin:1em 0;">返回首頁</button>
+  </header>
+  <main style="max-width:700px;margin:0 auto;">
+    <section class="mario-leaderboard">
+      <h2>各遊戲排行榜</h2>
+      <div id="all-leaderboards-area"></div>
+    </section>
+  </main>
+  <footer class="mario-footer">
+    <p>© 2025 超級小柚子主題遊戲網站 | 純 HTML + CSS 製作</p>
+  </footer>
+  <script>
+  // 遊戲 key 與名稱
+  const gameList = [
+    { key: 'calculator-quiz-leaderboard', name: '計算機考題測驗' },
+    { key: 'tic-tac-toe-leaderboard', name: '井字遊戲' },
+    { key: 'memory-flip-card-leaderboard', name: '記憶翻牌' },
+    { key: 'matching-pairs-leaderboard', name: '連連看' },
+    { key: 'tetris-leaderboard', name: '俄羅斯方塊' },
+    { key: 'puzzle-game-leaderboard', name: '拼圖遊戲' },
+    { key: 'connect-four-leaderboard', name: '四子棋' },
+    { key: 'snakes-and-ladders-leaderboard', name: '蛇棋' },
+    { key: 'ludo-leaderboard', name: '飛行棋' },
+    { key: 'sudoku-leaderboard', name: '數獨' },
+    { key: 'maze-game-leaderboard', name: '迷宮闖關' },
+    { key: 'spot-the-difference-leaderboard', name: '找不同' },
+    { key: 'drawing-board-leaderboard', name: '塗鴉板' },
+    { key: 'game-test-center-leaderboard', name: '測試中心' }
+  ];
+  function renderAllLeaderboards() {
+    const area = document.getElementById('all-leaderboards-area');
+    if (!area) return;
+    const rankIcons = ['🥇','🥈','🥉'];
+    area.innerHTML = gameList.map(game => {
+      let arr = [];
+      // 支援舊key與新版key
+      let keys = [game.key, game.key.replace(/-/g, '_'), game.key.replace(/_/g, '-')];
+      for (let k of keys) {
+        try {
+          arr = JSON.parse(localStorage.getItem(k) || '[]');
+        } catch(e) {}
+        if (arr.length) break;
+      }
+      if (!arr.length) return '';
+      return `<div class='mario-lb-block'><h3>${game.name}</h3><ol class='mario-lb-list'>` +
+        arr.sort((a, b) => b.score - a.score)
+          .map((item, idx) => {
+            const icon = `<span class='mario-rank'>${rankIcons[idx] || (idx+1)}</span>`;
+            return `<li>${icon} <span class='mario-player'>${item.player}</span> <span class='mario-score'>${item.score}分</span> <span class='mario-time'>${item.clearTime ? `｜${item.clearTime}` : ''}</span></li>`;
+          })
+          .join('') +
+        `</ol></div>`;
+    }).join('');
+  }
+  renderAllLeaderboards();
+  </script>
+</body>
+</html>

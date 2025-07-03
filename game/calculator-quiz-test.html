@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>計算機考題測驗 - 測試版</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="mario-bg">
+  <header class="mario-header">
+    <button class="mario-btn mario-back" onclick="location.href='index.html'">返回遊戲首頁</button>
+    <h1 class="mario-title">計算機考題測驗（測試版）</h1>
+  </header>
+  <main class="mario-main">
+    <section class="mario-game-area mario-quiz-area">
+      <div style="margin-bottom:1.5rem;text-align:center;">
+        <button class="mario-btn" onclick="testDifficultyChange('easy')" style="margin:0 0.5rem;">簡單模式</button>
+        <button class="mario-btn" onclick="testDifficultyChange('normal')" style="margin:0 0.5rem;">普通模式</button>
+        <button class="mario-btn" onclick="testDifficultyChange('hard')" style="margin:0 0.5rem;">困難模式</button>
+      </div>
+      <div id="test-output" style="background:rgba(255,255,255,0.9); padding:1rem; margin:1rem; border-radius:8px; font-family:monospace; font-size:0.9rem; max-height:400px; overflow-y:auto;">
+        <h3>測試輸出：</h3>
+        <div id="log-area"></div>
+      </div>
+      <div id="quiz-container">
+        <!-- 題目將由 JS 動態產生 -->
+      </div>
+    </section>
+  </main>
+
+<script>
+// 測試用的日誌輸出
+function log(message) {
+  const logArea = document.getElementById('log-area');
+  if (logArea) {
+    const time = new Date().toLocaleTimeString();
+    logArea.innerHTML += `<div>[${time}] ${message}</div>`;
+    logArea.scrollTop = logArea.scrollHeight;
+  }
+  console.log(message);
+}
+
+// 全域變數
+let currentDifficulty = 'normal';
+let quizData = [];
+
+// 題目生成函數
+function generateQuizData(count = 3, difficulty = 'normal') {
+  log(`開始生成 ${difficulty} 難度的題目，共 ${count} 題`);
+  
+  const quiz = [];
+  let maxNum = 20;
+  let allowDecimal = false;
+  
+  if(difficulty === 'easy') {
+    maxNum = 10;
+    log('簡單模式：數字範圍 1-10，不允許小數');
+  } else if(difficulty === 'hard') {
+    maxNum = 50;
+    allowDecimal = true;
+    log('困難模式：數字範圍 1-50，允許小數');
+  } else {
+    log('普通模式：數字範圍 1-20，不允許小數');
+  }
+  
+  const ops = [
+    {s: '+', f: (a,b)=>a+b, weight: 3},
+    {s: '-', f: (a,b)=>a-b, weight: 3},
+    {s: '×', f: (a,b)=>a*b, weight: 2},
+    {s: '÷', f: (a,b)=>a/b, weight: 2}
+  ];
+  
+  function getRandomOp() {
+    const totalWeight = ops.reduce((sum, op) => sum + op.weight, 0);
+    let random = Math.random() * totalWeight;
+    for(let op of ops) {
+      random -= op.weight;
+      if(random <= 0) return op;
+    }
+    return ops[0];
+  }
+  
+  while (quiz.length < count) {
+    const op = getRandomOp();
+    let a = Math.floor(Math.random()*maxNum)+1;
+    let b = Math.floor(Math.random()*maxNum)+1;
+    
+    if(op.s==='÷') {
+      if(!allowDecimal) {
+        a = a * b;
+      }
+      if(b === 0) b = 1;
+    }
+    
+    if(op.s==='-' && difficulty === 'easy' && a < b) {
+      [a, b] = [b, a];
+    }
+    
+    let ans = op.f(a,b);
+    if(op.s==='÷' && !allowDecimal) ans = Math.round(ans);
+    if(allowDecimal) ans = Math.round(ans * 100) / 100;
+    
+    const options = [ans];
+    while(options.length<4) {
+      let delta = Math.floor(Math.random()*(maxNum/3))+1;
+      let fake = ans + (Math.random()<0.5?-delta:delta);
+      if(op.s==='÷' && !allowDecimal) fake = Math.max(1, Math.round(fake));
+      if(allowDecimal) fake = Math.round(fake * 100) / 100;
+      if(!options.includes(fake) && fake >= 0) options.push(fake);
+    }
+    
+    // 洗牌
+    for(let i=options.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [options[i],options[j]]=[options[j],options[i]];
+    }
+    
+    const questionData = {
+      q: `${a} ${op.s} ${b} = ?`,
+      options,
+      answer: options.indexOf(ans)
+    };
+    
+    quiz.push(questionData);
+    log(`生成題目 ${quiz.length}：${questionData.q}，正確答案：${ans}`);
+  }
+  
+  log(`題目生成完成，共 ${quiz.length} 題`);
+  return quiz;
+}
+
+// 測試難度切換
+function testDifficultyChange(difficulty) {
+  log(`=== 測試難度切換：${difficulty} ===`);
+  
+  try {
+    currentDifficulty = difficulty;
+    quizData = generateQuizData(3, difficulty);
+    
+    log(`成功生成 ${quizData.length} 題 ${difficulty} 難度題目`);
+    
+    // 顯示題目
+    const container = document.getElementById('quiz-container');
+    if (container) {
+      container.innerHTML = `
+        <div class="mario-quiz-block">
+          <h3>生成的題目預覽：</h3>
+          ${quizData.map((item, idx) => `
+            <div style="margin:1rem 0; padding:1rem; background:rgba(255,255,255,0.7); border-radius:8px;">
+              <strong>題目 ${idx + 1}：</strong> ${item.q}<br>
+              <strong>選項：</strong> ${item.options.join(', ')}<br>
+              <strong>正確答案索引：</strong> ${item.answer}
+            </div>
+          `).join('')}
+        </div>
+      `;
+      log('題目預覽顯示完成');
+    }
+    
+    log(`=== 難度切換測試完成：${difficulty} ===`);
+    
+  } catch (error) {
+    log(`❌ 錯誤：${error.message}`);
+    log(`❌ 錯誤堆疊：${error.stack}`);
+  }
+}
+
+// 頁面載入完成後初始化
+document.addEventListener('DOMContentLoaded', function() {
+  log('頁面載入完成，開始初始化測試');
+  testDifficultyChange('normal');
+});
+</script>
+</body>
+</html>

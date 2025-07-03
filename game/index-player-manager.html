@@ -1,0 +1,43 @@
+<!-- 玩家管理 UI 區塊，將插入於 index.html，並可跨頁共用 -->
+<section class="mario-player-manager" id="player-manager-section">
+  <h2>玩家名單管理</h2>
+  <div id="player-list-area"></div>
+  <div style="margin-top:1em;">
+    <input type="text" id="new-player-input" class="mario-btn" placeholder="輸入新玩家名稱" style="width:160px;">
+    <button class="mario-btn" id="add-player-main-btn">新增玩家</button>
+    <button class="mario-btn" id="clear-player-main-btn">清除全部</button>
+  </div>
+</section>
+<script>
+// 玩家管理 UI 操作
+function renderPlayerList() {
+  const area = document.getElementById('player-list-area');
+  if (!area) return;
+  const players = getPlayers();
+  area.innerHTML = players.map(name =>
+    `<span class="mario-player-tag">${name}</span>`
+  ).join(' ');
+}
+function addPlayerFromInput() {
+  const input = document.getElementById('new-player-input');
+  let name = input.value.trim();
+  if (!name) return;
+  let list = getPlayers();
+  if (!list.includes(name)) {
+    list.push(name);
+    savePlayers(list);
+    renderPlayerList();
+    input.value = '';
+  } else {
+    alert('玩家已存在！');
+  }
+}
+document.getElementById('add-player-main-btn').onclick = addPlayerFromInput;
+document.getElementById('clear-player-main-btn').onclick = function() {
+  if (confirm('確定要清除所有玩家？（將恢復預設）')) {
+    savePlayers([...DEFAULT_PLAYERS]);
+    renderPlayerList();
+  }
+};
+renderPlayerList();
+</script>

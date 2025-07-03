@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>塗鴉板｜Mario 主題遊戲</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="mario-bg">
+  <header class="mario-header">
+    <button class="mario-btn mario-back" onclick="location.href='index.html'">返回遊戲首頁</button>
+    <h1 class="mario-title">塗鴉板</h1>
+  </header>
+  <main class="mario-main">
+    <section class="mario-game-area">
+      <p class="mario-desc">Mario 主題像素塗鴉，發揮創意！</p>
+      <div id="drawing-board" style="margin:2rem auto;text-align:center;"></div>
+      <div id="drawing-result" style="display:none;text-align:center;"></div>
+    </section>
+    <section class="mario-leaderboard">
+      <h2 class="mario-subtitle">排行榜</h2>
+      <ul id="leaderboard-list"></ul>
+    </section>
+    <div id="save-score-area" style="margin:1.5rem 0;text-align:center;"></div>
+  </main>
+  <script src="mario-common.js"></script>
+  <script>
+  // Mario 主題像素塗鴉板
+  const GRID_SIZE = 16;
+  const colors = ['#e63946','#f7b731','#457b9d','#43aa8b','#b97a1a','#7ec0ee','#c0392b','#ffe066','#222','#fff'];
+  let currentColor = colors[0];
+  let grid = Array.from({length: GRID_SIZE}, () => Array(GRID_SIZE).fill('#fff'));
+  let isDrawing = false;
+  
+  function renderDrawingBoard() {
+    let html = '<div style="text-align:center;">';
+    
+    // 調色盤
+    html += '<div style="margin-bottom:1em;">顏色：';
+    colors.forEach(color => {
+      html += `<button style="width:30px;height:30px;background:${color};border:2px solid ${currentColor===color?'#222':'#ccc'};margin:2px;border-radius:4px;" onclick="currentColor='${color}';renderDrawingBoard()"></button>`;
+    });
+    html += '</div>';
+    
+    // 畫布
+    html += '<div style="display:inline-block;border:2px solid #222;background:#fff;">';
+    for(let y=0;y<GRID_SIZE;y++){
+      html += '<div style="display:flex;">';
+      for(let x=0;x<GRID_SIZE;x++){
+        html += `<div style="width:20px;height:20px;background:${grid[y][x]};border:1px solid #ddd;cursor:pointer;" 
+                 onmousedown="startDraw(${x},${y})" 
+                 onmouseover="if(isDrawing)draw(${x},${y})" 
+                 onmouseup="stopDraw()"></div>`;
+      }
+      html += '</div>';
+    }
+    html += '</div>';
+    
+    // 功能按鈕
+    html += '<div style="margin-top:1em;">';
+    html += '<button class="mario-btn" onclick="clearGrid()">清除</button>';
+    html += '<button class="mario-btn" onclick="saveDrawing()">完成作品</button>';
+    html += '</div>';
+    
+    html += '</div>';
+    document.getElementById('drawing-board').innerHTML = html;
+  }
+  
+  function startDraw(x, y) {
+    if(startTime === null) startTime = Date.now();
+    isDrawing = true;
+    draw(x, y);
+  }
+  
+  function draw(x, y) {
+    grid[y][x] = currentColor;
+    renderDrawingBoard();
+  }
+  
+  function stopDraw() {
+    isDrawing = false;
+  }
+  
+  function clearGrid() {
+    grid = Array.from({length: GRID_SIZE}, () => Array(GRID_SIZE).fill('#fff'));
+    renderDrawingBoard();
+  }
+  
+  function saveDrawing() {
+    endTime = Date.now();
+    showResult();
+  }
+  
+  // 防止選取文字
+  document.addEventListener('selectstart', e => e.preventDefault());
+  
+  renderDrawingBoard();
+  let startTime = null;
+  let endTime = null;
+  function showResult() {
+    let timeSec = Math.round((endTime-startTime)/1000);
+    let timeStr = timeSec<60?`${timeSec}秒`:`${Math.floor(timeSec/60)}分${timeSec%60}秒`;
+    document.getElementById('drawing-result').style.display='block';
+    document.getElementById('drawing-result').innerHTML = `<h2 class='mario-title'>完成！</h2><div class='mario-quiz-status'>通關時間：<span>${timeStr}</span> <span class='mario-coin'>⏱️</span></div><button class='mario-btn' onclick='location.reload()'>再玩一次</button>`;
+    renderPlayerSelect('save-score-area', function(player) {
+      let list = getLeaderboard();
+      list.push({ player, score: timeSec, time: Date.now(), clearTime: timeStr });
+      saveLeaderboard(list);
+      renderLeaderboard();
+    });
+  }
+  const leaderboardKey = 'drawing_board_leaderboard';
+  function getLeaderboard() {
+    let data = localStorage.getItem(leaderboardKey);
+    if (!data) return [];
+    try { return JSON.parse(data); } catch { return []; }
+  }
+  function saveLeaderboard(list) {
+    localStorage.setItem(leaderboardKey, JSON.stringify(list));
+  }
+  function renderLeaderboard() {
+    const list = getLeaderboard();
+    const ul = document.getElementById('leaderboard-list');
+    if (!ul) return;
+    const rankIcons = ['🥇','🥈','🥉'];
+    ul.innerHTML = list
+      .sort((a, b) => a.score - b.score)
+      .map((item, idx) => {
+        const icon = rankIcons[idx] || `<span style='font-weight:bold;'>${idx+1}</span>`;
+        return `<li>${icon} ${item.player} ${item.clearTime?item.clearTime:item.score+'秒'}</li>`;
+      })
+      .join('');
+  }
+  renderLeaderboard();
+  </script>
+</body>
+</html>

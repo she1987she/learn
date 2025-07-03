@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>拼圖遊戲｜Mario 主題遊戲</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="mario-bg">
+  <header class="mario-header">
+    <button class="mario-btn mario-back" onclick="location.href='index.html'">返回遊戲首頁</button>
+    <h1 class="mario-title">拼圖遊戲</h1>
+  </header>
+  <main class="mario-main">
+    <section class="mario-game-area">
+      <p class="mario-desc">還原 Mario 主題拼圖，完成挑戰！</p>
+      <div id="puzzle-board" style="margin:2rem auto;text-align:center;"></div>
+      <div id="puzzle-result" style="display:none;text-align:center;"></div>
+    </section>
+    <section class="mario-leaderboard">
+      <h2 class="mario-subtitle">排行榜</h2>
+      <ul id="leaderboard-list"></ul>
+    </section>
+    <div id="save-score-area" style="margin:1.5rem 0;text-align:center;"></div>
+  </main>
+  <script src="mario-common.js"></script>
+  <script>
+  // 數字拼圖主程式（3x3滑動拼圖）
+  const SIZE = 3;
+  let puzzle = [];
+  let emptyPos = {x: SIZE-1, y: SIZE-1};
+  
+  function initPuzzle() {
+    // 創建完成狀態
+    puzzle = [];
+    for(let y=0; y<SIZE; y++) {
+      puzzle[y] = [];
+      for(let x=0; x<SIZE; x++) {
+        puzzle[y][x] = y * SIZE + x + 1;
+      }
+    }
+    puzzle[SIZE-1][SIZE-1] = 0; // 空格
+    
+    // 隨機打亂
+    for(let i=0; i<1000; i++) {
+      const moves = getValidMoves();
+      if(moves.length > 0) {
+        const move = moves[Math.floor(Math.random() * moves.length)];
+        movePiece(move.x, move.y, false);
+      }
+    }
+  }
+  
+  function getValidMoves() {
+    const moves = [];
+    const dirs = [{x:0,y:-1},{x:0,y:1},{x:-1,y:0},{x:1,y:0}];
+    
+    for(let dir of dirs) {
+      const newX = emptyPos.x + dir.x;
+      const newY = emptyPos.y + dir.y;
+      if(newX >= 0 && newX < SIZE && newY >= 0 && newY < SIZE) {
+        moves.push({x: newX, y: newY});
+      }
+    }
+    return moves;
+  }
+  
+  function movePiece(x, y, checkWin = true) {
+    if(Math.abs(x - emptyPos.x) + Math.abs(y - emptyPos.y) !== 1) return false;
+    
+    puzzle[emptyPos.y][emptyPos.x] = puzzle[y][x];
+    puzzle[y][x] = 0;
+    emptyPos = {x, y};
+    
+    if(checkWin && isPuzzleSolved()) {
+      endTime = Date.now();
+      showResult();
+    }
+    
+    return true;
+  }
+  
+  function isPuzzleSolved() {
+    for(let y=0; y<SIZE; y++) {
+      for(let x=0; x<SIZE; x++) {
+        const expected = y * SIZE + x + 1;
+        if(x === SIZE-1 && y === SIZE-1) {
+          if(puzzle[y][x] !== 0) return false;
+        } else {
+          if(puzzle[y][x] !== expected) return false;
+        }
+      }
+    }
+    return true;
+  }
+  
+  function renderPuzzle() {
+    let html = '<div style="display:inline-block;background:#fffbe6;padding:10px;border-radius:10px;border:2px solid #e09c3a;">';
+    
+    for(let y=0; y<SIZE; y++) {
+      html += '<div style="display:flex;">';
+      for(let x=0; x<SIZE; x++) {
+        const num = puzzle[y][x];
+        const isEmpty = num === 0;
+        html += `<button class="mario-btn" style="width:80px;height:80px;font-size:2rem;margin:2px;background:${isEmpty?'#ddd':'#fffbe6'};" 
+                 onclick="handleClick(${x},${y})" ${isEmpty?'disabled':''}>${isEmpty?'':num}</button>`;
+      }
+      html += '</div>';
+    }
+    
+    html += '</div>';
+    html += '<div style="margin:1em 0;"><button class="mario-btn" onclick="initPuzzle();renderPuzzle();">重新打亂</button></div>';
+    
+    document.getElementById('puzzle-board').innerHTML = html;
+  }
+  
+  function handleClick(x, y) {
+    if(startTime === null) startTime = Date.now();
+    if(movePiece(x, y)) {
+      renderPuzzle();
+    }
+  }
+  
+  initPuzzle();
+  renderPuzzle();
+  let startTime = null;
+  let endTime = null;
+  function showResult() {
+    let timeSec = Math.round((endTime-startTime)/1000);
+    let timeStr = timeSec<60?`${timeSec}秒`:`${Math.floor(timeSec/60)}分${timeSec%60}秒`;
+    document.getElementById('puzzle-result').style.display='block';
+    document.getElementById('puzzle-result').innerHTML = `<h2 class='mario-title'>完成！</h2><div class='mario-quiz-status'>通關時間：<span>${timeStr}</span> <span class='mario-coin'>⏱️</span></div><button class='mario-btn' onclick='location.reload()'>再玩一次</button>`;
+    renderPlayerSelect('save-score-area', function(player) {
+      let list = getLeaderboard();
+      list.push({ player, score: timeSec, time: Date.now(), clearTime: timeStr });
+      saveLeaderboard(list);
+      renderLeaderboard();
+    });
+  }
+  const leaderboardKey = 'puzzle_leaderboard';
+  function getLeaderboard() {
+    let data = localStorage.getItem(leaderboardKey);
+    if (!data) return [];
+    try { return JSON.parse(data); } catch { return []; }
+  }
+  function saveLeaderboard(list) {
+    localStorage.setItem(leaderboardKey, JSON.stringify(list));
+  }
+  function renderLeaderboard() {
+    const list = getLeaderboard();
+    const ul = document.getElementById('leaderboard-list');
+    if (!ul) return;
+    const rankIcons = ['🥇','🥈','🥉'];
+    ul.innerHTML = list
+      .sort((a, b) => a.score - b.score)
+      .map((item, idx) => {
+        const icon = rankIcons[idx] || `<span style='font-weight:bold;'>${idx+1}</span>`;
+        return `<li>${icon} ${item.player} ${item.clearTime?item.clearTime:item.score+'秒'}</li>`;
+      })
+      .join('');
+  }
+  renderLeaderboard();
+  </script>
+</body>
+</html>

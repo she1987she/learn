@@ -1,0 +1,769 @@
+/* === 基礎樣式重置與置中設計 === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', 'Microsoft JhengHei', '微軟正黑體', sans-serif;
+  line-height: 1.6;
+  color: #333;
+  text-align: center; /* 全局文字置中 */
+}
+
+/* 主要容器置中 */
+.mario-bg {
+  background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* 標題區域置中 */
+.mario-header {
+  background: linear-gradient(135deg, #ff6b6b, #feca57);
+  color: white;
+  padding: 2rem;
+  text-align: center;
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.mario-title {
+  font-size: 2.5rem;
+  margin: 0 auto;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  max-width: 800px;
+}
+
+.mario-desc {
+  font-size: 1.2rem;
+  margin: 1rem auto 0;
+  opacity: 0.9;
+  max-width: 600px;
+}
+
+/* 主要內容區域置中 */
+.mario-main {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* 遊戲區域置中 */
+.mario-game-area {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  margin: 0 auto 2rem;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 800px;
+  text-align: center;
+}
+
+/* 遊戲列表置中 */
+.game-list {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.game-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin: 2rem auto;
+  max-width: 1200px;
+  justify-items: center;
+}
+
+.game-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  text-align: center;
+  width: 100%;
+  max-width: 320px;
+}
+
+.game-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+/* 按鈕置中設計 */
+.mario-btn {
+  background: linear-gradient(135deg, #ff6b6b, #feca57);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 0.5rem;
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 4px 15px rgba(255,107,107,0.3);
+}
+
+.mario-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255,107,107,0.4);
+}
+
+.mario-back {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 1rem;
+  padding: 8px 16px;
+}
+/* === 計算機測驗專用樣式 === */
+.mario-quiz-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+}
+
+.mario-quiz-block {
+  margin: 0 auto 2rem auto;
+  max-width: 500px;
+  width: 100%;
+  background: #fffbe6;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 24px #e0c97a44;
+  padding: 2.5rem 1.5rem 2rem 1.5rem;
+  text-align: center;
+}
+
+.mario-quiz-question {
+  font-size: 2.1rem;
+  font-family: inherit;
+  margin-bottom: 2rem;
+  color: #c0392b;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.mario-quiz-qnum {
+  font-size: 1.1rem;
+  color: #2980d9;
+  margin-right: 1.2rem;
+  display: inline-block;
+}
+
+.mario-quiz-qtext {
+  font-size: 2.1rem;
+  font-weight: bold;
+  color: #c0392b;
+}
+
+.mario-quiz-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  justify-items: center;
+  margin: 1.5rem auto;
+  max-width: 400px;
+}
+
+.mario-quiz-options .mario-btn.mario-option {
+  font-size: 1.6rem;
+  padding: 1.1rem 2.2rem;
+  border-radius: 1.2rem;
+  min-width: 120px;
+  background: #e74c3c;
+  color: #fff;
+  font-family: inherit;
+  font-weight: bold;
+  box-shadow: 0 2px 8px #c0392b33;
+  transition: background 0.2s, transform 0.1s;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mario-quiz-options .mario-btn.mario-option:hover {
+  background: #2980d9;
+  color: #ffe066;
+  transform: scale(1.08);
+}
+
+.mario-quiz-status {
+  font-size: 1.3rem;
+  margin-top: 1rem;
+  text-align: center;
+  color: #27ae60;
+  font-weight: bold;
+}
+
+.mario-quiz-score {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+/* Mario Quiz 動畫效果（由 calculator-quiz.html 移植） */
+.mario-quiz-block.correct {
+  animation: mario-correct-flash 0.6s;
+  box-shadow: 0 0 0 4px #ffe066, 0 0 16px 8px #ffe06699;
+}
+.mario-quiz-block.wrong {
+  animation: mario-wrong-shake 0.6s;
+  box-shadow: 0 0 0 4px #e74c3c, 0 0 16px 8px #e74c3c66;
+}
+@keyframes mario-correct-flash {
+  0% { background: #fffbe6; }
+  30% { background: #ffe066; }
+  60% { background: #fffbe6; }
+  100% { background: inherit; }
+}
+@keyframes mario-wrong-shake {
+  0%,100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-8px); }
+  80% { transform: translateX(8px); }
+}
+.coin-bounce {
+  animation: coin-bounce 0.6s;
+}
+@keyframes coin-bounce {
+  0% { transform: translateY(0) scale(1); }
+  30% { transform: translateY(-18px) scale(1.2); }
+  60% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(0) scale(1); }
+}
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+body.mario-bg {
+  background: #7ec0ee url('https://i.imgur.com/1Q9Z1Zm.png') repeat-x top;
+  font-family: 'Press Start 2P', monospace, 'Microsoft JhengHei', sans-serif;
+  margin: 0;
+  min-height: 100vh;
+}
+
+.mario-header {
+  text-align: center;
+  padding: 2rem 1rem 1rem 1rem;
+}
+.mario-title {
+  color: #e63946;
+  font-size: 2.2rem;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 0 #fff, 4px 4px 0 #333;
+  margin-bottom: 0.5rem;
+}
+.mario-desc {
+  color: #222;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.game-list {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem 2rem 1rem;
+}
+.game-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+.game-card {
+  background: #fffbe6;
+  border: 4px solid #e09c3a;
+  border-radius: 18px;
+  box-shadow: 0 4px 0 #b97a1a, 0 8px 16px #0002;
+  width: 260px;
+  padding: 1.2rem 1rem 1.5rem 1rem;
+  text-align: center;
+  text-decoration: none;
+  color: #222;
+  transition: transform 0.15s, box-shadow 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.game-card:hover {
+  transform: translateY(-8px) scale(1.04);
+  box-shadow: 0 8px 0 #b97a1a, 0 16px 32px #0003;
+  z-index: 2;
+}
+.game-card h2 {
+  font-size: 1.1rem;
+  color: #e63946;
+  margin: 0.7rem 0 0.3rem 0;
+  letter-spacing: 1px;
+}
+.game-card p {
+  font-size: 0.95rem;
+  color: #333;
+  margin: 0 0 0.5rem 0;
+}
+.game-meta {
+  font-size: 0.8rem;
+  color: #555;
+  margin-bottom: 0.7rem;
+}
+.mario-btn {
+  background: linear-gradient(90deg, #e63946 60%, #457b9d 100%);
+  color: #fff;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.85rem;
+  border: 2px solid #222;
+  border-radius: 8px;
+  padding: 0.5rem 1.2rem;
+  margin-top: 0.2rem;
+  cursor: pointer;
+  box-shadow: 0 2px 0 #b97a1a;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.mario-btn:hover {
+  background: linear-gradient(90deg, #f7b731 60%, #e63946 100%);
+  color: #222;
+  box-shadow: 0 4px 0 #b97a1a;
+}
+
+/* Mario 玩家管理區塊 */
+.mario-player-manager {
+  background: #fffbe6;
+  border: 3px solid #e09c3a;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px #b97a1a33;
+  max-width: 480px;
+  margin: 2.2rem auto 2.5rem auto;
+  padding: 1.2rem 1.5rem 1.5rem 1.5rem;
+  text-align: center;
+}
+.mario-player-manager h2 {
+  color: #e63946;
+  font-size: 1.2rem;
+  margin-bottom: 1.1rem;
+  letter-spacing: 1px;
+}
+#player-list-area {
+  margin-bottom: 0.7em;
+  min-height: 2.2em;
+}
+.mario-player-tag {
+  display: inline-block;
+  background: #ffe066;
+  color: #c0392b;
+  border: 1.5px solid #e09c3a;
+  border-radius: 8px;
+  font-size: 1em;
+  font-family: inherit;
+  padding: 0.25em 0.9em;
+  margin: 0 0.3em 0.3em 0;
+  box-shadow: 0 1px 0 #b97a1a;
+  letter-spacing: 1px;
+}
+#new-player-input {
+  font-size: 1em;
+  border-radius: 8px;
+  border: 2px solid #e09c3a;
+  padding: 0.3em 0.7em;
+  margin-right: 0.5em;
+}
+#add-player-main-btn, #clear-player-main-btn {
+  margin-right: 0.5em;
+}
+
+/* Mario icon 樣式（現代化 emoji 圖示設計） */
+.game-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+}
+
+.game-icon:hover {
+  transform: scale(1.1);
+}
+
+.mario-icon-calculator { background: linear-gradient(45deg, #3498db, #2980b9); }
+.mario-icon-tic-tac-toe { background: linear-gradient(45deg, #e74c3c, #c0392b); }
+.mario-icon-memory { background: linear-gradient(45deg, #9b59b6, #8e44ad); }
+.mario-icon-matching { background: linear-gradient(45deg, #f39c12, #e67e22); }
+.mario-icon-tetris { background: linear-gradient(45deg, #1abc9c, #16a085); }
+.mario-icon-puzzle { background: linear-gradient(45deg, #34495e, #2c3e50); }
+.mario-icon-connect { background: linear-gradient(45deg, #e67e22, #d35400); }
+.mario-icon-snakes { background: linear-gradient(45deg, #27ae60, #229954); }
+.mario-icon-ludo { background: linear-gradient(45deg, #8e44ad, #7d3c98); }
+.mario-icon-sudoku { background: linear-gradient(45deg, #2980b9, #21618c); }
+.mario-icon-maze { background: linear-gradient(45deg, #c0392b, #a93226); }
+.mario-icon-star { background: linear-gradient(45deg, #f1c40f, #f39c12); }
+.mario-icon-flower { background: linear-gradient(45deg, #e91e63, #ad1457); }
+
+.mario-warning {
+  background: #fff3cd;
+  border: 2px solid #e09c3a;
+  border-radius: 12px;
+  margin: 2.5rem auto 0 auto;
+  max-width: 600px;
+  padding: 1.2rem 1.5rem;
+  font-size: 0.95rem;
+  color: #b97a1a;
+}
+.mario-warning h3 {
+  margin-top: 0;
+  color: #e63946;
+  font-size: 1.1rem;
+}
+.mario-warning ul {
+  margin: 0.5rem 0 0 1.2rem;
+  padding: 0;
+}
+.mario-warning li {
+  margin-bottom: 0.3rem;
+}
+
+/* === 排行榜置中樣式 === */
+.mario-leaderboard {
+  background: #f7f7f7;
+  border-radius: 1.2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+  margin: 2rem auto;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+.mario-leaderboard h2,
+.mario-subtitle {
+  font-size: 1.8rem;
+  color: #e67e22;
+  margin-bottom: 1.2rem;
+  font-family: inherit;
+  text-align: center;
+}
+
+.mario-leaderboard ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+
+.mario-leaderboard li {
+  font-size: 1.2rem;
+  color: #c0392b;
+  font-family: inherit;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-align: center;
+  padding: 0.5rem;
+  background: rgba(255,255,255,0.7);
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+/* === 遊戲卡片圖示置中 === */
+.game-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+}
+
+.game-icon:hover {
+  transform: scale(1.1);
+}
+
+/* === 遊戲標題和描述置中 === */
+.game-card h2 {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.game-card p {
+  color: #7f8c8d;
+  margin-bottom: 1rem;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.game-meta {
+  font-size: 0.9rem;
+  color: #95a5a6;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-style: italic;
+}
+
+/* === 玩家管理區域置中 === */
+.mario-player-manager {
+  background: rgba(255,255,255,0.9);
+  border-radius: 15px;
+  padding: 2rem;
+  margin: 2rem auto;
+  text-align: center;
+  max-width: 600px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.mario-player-manager h2 {
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.mario-player-tag {
+  display: inline-block;
+  background: linear-gradient(45deg, #3498db, #2980b9);
+  color: white;
+  padding: 0.5rem 1rem;
+  margin: 0.25rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* === 警告區域置中 === */
+.mario-warning {
+  background: rgba(241, 196, 15, 0.1);
+  border-left: 4px solid #f1c40f;
+  padding: 1.5rem;
+  margin: 2rem auto;
+  border-radius: 8px;
+  max-width: 800px;
+  text-align: center;
+}
+
+.mario-warning h3 {
+  color: #f39c12;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.mario-warning ul {
+  text-align: left;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.mario-warning li {
+  margin-bottom: 0.5rem;
+  color: #7f8c8d;
+}
+
+/* === 響應式設計 === */
+@media (max-width: 768px) {
+  .mario-title {
+    font-size: 2rem;
+  }
+  
+  .mario-desc {
+    font-size: 1rem;
+  }
+  
+  .game-cards {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .mario-quiz-options {
+    grid-template-columns: 1fr;
+    max-width: 300px;
+  }
+  
+  .mario-quiz-options .mario-btn.mario-option {
+    min-width: 200px;
+  }
+}
+
+/* === 遊戲棋盤和畫布置中樣式 === */
+#tic-tac-toe-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem auto;
+}
+
+#tic-tac-toe-board table {
+  margin: 0 auto;
+  border-collapse: collapse;
+}
+
+#tetris-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem auto;
+}
+
+#tetris-board canvas {
+  border: 2px solid #2c3e50;
+  border-radius: 8px;
+  margin: 0 auto;
+}
+
+/* 記憶翻牌遊戲置中 */
+#memory-board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  max-width: 400px;
+  margin: 2rem auto;
+  justify-items: center;
+}
+
+/* 拼圖遊戲置中 */
+#puzzle-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  max-width: 300px;
+  margin: 2rem auto;
+  background: #2c3e50;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+/* 數獨遊戲置中 */
+#sudoku-board {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 1px;
+  max-width: 450px;
+  margin: 2rem auto;
+  background: #2c3e50;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+/* 塗鴉板置中 */
+#drawing-board {
+  margin: 2rem auto;
+  text-align: center;
+}
+
+#drawing-board canvas {
+  border: 2px solid #2c3e50;
+  border-radius: 8px;
+  margin: 1rem auto;
+  display: block;
+}
+
+/* 迷宮遊戲置中 */
+#maze-board {
+  margin: 2rem auto;
+  text-align: center;
+}
+
+#maze-board canvas {
+  border: 2px solid #2c3e50;
+  border-radius: 8px;
+  margin: 0 auto;
+  display: block;
+}
+
+/* 找不同遊戲置中 */
+#spot-game-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem auto;
+  max-width: 800px;
+}
+
+/* 連連看遊戲置中 */
+#matching-board {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.5rem;
+  max-width: 480px;
+  margin: 2rem auto;
+  justify-items: center;
+}
+
+/* 四子棋遊戲置中 */
+#connect-four-board {
+  margin: 2rem auto;
+  text-align: center;
+}
+
+#connect-four-board table {
+  margin: 0 auto;
+  border-collapse: collapse;
+}
+
+/* 飛行棋和蛇棋置中 */
+#ludo-board, #snakes-board {
+  margin: 2rem auto;
+  text-align: center;
+  max-width: 500px;
+}
+
+/* 遊戲控制按鈕置中 */
+.game-controls {
+  text-align: center;
+  margin: 1rem auto;
+}
+
+.game-controls .mario-btn {
+  margin: 0.5rem;
+}
+
+/* 遊戲狀態信息置中 */
+.game-status, .game-info {
+  text-align: center;
+  margin: 1rem auto;
+  font-size: 1.1rem;
+  color: #2c3e50;
+}
+
+/* 計時器和分數置中 */
+.timer, .score-display {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #e67e22;
+  margin: 0.5rem auto;
+}

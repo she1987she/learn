@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>找不同｜Mario 主題遊戲</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="mario-bg">
+  <header class="mario-header">
+    <button class="mario-btn mario-back" onclick="location.href='index.html'">返回遊戲首頁</button>
+    <h1 class="mario-title">找不同</h1>
+  </header>
+  <main class="mario-main">
+    <section class="mario-game-area">
+      <p class="mario-desc">找出兩張 Mario 圖片的不同處，考驗觀察力！</p>
+      <div id="spot-board" style="margin:2rem auto;text-align:center;"></div>
+      <div id="spot-result" style="display:none;text-align:center;"></div>
+    </section>
+    <section class="mario-leaderboard">
+      <h2 class="mario-subtitle">排行榜</h2>
+      <ul id="leaderboard-list"></ul>
+    </section>
+    <div id="save-score-area" style="margin:1.5rem 0;text-align:center;"></div>
+  </main>
+  <script src="mario-common.js"></script>
+  <script>
+  // 找不同遊戲隨機生成
+  function generateSpotGame() {
+    const icons = ['🍄','⭐','🌸','🪙','🧱','🚩','🔥','👑','💎'];
+    const size = 6; // 6x6 格子
+    const board1 = [];
+    const board2 = [];
+    const differences = [];
+    
+    // 生成基礎圖案
+    for(let y=0;y<size;y++){
+      board1[y] = [];
+      board2[y] = [];
+      for(let x=0;x<size;x++){
+        const icon = icons[Math.floor(Math.random() * icons.length)];
+        board1[y][x] = icon;
+        board2[y][x] = icon;
+      }
+    }
+    
+    // 隨機生成3-5個不同點
+    const diffCount = Math.floor(Math.random() * 3) + 3;
+    for(let i=0;i<diffCount;i++){
+      let x, y;
+      do {
+        x = Math.floor(Math.random() * size);
+        y = Math.floor(Math.random() * size);
+      } while(differences.some(d => d.x===x && d.y===y));
+      
+      board2[y][x] = icons[Math.floor(Math.random() * icons.length)];
+      differences.push({x, y, found: false});
+    }
+    
+    return {board1, board2, differences};
+  }
+  
+  const gameData = generateSpotGame();
+  let foundCount = 0;
+  
+  function renderSpotBoard() {
+    let html = '<div style="display:flex;gap:20px;justify-content:center;">';
+    
+    // 左邊圖
+    html += '<div><h3>圖一</h3><div style="display:grid;grid-template-columns:repeat(6,40px);gap:2px;">';
+    for(let y=0;y<6;y++){
+      for(let x=0;x<6;x++){
+        html += `<div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:#fffbe6;border:1px solid #e09c3a;border-radius:4px;">${gameData.board1[y][x]}</div>`;
+      }
+    }
+    html += '</div></div>';
+    
+    // 右邊圖（可點擊）
+    html += '<div><h3>圖二</h3><div style="display:grid;grid-template-columns:repeat(6,40px);gap:2px;">';
+    for(let y=0;y<6;y++){
+      for(let x=0;x<6;x++){
+        const isDiff = gameData.differences.find(d => d.x===x && d.y===y);
+        const isFound = isDiff && isDiff.found;
+        html += `<button class="mario-btn" style="width:40px;height:40px;font-size:1.5rem;background:${isFound?'#ffe066':'#fffbe6'};" data-x="${x}" data-y="${y}">${gameData.board2[y][x]}</button>`;
+      }
+    }
+    html += '</div></div>';
+    
+    html += '</div>';
+    html += `<div style="margin:1em 0;font-size:1.2em;color:#e63946;">已找到：${foundCount}/${gameData.differences.length}</div>`;
+    
+    document.getElementById('spot-board').innerHTML = html;
+    
+    // 綁定點擊事件
+    Array.from(document.querySelectorAll('#spot-board button')).forEach(btn => {
+      btn.onclick = function() {
+        if(startTime === null) startTime = Date.now();
+        const x = parseInt(this.dataset.x);
+        const y = parseInt(this.dataset.y);
+        const diff = gameData.differences.find(d => d.x===x && d.y===y);
+        
+        if(diff && !diff.found) {
+          diff.found = true;
+          foundCount++;
+          this.style.background = '#ffe066';
+          
+          if(foundCount === gameData.differences.length) {
+            endTime = Date.now();
+            showResult();
+          } else {
+            renderSpotBoard();
+          }
+        }
+      };
+    });
+  }
+  
+  renderSpotBoard();
+  let startTime = null;
+  let endTime = null;
+  function showResult() {
+    let timeSec = Math.round((endTime-startTime)/1000);
+    let timeStr = timeSec<60?`${timeSec}秒`:`${Math.floor(timeSec/60)}分${timeSec%60}秒`;
+    document.getElementById('spot-result').style.display='block';
+    document.getElementById('spot-result').innerHTML = `<h2 class='mario-title'>完成！</h2><div class='mario-quiz-status'>通關時間：<span>${timeStr}</span> <span class='mario-coin'>⏱️</span></div><button class='mario-btn' onclick='location.reload()'>再玩一次</button>`;
+    renderPlayerSelect('save-score-area', function(player) {
+      let list = getLeaderboard();
+      list.push({ player, score: timeSec, time: Date.now(), clearTime: timeStr });
+      saveLeaderboard(list);
+      renderLeaderboard();
+    });
+  }
+  const leaderboardKey = 'spot_diff_leaderboard';
+  function getLeaderboard() {
+    let data = localStorage.getItem(leaderboardKey);
+    if (!data) return [];
+    try { return JSON.parse(data); } catch { return []; }
+  }
+  function saveLeaderboard(list) {
+    localStorage.setItem(leaderboardKey, JSON.stringify(list));
+  }
+  function renderLeaderboard() {
+    const list = getLeaderboard();
+    const ul = document.getElementById('leaderboard-list');
+    if (!ul) return;
+    const rankIcons = ['🥇','🥈','🥉'];
+    ul.innerHTML = list
+      .sort((a, b) => a.score - b.score)
+      .map((item, idx) => {
+        const icon = rankIcons[idx] || `<span style='font-weight:bold;'>${idx+1}</span>`;
+        return `<li>${icon} ${item.player} ${item.clearTime?item.clearTime:item.score+'秒'}</li>`;
+      })
+      .join('');
+  }
+  renderLeaderboard();
+  </script>
+</body>
+</html>

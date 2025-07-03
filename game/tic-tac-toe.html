@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>井字遊戲｜Mario 主題遊戲</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="mario-bg">
+  <header class="mario-header">
+    <button class="mario-btn mario-back" onclick="location.href='index.html'">返回遊戲首頁</button>
+    <h1 class="mario-title">井字遊戲</h1>
+  </header>
+  <main class="mario-main" style="text-align:center;">
+    <section class="mario-game-area" style="text-align:center;">
+      <p class="mario-desc">經典 3x3 棋盤，Mario 主題棋子，歡迎挑戰！</p>
+      <div id="tic-tac-toe-board" style="margin:2rem auto;text-align:center;"></div>
+      <div id="tic-tac-toe-result" style="display:none;text-align:center;margin:1rem auto;"></div>
+    </section>
+    <section class="mario-leaderboard" style="text-align:center;margin:2rem auto;">
+      <h2 class="mario-subtitle">排行榜</h2>
+      <ul id="leaderboard-list"></ul>
+    </section>
+    <div id="save-score-area" style="margin:1.5rem auto;text-align:center;"></div>
+  </main>
+  <script src="mario-common.js"></script>
+  <script>
+  // 井字遊戲主程式
+  const boardEl = document.getElementById('tic-tac-toe-board');
+  const resultEl = document.getElementById('tic-tac-toe-result');
+  let board = Array(9).fill('');
+  let currentPlayer = 'X';
+  let gameActive = true;
+  let startTime = null;
+  let endTime = null;
+  function renderBoard() {
+    let html = '<div style="display:grid;grid-template-columns:repeat(3,60px);gap:8px;justify-content:center;">';
+    for(let i=0;i<9;i++) {
+      html += `<button class='mario-btn' style='height:60px;font-size:2rem;' data-idx='${i}'>${board[i]}</button>`;
+    }
+    html += '</div>';
+    boardEl.innerHTML = html;
+    Array.from(boardEl.querySelectorAll('button')).forEach(btn => {
+      btn.onclick = function() {
+        if(!gameActive) return;
+        const idx = parseInt(btn.dataset.idx);
+        if(board[idx]) return;
+        if(startTime===null) startTime=Date.now();
+        board[idx] = currentPlayer;
+        renderBoard();
+        const winner = checkWinner();
+        if(winner) {
+          endTime = Date.now();
+          gameActive = false;
+          showResult(`${winner==='X'?'玩家1':'玩家2'} 勝利！`);
+        } else if(board.every(cell=>cell)) {
+          endTime = Date.now();
+          gameActive = false;
+          showResult('平手！');
+        } else {
+          currentPlayer = currentPlayer==='X'?'O':'X';
+        }
+      };
+    });
+  }
+  function checkWinner() {
+    const lines = [
+      [0,1,2],[3,4,5],[6,7,8],
+      [0,3,6],[1,4,7],[2,5,8],
+      [0,4,8],[2,4,6]
+    ];
+    for(const [a,b,c] of lines) {
+      if(board[a]&&board[a]===board[b]&&board[a]===board[c]) return board[a];
+    }
+    return null;
+  }
+  function showResult(msg) {
+    let timeSec = Math.round((endTime-startTime)/1000);
+    let timeStr = timeSec<60?`${timeSec}秒`:`${Math.floor(timeSec/60)}分${timeSec%60}秒`;
+    resultEl.style.display='block';
+    resultEl.innerHTML = `<h2 class='mario-title'>${msg}</h2><div class='mario-quiz-status'>通關時間：<span>${timeStr}</span> <span class='mario-coin'>⏱️</span></div><button class='mario-btn' onclick='location.reload()'>再玩一次</button>`;
+    renderPlayerSelect('save-score-area', function(player) {
+      let list = getLeaderboard();
+      list.push({ player, score: msg.includes('勝利')?1:0, time: Date.now(), clearTime: timeStr });
+      saveLeaderboard(list);
+      renderLeaderboard();
+    });
+  }
+  // 排行榜共用
+  const leaderboardKey = 'tic_tac_toe_leaderboard';
+  function getLeaderboard() {
+    let data = localStorage.getItem(leaderboardKey);
+    if (!data) return [];
+    try { return JSON.parse(data); } catch { return []; }
+  }
+  function saveLeaderboard(list) {
+    localStorage.setItem(leaderboardKey, JSON.stringify(list));
+  }
+  function renderLeaderboard() {
+    const list = getLeaderboard();
+    const ul = document.getElementById('leaderboard-list');
+    if (!ul) return;
+    const rankIcons = ['🥇','🥈','🥉'];
+    ul.innerHTML = list
+      .sort((a, b) => b.score - a.score)
+      .map((item, idx) => {
+        const icon = rankIcons[idx] || `<span style='font-weight:bold;'>${idx+1}</span>`;
+        return `<li>${icon} ${item.player} ${item.score?'勝利':'平手'} <span style='color:#888;font-size:0.9em;'>${item.clearTime?`｜${item.clearTime}`:''}</span></li>`;
+      })
+      .join('');
+  }
+  renderBoard();
+  renderLeaderboard();
+  </script>
+</body>
+</html>

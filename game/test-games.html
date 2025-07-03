@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>遊戲測試頁面｜Mario 主題遊戲</title>
+  <link rel="stylesheet" href="index.css">
+  <style>
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    .test-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .test-status {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+    .test-pass { color: #22c55e; }
+    .test-fail { color: #ef4444; }
+    .test-pending { color: #f59e0b; }
+  </style>
+</head>
+<body class="mario-bg">
+  <header class="mario-header">
+    <button class="mario-btn mario-back" onclick="location.href='index.html'">返回遊戲首頁</button>
+    <h1 class="mario-title">🎮 遊戲測試頁面</h1>
+  </header>
+  <main class="mario-main">
+    <section class="mario-game-area">
+      <p class="mario-desc">檢查所有遊戲功能是否正常運作</p>
+      <div class="test-grid" id="test-grid">
+        <!-- 測試項目將由 JS 動態生成 -->
+      </div>
+    </section>
+  </main>
+  <script src="mario-common.js"></script>
+  <script>
+    const games = [
+      { name: '計算機考題測驗', url: 'calculator-quiz.html', features: ['隨機題目', '難度選擇', '音效', '排行榜'] },
+      { name: '井字遊戲', url: 'tic-tac-toe.html', features: ['AI對戰', '人機互動', '勝負判定'] },
+      { name: '記憶翻牌', url: 'memory-flip-card.html', features: ['隨機圖示', '計時', '配對邏輯'] },
+      { name: '連連看', url: 'matching-pairs.html', features: ['路徑檢查', '隨機佈局', '時間限制'] },
+      { name: '迷宮遊戲', url: 'maze-game.html', features: ['隨機迷宮', '鍵盤控制', '通關檢測'] },
+      { name: '俄羅斯方塊', url: 'tetris.html', features: ['下落邏輯', '消行機制', '分數系統'] },
+      { name: '數獨遊戲', url: 'sudoku.html', features: ['隨機題目', '數字檢查', '勝負判定'] },
+      { name: '找不同', url: 'spot-the-difference.html', features: ['隨機差異', '點擊檢測', '進度追蹤'] },
+      { name: '塗鴉板', url: 'drawing-board.html', features: ['像素繪圖', '顏色選擇', '清除功能'] },
+      { name: '四子棋', url: 'connect-four.html', features: ['重力效果', '連線檢測', 'AI邏輯'] },
+      { name: '飛行棋', url: 'ludo.html', features: ['骰子邏輯', '棋子移動', '多人遊戲'] },
+      { name: '蛇棋', url: 'snakes-and-ladders.html', features: ['蛇梯邏輯', '隨機事件', '勝負判定'] },
+      { name: '拼圖遊戲', url: 'puzzle-game.html', features: ['滑動拼圖', '隨機打亂', '完成檢測'] }
+    ];
+
+    function createTestCards() {
+      const grid = document.getElementById('test-grid');
+      grid.innerHTML = games.map(game => `
+        <div class="test-card">
+          <h3>${game.name}</h3>
+          <div class="test-status test-pending" id="status-${game.url}">⏳ 待測試</div>
+          <button class="mario-btn" onclick="testGame('${game.url}')">開始測試</button>
+          <button class="mario-btn" onclick="openGame('${game.url}')" style="margin-left:0.5rem;">開啟遊戲</button>
+          <div style="margin-top:1rem;">
+            <h4>功能檢查：</h4>
+            <ul style="text-align:left;">
+              ${game.features.map(feature => `<li>${feature}</li>`).join('')}
+            </ul>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function testGame(gameUrl) {
+      const statusEl = document.getElementById(`status-${gameUrl}`);
+      statusEl.textContent = '🔄 測試中...';
+      statusEl.className = 'test-status test-pending';
+      
+      // 模擬測試過程
+      setTimeout(() => {
+        // 簡單的存在性檢查
+        fetch(gameUrl)
+          .then(response => {
+            if (response.ok) {
+              statusEl.textContent = '✅ 測試通過';
+              statusEl.className = 'test-status test-pass';
+            } else {
+              statusEl.textContent = '❌ 測試失敗';
+              statusEl.className = 'test-status test-fail';
+            }
+          })
+          .catch(error => {
+            statusEl.textContent = '❌ 檔案不存在';
+            statusEl.className = 'test-status test-fail';
+          });
+      }, 1000);
+    }
+
+    function openGame(gameUrl) {
+      window.open(gameUrl, '_blank');
+    }
+
+    function testAllGames() {
+      games.forEach(game => {
+        setTimeout(() => testGame(game.url), Math.random() * 2000);
+      });
+    }
+
+    // 初始化
+    createTestCards();
+    
+    // 自動測試按鈕
+    document.querySelector('.mario-main').insertAdjacentHTML('beforeend', `
+      <div style="text-align:center;margin:2rem 0;">
+        <button class="mario-btn" onclick="testAllGames()" style="font-size:1.2em;padding:1rem 2rem;">
+          🚀 測試所有遊戲
+        </button>
+      </div>
+    `);
+  </script>
+</body>
+</html>

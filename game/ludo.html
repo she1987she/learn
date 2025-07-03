@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>飛行棋｜Mario 主題遊戲</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="mario-bg">
+  <header class="mario-header">
+    <button class="mario-btn mario-back" onclick="location.href='index.html'">返回遊戲首頁</button>
+    <h1 class="mario-title">飛行棋</h1>
+  </header>
+  <main class="mario-main">
+    <section class="mario-game-area">
+      <p class="mario-desc">Mario 主題飛行棋，四色棋子競速！</p>
+      <div id="ludo-board" style="margin:2rem auto;text-align:center;"></div>
+      <div id="ludo-result" style="display:none;text-align:center;"></div>
+    </section>
+    <section class="mario-leaderboard">
+      <h2 class="mario-subtitle">排行榜</h2>
+      <ul id="leaderboard-list"></ul>
+    </section>
+    <div id="save-score-area" style="margin:1.5rem 0;text-align:center;"></div>
+  </main>
+  <script src="mario-common.js"></script>
+  <script>
+  // 簡化飛行棋主程式
+  const TRACK_LENGTH = 52; // 外圈軌道長度
+  let players = [
+    {id: 1, pieces: [0,0,0,0], color: '#e63946', name: '紅方'},
+    {id: 2, pieces: [0,0,0,0], color: '#457b9d', name: '藍方'},
+    {id: 3, pieces: [0,0,0,0], color: '#f7b731', name: '黃方'},
+    {id: 4, pieces: [0,0,0,0], color: '#43aa8b', name: '綠方'}
+  ];
+  let currentPlayerIndex = 0;
+  let gameActive = true;
+  let diceValue = 0;
+  let selectedPiece = -1;
+  
+  function rollDice() {
+    if(!gameActive) return;
+    if(startTime === null) startTime = Date.now();
+    
+    diceValue = Math.floor(Math.random() * 6) + 1;
+    selectedPiece = -1;
+    renderLudoBoard();
+  }
+  
+  function movePiece(pieceIndex) {
+    const player = players[currentPlayerIndex];
+    const currentPos = player.pieces[pieceIndex];
+    
+    // 如果棋子在家裡且不是6點，不能出發
+    if(currentPos === 0 && diceValue !== 6) return;
+    
+    // 移動棋子
+    if(currentPos === 0) {
+      player.pieces[pieceIndex] = 1; // 出發點
+    } else {
+      player.pieces[pieceIndex] = Math.min(currentPos + diceValue, 57); // 最多到終點
+    }
+    
+    // 檢查勝利條件
+    if(player.pieces.every(pos => pos >= 57)) {
+      gameActive = false;
+      endTime = Date.now();
+      showResult(`${player.name}勝利！`);
+      return;
+    }
+    
+    // 如果不是6點，換下一個玩家
+    if(diceValue !== 6) {
+      currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+    }
+    
+    diceValue = 0;
+    selectedPiece = -1;
+    renderLudoBoard();
+  }
+  
+  function renderLudoBoard() {
+    let html = '<div style="text-align:center;">';
+    
+    // 簡化的線性軌道顯示
+    html += '<div style="display:flex;flex-wrap:wrap;justify-content:center;max-width:600px;margin:0 auto;">';
+    
+    for(let pos=1; pos<=57; pos++) {
+      let cellContent = pos;
+      let bgColor = '#fff';
+      
+      // 特殊位置標記
+      if(pos === 1) bgColor = '#c8e6c9'; // 起點
+      if(pos >= 57) bgColor = '#ffcccb'; // 終點區
+      
+      // 檢查哪些棋子在這個位置
+      const piecesHere = [];
+      players.forEach((player, playerIndex) => {
+        player.pieces.forEach((piecePos, pieceIndex) => {
+          if(piecePos === pos) {
+            piecesHere.push({playerIndex, pieceIndex, color: player.color});
+          }
+        });
+      });
+      
+      if(piecesHere.length > 0) {
+        cellContent = piecesHere.map(p => `<span style="color:${p.color}">●</span>`).join('');
+      }
+      
+      html += `<div style="width:30px;height:30px;border:1px solid #222;background:${bgColor};display:flex;align-items:center;justify-content:center;font-size:0.7rem;margin:1px;">${cellContent}</div>`;
+      
+      if(pos % 13 === 0) html += '<br>'; // 換行
+    }
+    html += '</div>';
+    
+    // 玩家棋子選擇區
+    const currentPlayer = players[currentPlayerIndex];
+    html += `<div style="margin:2em 0;">`;
+    html += `<div style="color:${currentPlayer.color};font-size:1.2em;">${currentPlayer.name} 的回合</div>`;
+    html += `<div>骰子：${diceValue || '?'}</div>`;
+    html += `<button class="mario-btn" onclick="rollDice()" ${diceValue>0||!gameActive?'disabled':''}>擲骰子</button>`;
+    
+    if(diceValue > 0) {
+      html += '<div style="margin:1em 0;">選擇要移動的棋子：</div>';
+      currentPlayer.pieces.forEach((pos, index) => {
+        const canMove = pos === 0 ? diceValue === 6 : true;
+        html += `<button class="mario-btn" style="background:${currentPlayer.color};margin:2px;" 
+                 onclick="movePiece(${index})" ${!canMove||!gameActive?'disabled':''}
+                 >棋子${index+1}(${pos===0?'家':pos>=57?'終':'位'+pos})</button>`;
+      });
+    }
+    html += '</div>';
+    
+    // 所有玩家狀態
+    html += '<div style="margin:1em 0;">玩家狀態：</div>';
+    players.forEach(player => {
+      const homeCount = player.pieces.filter(pos => pos === 0).length;
+      const finishCount = player.pieces.filter(pos => pos >= 57).length;
+      html += `<div style="color:${player.color};">${player.name}: 家中${homeCount}個, 完成${finishCount}個</div>`;
+    });
+    
+    html += '</div>';
+    document.getElementById('ludo-board').innerHTML = html;
+  }
+  
+  renderLudoBoard();
+  let startTime = null;
+  let endTime = null;
+  function showResult(msg) {
+    let timeSec = Math.round((endTime-startTime)/1000);
+    let timeStr = timeSec<60?`${timeSec}秒`:`${Math.floor(timeSec/60)}分${timeSec%60}秒`;
+    document.getElementById('ludo-result').style.display='block';
+    document.getElementById('ludo-result').innerHTML = `<h2 class='mario-title'>${msg}</h2><div class='mario-quiz-status'>通關時間：<span>${timeStr}</span> <span class='mario-coin'>⏱️</span></div><button class='mario-btn' onclick='location.reload()'>再玩一次</button>`;
+    renderPlayerSelect('save-score-area', function(player) {
+      let list = getLeaderboard();
+      list.push({ player, score: msg.includes('勝利')?1:0, time: Date.now(), clearTime: timeStr });
+      saveLeaderboard(list);
+      renderLeaderboard();
+    });
+  }
+  const leaderboardKey = 'ludo_leaderboard';
+  function getLeaderboard() {
+    let data = localStorage.getItem(leaderboardKey);
+    if (!data) return [];
+    try { return JSON.parse(data); } catch { return []; }
+  }
+  function saveLeaderboard(list) {
+    localStorage.setItem(leaderboardKey, JSON.stringify(list));
+  }
+  function renderLeaderboard() {
+    const list = getLeaderboard();
+    const ul = document.getElementById('leaderboard-list');
+    if (!ul) return;
+    const rankIcons = ['🥇','🥈','🥉'];
+    ul.innerHTML = list
+      .sort((a, b) => b.score - a.score)
+      .map((item, idx) => {
+        const icon = rankIcons[idx] || `<span style='font-weight:bold;'>${idx+1}</span>`;
+        return `<li>${icon} ${item.player} ${item.score?'勝利':'平手'} <span style='color:#888;font-size:0.9em;'>${item.clearTime?`｜${item.clearTime}`:''}</span></li>`;
+      })
+      .join('');
+  }
+  renderLeaderboard();
+  </script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>計算機考題測驗（測試版）｜Mario 主題遊戲</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="mario-bg">
+  <header class="mario-header">
+    <button class="mario-btn mario-back" onclick="location.href='index.html'">返回遊戲首頁</button>
+    <h1 class="mario-title">計算機考題測驗（測試版）</h1>
+  </header>
+  <main class="mario-main">
+    <section class="mario-game-area mario-quiz-area">
+      <div style="margin-bottom:1.5rem;text-align:center;">
+        <button class="mario-btn" onclick="startQuiz('easy')" style="margin:0 0.5rem;">簡單模式</button>
+        <button class="mario-btn" onclick="startQuiz('normal')" style="margin:0 0.5rem;">普通模式</button>
+        <button class="mario-btn" onclick="startQuiz('hard')" style="margin:0 0.5rem;">困難模式</button>
+      </div>
+      <div id="quiz-container">
+        <div class="mario-quiz-block">
+          <h3>請選擇難度開始遊戲</h3>
+          <p>選擇上方的難度按鈕即可開始計算機考題測驗！</p>
+        </div>
+      </div>
+      <div id="quiz-result" style="display:none;text-align:center;">
+        <h2 class="mario-title">🎉 恭喜完成！</h2>
+        <div class="mario-quiz-status" style="font-size:1.5em;">
+          <span class="mario-quiz-score">總分：<span id="final-score">0</span> <span class="mario-coin">🪙</span></span>
+        </div>
+        <div id="clear-time-area" class="mario-quiz-status"></div>
+        <button class="mario-btn" onclick="location.reload()">再玩一次</button>
+      </div>
+    </section>
+    <section class="mario-leaderboard" id="leaderboard-section">
+      <h2 class="mario-subtitle">排行榜</h2>
+      <ul id="leaderboard-list">
+        <!-- 排行榜內容由 JS 產生 -->
+      </ul>
+    </section>
+  </main>
+
+<script>
+// 簡化版本的計算機考題測驗
+let currentQuizIndex = 0;
+let quizScore = 0;
+let quizStartTime = null;
+let quizData = [];
+
+// 生成題目
+function generateQuiz(difficulty = 'normal') {
+  const questions = [];
+  const count = 5; // 簡化為5題
+  
+  let maxNum = 10;
+  if (difficulty === 'easy') maxNum = 10;
+  else if (difficulty === 'normal') maxNum = 20;
+  else if (difficulty === 'hard') maxNum = 50;
+  
+  for (let i = 0; i < count; i++) {
+    const operations = ['+', '-', '×', '÷'];
+    const op = operations[Math.floor(Math.random() * operations.length)];
+    
+    let a = Math.floor(Math.random() * maxNum) + 1;
+    let b = Math.floor(Math.random() * maxNum) + 1;
+    
+    // 確保除法能整除
+    if (op === '÷') {
+      a = a * b;
+    }
+    
+    // 確保減法不為負數
+    if (op === '-' && a < b) {
+      [a, b] = [b, a];
+    }
+    
+    let answer;
+    switch (op) {
+      case '+': answer = a + b; break;
+      case '-': answer = a - b; break;
+      case '×': answer = a * b; break;
+      case '÷': answer = a / b; break;
+    }
+    
+    // 生成選項
+    const options = [answer];
+    while (options.length < 4) {
+      const fake = answer + Math.floor(Math.random() * 10) - 5;
+      if (fake > 0 && !options.includes(fake)) {
+        options.push(fake);
+      }
+    }
+    
+    // 洗牌
+    options.sort(() => Math.random() - 0.5);
+    
+    questions.push({
+      question: `${a} ${op} ${b} = ?`,
+      options: options,
+      correct: options.indexOf(answer)
+    });
+  }
+  
+  return questions;
+}
+
+// 開始測驗
+function startQuiz(difficulty) {
+  console.log('開始', difficulty, '難度測驗');
+  
+  quizData = generateQuiz(difficulty);
+  currentQuizIndex = 0;
+  quizScore = 0;
+  quizStartTime = Date.now();
+  
+  document.getElementById('quiz-result').style.display = 'none';
+  showQuestion();
+}
+
+// 顯示問題
+function showQuestion() {
+  if (currentQuizIndex >= quizData.length) {
+    showResult();
+    return;
+  }
+  
+  const question = quizData[currentQuizIndex];
+  const container = document.getElementById('quiz-container');
+  
+  container.innerHTML = `
+    <div class="mario-quiz-block">
+      <div class="mario-quiz-question">
+        <span class="mario-quiz-qnum">第 ${currentQuizIndex + 1} 題</span>
+        <span class="mario-quiz-qtext">${question.question}</span>
+      </div>
+      <div class="mario-quiz-options">
+        ${question.options.map((opt, i) => 
+          `<button class="mario-btn mario-option" onclick="selectAnswer(${i})">${opt}</button>`
+        ).join('')}
+      </div>
+      <div class="mario-quiz-status">
+        <span class="mario-quiz-score">分數：${quizScore} <span class="mario-coin">🪙</span></span>
+      </div>
+    </div>
+  `;
+}
+
+// 選擇答案
+function selectAnswer(selectedIndex) {
+  const question = quizData[currentQuizIndex];
+  const buttons = document.querySelectorAll('.mario-option');
+  
+  // 禁用所有按鈕
+  buttons.forEach(btn => btn.disabled = true);
+  
+  if (selectedIndex === question.correct) {
+    buttons[selectedIndex].style.backgroundColor = '#4CAF50';
+    quizScore += 20;
+    console.log('答對了！');
+  } else {
+    buttons[selectedIndex].style.backgroundColor = '#f44336';
+    buttons[question.correct].style.backgroundColor = '#4CAF50';
+    console.log('答錯了！');
+  }
+  
+  // 更新分數顯示
+  document.querySelector('.mario-quiz-score').innerHTML = `分數：${quizScore} <span class="mario-coin">🪙</span>`;
+  
+  // 1秒後顯示下一題
+  setTimeout(() => {
+    currentQuizIndex++;
+    showQuestion();
+  }, 1500);
+}
+
+// 顯示結果
+function showResult() {
+  const endTime = Date.now();
+  const duration = Math.round((endTime - quizStartTime) / 1000);
+  
+  document.getElementById('quiz-container').style.display = 'none';
+  document.getElementById('final-score').textContent = quizScore;
+  document.getElementById('clear-time-area').innerHTML = `通關時間：${duration} 秒 <span class="mario-coin">⏱️</span>`;
+  document.getElementById('quiz-result').style.display = 'block';
+  
+  console.log('測驗完成！分數：', quizScore, '時間：', duration, '秒');
+}
+
+// 初始化
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('測試版計算機考題測驗載入完成');
+});
+</script>
+</body>
+</html>
