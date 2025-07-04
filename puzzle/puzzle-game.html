@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML 拼圖遊戲</title>
+  <link rel="stylesheet" href="puzzle-game.css">
+</head>
+<body>
+  <div class="puzzle-header">
+    <h1>🧩 波力拼圖樂園 🌟</h1>
+    <div class="controls">
+      <label for="size">🎯 難度：</label>
+      <select id="size">
+        <option value="2">🌱 2 x 2 (簡單)</option>
+        <option value="3">🌸 3 x 3 (容易)</option>
+        <option value="4">🌺 4 x 4 (普通)</option>
+        <option value="5">🌻 5 x 5 (中等)</option>
+        <option value="6">🌷 6 x 6 (困難)</option>
+        <option value="7">🌹 7 x 7 (挑戰)</option>
+        <option value="8">🌼 8 x 8 (專家)</option>
+        <option value="9">🌙 9 x 9 (大師)</option>
+        <option value="10">⭐ 10 x 10 (傳奇)</option>
+      </select>
+      <input type="file" id="upload" accept="image/*" title="🌟 上傳你最喜歡的圖片來製作拼圖吧！✨">
+      <button id="reset">🔄 重新開始</button>
+      <button id="hint">💡 提示 (<span id="hint-count">3</span>)</button>
+      <span id="timer">⏰ 00:00</span>
+    </div>
+  </div>
+  <div class="puzzle-main">
+    <div class="puzzle-board" id="puzzle-board"></div>
+    <div class="puzzle-preview">
+      <h3>🖼️ 完整圖片預覽</h3>
+      <img id="preview-img" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" alt="原始圖片">
+      <div id="magnifier" class="magnifier"></div>
+    </div>
+  </div>
+  <div id="message"></div>
+  
+  <!-- 原圖放大顯示模態框 -->
+  <div id="imageModal" class="modal">
+    <div class="modal-content">
+      <img id="modalImg" src="" alt="原圖放大">
+    </div>
+  </div>
+  
+  <audio id="move-sound" preload="auto">
+    <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmAbCjiH1O/Keby5GGS39OmxSQ4MU6zm8LdlCJnDfREw==" type="audio/wav">
+  </audio>
+  <audio id="win-sound" preload="auto">
+    <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmAbCjiH1O/KedwFHnfO8ruBFwNWqeLwtHsfBjuBFwNWqeLwtHsfBjuBFwNWqeLwtHsfBjuB=" type="audio/wav">
+  </audio>
+  <script src="puzzle-game.js"></script>
+</body>
+</html>
