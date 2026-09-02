@@ -558,16 +558,16 @@
   "title": "針對下列每項陳述，如果陳述為真，請選取「是」。否則，選取「否」：",
   "instruction": "注意：每個正確選取項目均可獲得一分。",
   "statements": [
-   "所有 Azure Active Directory (Azure AD / Entra ID) 授權版本均包含完全相同的功能。",
-   "您可以使用 Azure 入口網站管理 Azure Active Directory 租用戶。",
-   "您必須部署 Azure 虛擬機器 (VM) 才能裝載 Azure Active Directory 租用戶。"
+   "所有 Microsoft Entra ID 授權版本均包含完全相同的功能。",
+   "您可以使用 Azure 入口網站管理 Microsoft Entra 租用戶。",
+   "您必須部署 Azure 虛擬機器 (VM) 才能裝載 Microsoft Entra 租用戶。"
   ],
   "correctAnswers": [
    "No",
    "Yes",
    "No"
   ],
-  "explanation": "Azure AD 提供 Free、P1、P2 等不同授權層級，功能各有差異。Azure AD 為雲端身分識別服務，由 Microsoft 全權代管，無需自行建立 VM 裝載[cite: 1]。",
+  "explanation": "Microsoft Entra ID 提供 Free、P1、P2 等不同授權層級，功能各有差異。Microsoft Entra ID 為雲端身分識別服務，由 Microsoft 全權代管，無需自行建立 VM 裝載[cite: 1]。",
   "reference": "https://learn.microsoft.com/azure/active-directory/fundamentals/"
  },
  {
@@ -609,19 +609,19 @@
  {
   "id": 4,
   "type": "dropdown",
-  "isCorrected": false,
+  "isCorrected": true,
   "title": "選取正確完成句子的答案：",
   "instruction": "請從下拉選單中選取最符合敘述的項目。",
   "beforeText": "您可以使用",
   "afterText": "管理 Microsoft Intune。",
   "options": [
-   "Azure Active Directory 系統管理中心",
+   "Microsoft Entra 系統管理中心",
    "Microsoft 365 合規性中心",
    "Microsoft 365 Defender 入口網站",
-   "Microsoft Endpoint Manager 系統管理中心"
+   "Microsoft Intune 系統管理中心 (Microsoft Intune admin center)"
   ],
-  "correctAnswer": "Microsoft Endpoint Manager 系統管理中心",
-  "explanation": "Microsoft Intune 是透過 Microsoft Endpoint Manager 系統管理中心進行管理。",
+  "correctAnswer": "Microsoft Intune 系統管理中心 (Microsoft Intune admin center)",
+  "explanation": "Microsoft Intune 是透過 Microsoft Intune 系統管理中心進行管理。此入口網站原名為「Microsoft Endpoint Manager 系統管理中心」，Microsoft 已於 2023 年 2 月將其更名為「Microsoft Intune 系統管理中心」，網址也由 endpoint.microsoft.com 改為 intune.microsoft.com。",
   "reference": "https://learn.microsoft.com/mem/intune/fundamentals/what-is-intune"
  },
  {
@@ -684,13 +684,13 @@
   "title": "您可以使用下列何者在 Microsoft Sentinel 與其他安全性來源之間提供即時整合？",
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
-   "Azure AD Connect",
+   "Microsoft Entra Connect",
    "Log Analytics 工作區",
    "Azure 資訊保護 (Azure Information Protection)",
    "連接器 (a connector)"
   ],
   "correctIndex": 3,
-  "explanation": "若要載入 Microsoft Sentinel，您必須先連接安全性資料來源。Microsoft Sentinel 提供多種連接器，可連接 Microsoft 365 Defender 解決方案，以及 Office 365、Azure AD、Microsoft Defender for Identity、Microsoft Cloud App Security 等 Microsoft 365 資料來源。",
+  "explanation": "若要載入 Microsoft Sentinel，您必須先連接安全性資料來源。Microsoft Sentinel 提供多種連接器，可連接 Microsoft 365 Defender 解決方案，以及 Office 365、Microsoft Entra ID、Microsoft Defender for Identity、Microsoft Cloud App Security 等 Microsoft 365 資料來源。",
   "reference": "https://learn.microsoft.com/azure/sentinel/overview"
  },
  {
@@ -700,10 +700,10 @@
   "title": "哪一個 Microsoft 入口網站提供有關 Microsoft 雲端服務如何符合法規標準（例如國際標準化組織 ISO）的資訊？",
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
-   "Microsoft Endpoint Manager 系統管理中心",
+   "Microsoft Intune 系統管理中心",
    "Azure 成本管理 + 帳單 (Azure Cost Management + Billing)",
    "Microsoft 服務信任入口網站 (Microsoft Service Trust Portal)",
-   "Azure Active Directory 系統管理中心"
+   "Microsoft Entra 系統管理中心"
   ],
   "correctIndex": 2,
   "explanation": "Microsoft 服務信任入口網站 (Service Trust Portal) 包含 Microsoft 用來保護其雲端服務與其中客戶資料的控制項與流程實作詳情。",
@@ -847,11 +847,11 @@
   "options": [
    "Active Directory 網域服務 (AD DS)",
    "Active Directory 樹系信任 (forest trusts)",
-   "Azure Active Directory (Azure AD) 企業對企業 (B2B)",
-   "Azure Active Directory 企業對消費者 B2C (Azure AD B2C)"
+   "Microsoft Entra 企業對企業 (B2B)",
+   "Microsoft Entra 企業對消費者 (Microsoft Entra External ID)"
   ],
-  "correctAnswer": "Azure Active Directory (Azure AD) 企業對企業 (B2B)",
-  "explanation": "Azure AD B2B 可讓來自外部組織的商務合作夥伴以來賓使用者身分存取貴組織的應用程式與資源。",
+  "correctAnswer": "Microsoft Entra 企業對企業 (B2B)",
+  "explanation": "Microsoft Entra B2B 可讓來自外部組織的商務合作夥伴以來賓使用者身分存取貴組織的應用程式與資源。",
   "reference": "https://learn.microsoft.com/azure/active-directory/external-identities/what-is-b2b"
  },
  {
@@ -900,16 +900,16 @@
   "title": "針對下列每項陳述，如果陳述為真，請選取「是」。否則，選取「否」：",
   "instruction": "注意：每個正確選取項目均可獲得一分。",
   "statements": [
-   "Azure AD Connect 可用來實作混合式身分識別 (hybrid identity)。",
+   "Microsoft Entra Connect 可用來實作混合式身分識別 (hybrid identity)。",
    "混合式身分識別 (hybrid identity) 需要實作兩個 Microsoft 365 租用戶。",
-   "混合式身分識別 (hybrid identity) 的驗證需要同步 Active Directory 網域服務 (AD DS) 與 Azure Active Directory (Azure AD)。"
+   "混合式身分識別 (hybrid identity) 的驗證需要同步 Active Directory 網域服務 (AD DS) 與 Microsoft Entra ID。"
   ],
   "correctAnswers": [
    "Yes",
    "No",
    "Yes"
   ],
-  "explanation": "Azure AD Connect 是用來實作混合式身分識別 (hybrid identity) 的工具；混合式身分識別 (hybrid identity) 只需要一個 Microsoft 365 租用戶（而非兩個）；其驗證機制需要在 AD DS 與 Azure AD 之間同步身分識別資料。",
+  "explanation": "Microsoft Entra Connect 是用來實作混合式身分識別 (hybrid identity) 的工具；混合式身分識別 (hybrid identity) 只需要一個 Microsoft 365 租用戶（而非兩個）；其驗證機制需要在 AD DS 與 Microsoft Entra ID 之間同步身分識別資料。",
   "reference": "https://learn.microsoft.com/azure/active-directory/hybrid/whatis-hybrid-identity"
  },
  {
@@ -974,7 +974,7 @@
   "title": "您應該使用哪一項服務檢視您的 Azure 安全分數 (secure score)？在 Azure 服務畫面中選取適當的服務。",
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
-   "Azure AD Connect Health",
+   "Microsoft Entra Connect Health",
    "安全性中心 (Security Center)",
    "Advisor",
    "監視器 (Monitor)"
@@ -1065,29 +1065,29 @@
   "title": "您可以使用下列何者，讓使用者取得為期兩小時的時間窗口以完成 Azure 中的系統管理工作？",
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
-   "Azure AD Privileged Identity Management (PIM)",
+   "Microsoft Entra Privileged Identity Management (PIM)",
    "Azure 多重要素驗證 (Azure MFA)",
-   "Azure AD Identity Protection",
+   "Microsoft Entra ID Protection",
    "條件式存取原則 (conditional access policies)"
   ],
   "correctIndex": 0,
-  "explanation": "Azure AD Privileged Identity Management (PIM) 可提供限時 (time-bound) 的角色啟用，讓使用者僅在需要的時間範圍內取得提升的權限。",
+  "explanation": "Microsoft Entra Privileged Identity Management (PIM) 可提供限時 (time-bound) 的角色啟用，讓使用者僅在需要的時間範圍內取得提升的權限。",
   "reference": "https://learn.microsoft.com/azure/active-directory/privileged-identity-management/pim-configure"
  },
  {
   "id": 29,
   "type": "single",
   "isCorrected": false,
-  "title": "在混合式身分識別 (hybrid identity) 模型中，您可以使用下列何者在 Active Directory 網域服務 (AD DS) 與 Azure Active Directory (Azure AD) 之間同步身分識別？",
+  "title": "在混合式身分識別 (hybrid identity) 模型中，您可以使用下列何者在 Active Directory 網域服務 (AD DS) 與 Microsoft Entra ID 之間同步身分識別？",
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
    "Active Directory Federation Services (AD FS)",
    "Microsoft Sentinel",
-   "Azure AD Connect",
-   "Azure AD Privileged Identity Management (PIM)"
+   "Microsoft Entra Connect",
+   "Microsoft Entra Privileged Identity Management (PIM)"
   ],
   "correctIndex": 2,
-  "explanation": "Azure AD Connect 是用來將內部部署 AD DS 身分識別同步至 Azure AD 的工具，以建立混合式身分識別 (hybrid identity) 環境。",
+  "explanation": "Microsoft Entra Connect 是用來將內部部署 AD DS 身分識別同步至 Microsoft Entra ID 的工具，以建立混合式身分識別 (hybrid identity) 環境。",
   "reference": "https://learn.microsoft.com/azure/active-directory/hybrid/whatis-azure-ad-connect"
  },
  {
@@ -1097,16 +1097,16 @@
   "title": "針對下列每項陳述，如果陳述為真，請選取「是」。否則，選取「否」：",
   "instruction": "注意：每個正確選取項目均可獲得一分。",
   "statements": [
-   "您可以在 Azure Active Directory (Azure AD) 中建立自訂角色。",
-   "全域管理員 (Global administrator) 是 Azure Active Directory (Azure AD) 中的一種角色。",
-   "Azure Active Directory (Azure AD) 使用者僅能被指派一種角色。"
+   "您可以在 Microsoft Entra ID 中建立自訂角色。",
+   "全域管理員 (Global administrator) 是 Microsoft Entra ID 中的一種角色。",
+   "Microsoft Entra 使用者僅能被指派一種角色。"
   ],
   "correctAnswers": [
    "Yes",
    "Yes",
    "No"
   ],
-  "explanation": "Azure AD 支援自訂角色；全域管理員是 Azure AD 內建角色之一，具有所有系統管理功能的存取權；使用者可同時被指派多個角色，並非僅限一種。",
+  "explanation": "Microsoft Entra ID 支援自訂角色；全域管理員是 Microsoft Entra 內建角色之一，具有所有系統管理功能的存取權；使用者可同時被指派多個角色，並非僅限一種。",
   "reference": "https://learn.microsoft.com/azure/active-directory/roles/concept-understand-roles"
  },
  {
@@ -1116,16 +1116,16 @@
   "title": "針對下列每項陳述，如果陳述為真，請選取「是」。否則，選取「否」：",
   "instruction": "注意：每個正確選取項目均可獲得一分。",
   "statements": [
-   "Azure Active Directory (Azure AD) 部署於內部部署環境中。",
-   "Azure Active Directory (Azure AD) 是隨 Microsoft 365 訂用帳戶提供的一部分。",
-   "Azure Active Directory (Azure AD) 是一項身分識別與存取管理服務。"
+   "Microsoft Entra ID 部署於內部部署環境中。",
+   "Microsoft Entra ID 是隨 Microsoft 365 訂用帳戶提供的一部分。",
+   "Microsoft Entra ID 是一項身分識別與存取管理服務。"
   ],
   "correctAnswers": [
    "No",
    "Yes",
    "Yes"
   ],
-  "explanation": "Azure AD 是雲端式的使用者身分識別與驗證服務，並非部署於內部部署環境；Microsoft 365 訂用帳戶已內含 Azure AD；Azure AD 本質上即為身分識別與存取管理服務。",
+  "explanation": "Microsoft Entra ID 是雲端式的使用者身分識別與驗證服務，並非部署於內部部署環境；Microsoft 365 訂用帳戶已內含 Microsoft Entra ID；Microsoft Entra ID 本質上即為身分識別與存取管理服務。",
   "reference": "https://learn.microsoft.com/microsoft-365/enterprise/about-microsoft-365-identity"
  },
  {
@@ -1139,7 +1139,7 @@
   "options": [
    "會儲存在外部裝置上。",
    "僅會儲存在本機裝置上。",
-   "會儲存在 Azure Active Directory (Azure AD) 中。",
+   "會儲存在 Microsoft Entra ID 中。",
    "會複寫到使用者指定的所有裝置。"
   ],
   "correctAnswer": "僅會儲存在本機裝置上。",
@@ -1150,7 +1150,7 @@
   "id": 33,
   "type": "single",
   "isCorrected": false,
-  "title": "Azure Active Directory (Azure AD) 密碼保護 (Password Protection) 的目的為何？",
+  "title": "Microsoft Entra 密碼保護 (Password Protection) 的目的為何？",
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
    "控制使用者必須多久變更一次密碼",
@@ -1159,23 +1159,23 @@
    "防止使用者在密碼中使用特定字詞"
   ],
   "correctIndex": 3,
-  "explanation": "Azure AD 密碼保護會偵測並封鎖已知的弱密碼及其變化型，也可封鎖特定於貴組織的其他弱式詞彙。系統會自動對租用戶中所有使用者套用全域禁用密碼清單，且組織也可自訂禁用密碼清單。",
+  "explanation": "Microsoft Entra 密碼保護會偵測並封鎖已知的弱密碼及其變化型，也可封鎖特定於貴組織的其他弱式詞彙。系統會自動對租用戶中所有使用者套用全域禁用密碼清單，且組織也可自訂禁用密碼清單。",
   "reference": "https://learn.microsoft.com/azure/active-directory/authentication/concept-password-ban-bad-on-premises"
  },
  {
   "id": 34,
   "type": "single",
   "isCorrected": false,
-  "title": "您可以使用下列哪一項 Azure Active Directory (Azure AD) 功能，評估群組成員資格並自動移除不再需要該群組成員資格的使用者？",
+  "title": "您可以使用下列哪一項 Microsoft Entra ID 功能，評估群組成員資格並自動移除不再需要該群組成員資格的使用者？",
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
    "存取權檢閱 (access reviews)",
    "受控識別 (managed identities)",
    "條件式存取原則 (Conditional Access policy)",
-   "Azure AD Identity Protection"
+   "Microsoft Entra ID Protection"
   ],
   "correctIndex": 0,
-  "explanation": "Azure AD 存取權檢閱 (access reviews) 可讓組織有效管理群組成員資格、企業應用程式的存取權以及角色指派，並定期確認使用者是否仍需要相關存取權。",
+  "explanation": "Microsoft Entra 存取權檢閱 (access reviews) 可讓組織有效管理群組成員資格、企業應用程式的存取權以及角色指派，並定期確認使用者是否仍需要相關存取權。",
   "reference": "https://learn.microsoft.com/azure/active-directory/governance/access-reviews-overview"
  },
  {
@@ -1242,8 +1242,8 @@
   "beforeText": "Microsoft Defender for Identity 可從",
   "afterText": "訊號識別進階威脅。",
   "options": [
-   "Azure Active Directory (Azure AD)",
-   "Azure AD Connect",
+   "Microsoft Entra ID",
+   "Microsoft Entra Connect",
    "內部部署 Active Directory 網域服務 (AD DS)"
   ],
   "correctAnswer": "內部部署 Active Directory 網域服務 (AD DS)",
@@ -1256,7 +1256,7 @@
   "isCorrected": false,
   "title": "選取正確完成句子的答案：",
   "instruction": "請從下拉選單中選取最符合敘述的項目。",
-  "beforeText": "Azure Active Directory (Azure AD) 是",
+  "beforeText": "Microsoft Entra ID 是",
   "afterText": "，用於驗證與授權。",
   "options": [
    "延伸偵測與回應 (XDR) 系統",
@@ -1265,23 +1265,23 @@
    "安全性資訊與事件管理 (SIEM) 系統"
   ],
   "correctAnswer": "身分識別提供者 (an identity provider)",
-  "explanation": "Azure Active Directory (Azure AD) 是一項雲端式的使用者身分識別與驗證服務，其角色即為身分識別提供者 (identity provider)，用於驗證與授權。",
+  "explanation": "Microsoft Entra ID 是一項雲端式的使用者身分識別與驗證服務，其角色即為身分識別提供者 (identity provider)，用於驗證與授權。",
   "reference": "https://learn.microsoft.com/microsoft-365/enterprise/about-microsoft-365-identity"
  },
  {
   "id": 40,
   "type": "single",
   "isCorrected": false,
-  "title": "您可以使用下列哪一項 Azure Active Directory (Azure AD) 功能，提供及時 (just-in-time, JIT) 存取以管理 Azure 資源？",
+  "title": "您可以使用下列哪一項 Microsoft Entra ID 功能，提供及時 (just-in-time, JIT) 存取以管理 Azure 資源？",
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
    "條件式存取原則 (Conditional Access policy)",
-   "Azure AD Identity Protection",
-   "Azure AD Privileged Identity Management (PIM)",
+   "Microsoft Entra ID Protection",
+   "Microsoft Entra Privileged Identity Management (PIM)",
    "驗證方法原則"
   ],
   "correctIndex": 2,
-  "explanation": "Azure AD Privileged Identity Management (PIM) 可為 Azure AD 與 Azure 資源提供及時 (JIT) 的特殊權限存取。",
+  "explanation": "Microsoft Entra Privileged Identity Management (PIM) 可為 Microsoft Entra ID 與 Azure 資源提供及時 (JIT) 的特殊權限存取。",
   "reference": "https://learn.microsoft.com/azure/active-directory/privileged-identity-management/pim-configure"
  },
  {
@@ -1330,14 +1330,14 @@
   "statements": [
    "條件式存取原則 (Conditional Access policy) 永遠會強制要求使用多重要素驗證 (MFA)。",
    "條件式存取原則 (Conditional Access policy) 可用來根據使用者的所在位置封鎖對應用程式的存取。",
-   "條件式存取原則 (Conditional Access policy) 僅會影響擁有 Azure Active Directory (Azure AD) 加入裝置的使用者。"
+   "條件式存取原則 (Conditional Access policy) 僅會影響擁有 Microsoft Entra 加入裝置的使用者。"
   ],
   "correctAnswers": [
    "No",
    "Yes",
    "No"
   ],
-  "explanation": "條件式存取原則 (Conditional Access policy) 並非永遠強制要求 MFA，MFA 只是眾多可設定的控制項之一；原則可根據使用者位置封鎖應用程式存取；原則可套用至所有使用者（不限於 Azure AD 加入裝置的使用者）。",
+  "explanation": "條件式存取原則 (Conditional Access policy) 並非永遠強制要求 MFA，MFA 只是眾多可設定的控制項之一；原則可根據使用者位置封鎖應用程式存取；原則可套用至所有使用者（不限於 Microsoft Entra 加入裝置的使用者）。",
   "reference": "https://learn.microsoft.com/azure/active-directory/conditional-access/overview"
  },
  {
@@ -1365,7 +1365,7 @@
   "isCorrected": false,
   "title": "選取正確完成句子的答案：",
   "instruction": "請從下拉選單中選取最符合敘述的項目。",
-  "beforeText": "在 Azure Active Directory (Azure AD) 中註冊的應用程式，會自動關聯至一個",
+  "beforeText": "在 Microsoft Entra 中註冊的應用程式，會自動關聯至一個",
   "afterText": "。",
   "options": [
    "來賓帳戶。",
@@ -1404,11 +1404,11 @@
   "isCorrected": false,
   "title": "選取正確完成句子的答案：",
   "instruction": "請從下拉選單中選取最符合敘述的項目。",
-  "beforeText": "當您在 Azure Active Directory (Azure AD) 中啟用安全性預設值 (security defaults) 時，",
-  "afterText": "將會為所有 Azure AD 使用者啟用。",
+  "beforeText": "當您在 Microsoft Entra ID 中啟用安全性預設值 (security defaults) 時，",
+  "afterText": "將會為所有 Microsoft Entra 使用者啟用。",
   "options": [
-   "Azure AD Identity Protection",
-   "Azure AD Privileged Identity Management (PIM)",
+   "Microsoft Entra ID Protection",
+   "Microsoft Entra Privileged Identity Management (PIM)",
    "多重要素驗證 (MFA)"
   ],
   "correctAnswer": "多重要素驗證 (MFA)",
@@ -1423,12 +1423,12 @@
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
    "Windows Hello for Business",
-   "Azure AD Identity Protection",
-   "Azure AD 存取權檢閱 (access reviews)",
-   "Azure AD Privileged Identity Management (PIM)"
+   "Microsoft Entra ID Protection",
+   "Microsoft Entra 存取權檢閱 (access reviews)",
+   "Microsoft Entra Privileged Identity Management (PIM)"
   ],
   "correctIndex": 3,
-  "explanation": "Azure AD Privileged Identity Management (PIM) 可設定角色啟用需要核准，並提供限時 (time-bound) 的角色指派。",
+  "explanation": "Microsoft Entra Privileged Identity Management (PIM) 可設定角色啟用需要核准，並提供限時 (time-bound) 的角色指派。",
   "reference": "https://learn.microsoft.com/azure/active-directory/privileged-identity-management/pim-configure"
  },
  {
@@ -1439,7 +1439,7 @@
   "instruction": "注意：每個正確選取項目均可獲得一分。",
   "statements": [
    "全域管理員不受條件式存取原則 (Conditional Access policy) 的約束（可豁免）。",
-   "條件式存取原則 (Conditional Access policy) 可將使用者新增至 Azure Active Directory (Azure AD) 角色。",
+   "條件式存取原則 (Conditional Access policy) 可將使用者新增至 Microsoft Entra 角色。",
    "條件式存取原則 (Conditional Access policy) 可強制要求使用多重要素驗證 (MFA) 才能存取雲端應用程式。"
   ],
   "correctAnswers": [
@@ -1447,14 +1447,14 @@
    "No",
    "Yes"
   ],
-  "explanation": "全域管理員同樣受條件式存取原則 (Conditional Access policy) 約束，並無豁免；條件式存取原則 (Conditional Access policy) 用於控制存取權限，並無法將使用者新增至 Azure AD 角色（角色指派需另行設定）；條件式存取原則 (Conditional Access policy) 可強制要求存取雲端應用程式時必須完成多重要素驗證 (MFA)。",
+  "explanation": "全域管理員同樣受條件式存取原則 (Conditional Access policy) 約束，並無豁免；條件式存取原則 (Conditional Access policy) 用於控制存取權限，並無法將使用者新增至 Microsoft Entra 角色（角色指派需另行設定）；條件式存取原則 (Conditional Access policy) 可強制要求存取雲端應用程式時必須完成多重要素驗證 (MFA)。",
   "reference": "https://learn.microsoft.com/azure/active-directory/conditional-access/overview"
  },
  {
   "id": 50,
   "type": "multiple",
   "isCorrected": false,
-  "title": "當 Azure Active Directory (Azure AD) 租用戶啟用安全性預設值 (security defaults) 時，會強制執行下列哪兩項要求？每個正確答案皆為完整解答。",
+  "title": "當 Microsoft Entra 租用戶啟用安全性預設值 (security defaults) 時，會強制執行下列哪兩項要求？每個正確答案皆為完整解答。",
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
    "所有使用者都必須從已登錄的裝置進行驗證。",
@@ -1467,14 +1467,14 @@
    1,
    2
   ],
-  "explanation": "安全性預設值 (security defaults) 可輕鬆為組織套用一組預先設定的安全性設定，包括要求所有使用者註冊 Azure AD 多重要素驗證 (MFA)、要求系統管理員執行多重要素驗證 (MFA)、封鎖舊版驗證通訊協定，以及在必要時要求使用者進行多重要素驗證 (MFA) 等，因此正確答案為 B、C。",
+  "explanation": "安全性預設值 (security defaults) 可輕鬆為組織套用一組預先設定的安全性設定，包括要求所有使用者註冊 Microsoft Entra 多重要素驗證 (MFA)、要求系統管理員執行多重要素驗證 (MFA)、封鎖舊版驗證通訊協定，以及在必要時要求使用者進行多重要素驗證 (MFA) 等，因此正確答案為 B、C。",
   "reference": "https://learn.microsoft.com/azure/active-directory/fundamentals/concept-fundamentals-security-defaults"
  },
  {
   "id": 51,
   "type": "single",
   "isCorrected": false,
-  "title": "當您向 Active Directory (Azure AD) 註冊應用程式時，會建立哪一種類型的身分識別？",
+  "title": "當您向 Active Directory (Microsoft Entra ID) 註冊應用程式時，會建立哪一種類型的身分識別？",
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
    "使用者帳戶",
@@ -1490,7 +1490,7 @@
   "id": 52,
   "type": "multiple",
   "isCorrected": true,
-  "title": "您可以使用 Azure Active Directory (Azure AD) Identity Protection 執行下列哪三項工作？每個正確答案皆為完整解答。",
+  "title": "您可以使用 Microsoft Entra ID Protection 執行下列哪三項工作？每個正確答案皆為完整解答。",
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
    "為合作夥伴組織設定外部存取。",
@@ -1504,7 +1504,7 @@
    2,
    3
   ],
-  "explanation": "Azure AD Identity Protection 可將風險偵測結果匯出至協力廠商 SIEM 等公用程式、自動偵測並補救以身分識別為基礎的風險，並調查與使用者驗證相關的風險，因此正確答案為 B、C、D（建立與指派敏感度標籤 (sensitivity labels) 屬於 Microsoft Purview 資訊保護功能，與 Identity Protection 無關）。",
+  "explanation": "Microsoft Entra ID Protection 可將風險偵測結果匯出至協力廠商 SIEM 等公用程式、自動偵測並補救以身分識別為基礎的風險，並調查與使用者驗證相關的風險，因此正確答案為 B、C、D（建立與指派敏感度標籤 (sensitivity labels) 屬於 Microsoft Purview 資訊保護功能，與 Identity Protection 無關）。",
   "reference": "https://learn.microsoft.com/azure/active-directory/identity-protection/overview-identity-protection"
  },
  {
@@ -1553,13 +1553,13 @@
   "beforeText": "Azure 資源可使用系統指派的",
   "afterText": "來存取 Azure 服務。",
   "options": [
-   "Azure Active Directory (Azure AD) 加入裝置",
+   "Microsoft Entra 加入裝置",
    "受控識別 (managed identity)",
    "服務主體 (service principal)",
    "使用者身分識別"
   ],
   "correctAnswer": "受控識別 (managed identity)",
-  "explanation": "受控識別 (managed identity) 可為應用程式提供身分識別，讓應用程式在連線至支援 Azure AD 驗證的資源時使用，而不需要自行管理認證資料。",
+  "explanation": "受控識別 (managed identity) 可為應用程式提供身分識別，讓應用程式在連線至支援 Microsoft Entra 驗證的資源時使用，而不需要自行管理認證資料。",
   "reference": "https://learn.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview"
  },
  {
@@ -1791,7 +1791,7 @@
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
    "Azure 虛擬機器",
-   "Azure Active Directory (Azure AD) 使用者",
+   "Microsoft Entra 使用者",
    "Microsoft Exchange Online 收件匣",
    "Azure 虛擬網路",
    "Microsoft SharePoint Online 網站"
@@ -1909,11 +1909,11 @@
   "id": 74,
   "type": "single",
   "isCorrected": false,
-  "title": "您可以使用下列哪一項 Azure Active Directory (Azure AD) 功能，限制由 Microsoft Intune 管理的裝置存取公司資源？",
+  "title": "您可以使用下列哪一項 Microsoft Entra ID 功能，限制由 Microsoft Intune 管理的裝置存取公司資源？",
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
    "網路安全性群組 (NSG)",
-   "Azure AD Privileged Identity Management (PIM)",
+   "Microsoft Entra Privileged Identity Management (PIM)",
    "條件式存取原則 (Conditional Access policy)",
    "資源鎖定 (resource locks)"
   ],
@@ -1930,7 +1930,7 @@
   "beforeText": "",
   "afterText": "可使用條件式存取原則 (Conditional Access policy) 即時控制工作階段。",
   "options": [
-   "Azure Active Directory (Azure AD) Privileged Identity Management (PIM)",
+   "Microsoft Entra Privileged Identity Management (PIM)",
    "Azure Defender",
    "Azure Sentinel",
    "Microsoft Cloud App Security"
@@ -1948,8 +1948,8 @@
   "beforeText": "Azure DDoS 保護標準 (Standard) 可用於保護",
   "afterText": "。",
   "options": [
-   "Azure Active Directory (Azure AD) 應用程式。",
-   "Azure Active Directory (Azure AD) 使用者。",
+   "Microsoft Entra ID 應用程式。",
+   "Microsoft Entra 使用者。",
    "資源群組。",
    "虛擬網路。"
   ],
@@ -2179,7 +2179,7 @@
    "No",
    "Yes"
   ],
-  "explanation": "進階稽核可透過 MailItemsAccessed 事件識別電子郵件何時被存取；基本稽核 (Basic Audit) 僅保留 180 天（2023 年 10 月以前為 90 天），而進階稽核會將 Exchange、SharePoint 與 Azure AD 的稽核記錄保留一年，兩者保留期間不同；進階稽核可為存取 Office 365 管理活動 API 提供高頻寬的專屬存取。",
+  "explanation": "進階稽核可透過 MailItemsAccessed 事件識別電子郵件何時被存取；基本稽核 (Basic Audit) 僅保留 180 天（2023 年 10 月以前為 90 天），而進階稽核會將 Exchange、SharePoint 與 Microsoft Entra ID 的稽核記錄保留一年，兩者保留期間不同；進階稽核可為存取 Office 365 管理活動 API 提供高頻寬的專屬存取。",
   "reference": "https://learn.microsoft.com/microsoft-365/compliance/advanced-audit"
  },
  {
@@ -2189,9 +2189,9 @@
   "title": "針對下列每項陳述，如果陳述為真，請選取「是」。否則，選取「否」：",
   "instruction": "注意：每個正確選取項目均可獲得一分。",
   "statements": [
-   "Azure Active Directory (Azure AD) Identity Protection 可根據使用者的風險層級，將使用者新增至群組。",
-   "Azure Active Directory (Azure AD) Identity Protection 可偵測使用者的認證是否已外洩至公開場所。",
-   "Azure Active Directory (Azure AD) Identity Protection 可根據使用者的風險層級，觸發多重要素驗證 (MFA)。"
+   "Microsoft Entra ID Protection 可根據使用者的風險層級，將使用者新增至群組。",
+   "Microsoft Entra ID Protection 可偵測使用者的認證是否已外洩至公開場所。",
+   "Microsoft Entra ID Protection 可根據使用者的風險層級，觸發多重要素驗證 (MFA)。"
   ],
   "correctAnswers": [
    "No",
@@ -2229,7 +2229,7 @@
    "Azure Defender",
    "Microsoft 365 合規性中心",
    "Microsoft Defender 入口網站",
-   "Microsoft Endpoint Manager"
+   "Microsoft Intune"
   ],
   "correctAnswer": "Microsoft 365 合規性中心",
   "explanation": "Microsoft 365 合規性中心（現為 Microsoft Purview 合規性入口網站）提供了管理資訊保護、資訊治理 (information governance) 與 DLP 原則的中央位置。",
@@ -2581,12 +2581,12 @@
   "id": 111,
   "type": "single",
   "isCorrected": false,
-  "title": "您應該使用下列何者，確保 Azure Active Directory 群組的成員在登入時必須使用多重要素驗證 (MFA)？",
+  "title": "您應該使用下列何者，確保 Microsoft Entra 群組的成員在登入時必須使用多重要素驗證 (MFA)？",
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
    "Azure 角色型存取控制 (Azure RBAC)",
-   "Azure Active Directory (Azure AD) Privileged Identity Management (PIM)",
-   "Azure Active Directory (Azure AD) Identity Protection",
+   "Microsoft Entra Privileged Identity Management (PIM)",
+   "Microsoft Entra ID Protection",
    "條件式存取原則 (Conditional Access policy)"
   ],
   "correctIndex": 3,
@@ -2600,9 +2600,9 @@
   "title": "針對下列每項陳述，如果陳述為真，請選取「是」。否則，選取「否」：",
   "instruction": "注意：每個正確選取項目均可獲得一分。",
   "statements": [
-   "Azure Active Directory (Azure AD) Identity Protection 會在使用者通過驗證後才產生風險偵測結果。",
-   "Azure Active Directory (Azure AD) Identity Protection 會為每個風險事件指派「低」、「中」或「高」的風險層級。",
-   "Azure Active Directory (Azure AD) Identity Protection 中的使用者風險 (user risk)，代表特定身分識別或帳戶遭到入侵的機率。"
+   "Microsoft Entra ID Protection 會在使用者通過驗證後才產生風險偵測結果。",
+   "Microsoft Entra ID Protection 會為每個風險事件指派「低」、「中」或「高」的風險層級。",
+   "Microsoft Entra ID Protection 中的使用者風險 (user risk)，代表特定身分識別或帳戶遭到入侵的機率。"
   ],
   "correctAnswers": [
    "Yes",
@@ -2636,7 +2636,7 @@
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
    "Microsoft 365 合規性中心",
-   "Microsoft Endpoint Manager 系統管理中心",
+   "Microsoft Intune 系統管理中心",
    "Microsoft 365 系統管理中心",
    "Microsoft 365 Defender 入口網站"
   ],
@@ -2778,7 +2778,7 @@
   "options": [
    "網域控制站 (a domain controller)",
    "Active Directory 網域服務 (AD DS)",
-   "Azure Active Directory (Azure AD) Privilege Identity Management (PIM)",
+   "Microsoft Entra Privileged Identity Management (PIM)",
    "聯盟 (Federation)"
   ],
   "correctAnswer": "聯盟 (Federation)",
@@ -2807,7 +2807,7 @@
   "id": 123,
   "type": "single",
   "isCorrected": true,
-  "title": "Azure Active Directory (Azure AD) Identity Protection 用於評估條件式存取 (Conditional Access) 中的哪一項條件？",
+  "title": "Microsoft Entra ID Protection 用於評估條件式存取 (Conditional Access) 中的哪一項條件？",
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
    "使用者動作",
@@ -2816,7 +2816,7 @@
    "使用者風險 (user risk)"
   ],
   "correctIndex": 3,
-  "explanation": "條件式存取 (Conditional Access) 可利用 Azure AD Identity Protection 所偵測到的「使用者風險 (user risk)」訊號作為判斷條件之一。",
+  "explanation": "條件式存取 (Conditional Access) 可利用 Microsoft Entra ID Protection 所偵測到的「使用者風險 (user risk)」訊號作為判斷條件之一。",
   "reference": "https://learn.microsoft.com/azure/active-directory/conditional-access/overview"
  },
  {
@@ -2983,7 +2983,7 @@
    "行動裝置"
   ],
   "correctIndex": 1,
-  "explanation": "傳統的 AD DS 主要用於管理內部部署資源，例如使用者帳戶、電腦帳戶與群組，並不支援新式驗證通訊協定的 LOB 或 SaaS 應用程式（這類應用程式需要 Azure AD）。",
+  "explanation": "傳統的 AD DS 主要用於管理內部部署資源，例如使用者帳戶、電腦帳戶與群組，並不支援新式驗證通訊協定的 LOB 或 SaaS 應用程式（這類應用程式需要 Microsoft Entra ID）。",
   "reference": "https://learn.microsoft.com/windows-server/identity/ad-ds/get-started/virtual-dc/active-directory-domain-services-overview"
  },
  {
@@ -3046,9 +3046,9 @@
   "title": "針對下列每項陳述，如果陳述為真，請選取「是」。否則，選取「否」：",
   "instruction": "注意：每個正確選取項目均可獲得一分。",
   "statements": [
-   "Azure AD Identity Protection 可根據使用者的風險層級，將使用者新增至群組。",
-   "Azure AD Identity Protection 可偵測使用者的認證是否已外洩至公開場所。",
-   "Azure AD Identity Protection 可用來根據使用者的風險層級，觸發多重要素驗證 (MFA)。"
+   "Microsoft Entra ID Protection 可根據使用者的風險層級，將使用者新增至群組。",
+   "Microsoft Entra ID Protection 可偵測使用者的認證是否已外洩至公開場所。",
+   "Microsoft Entra ID Protection 可用來根據使用者的風險層級，觸發多重要素驗證 (MFA)。"
   ],
   "correctAnswers": [
    "No",
@@ -3062,7 +3062,7 @@
   "id": 136,
   "type": "single",
   "isCorrected": true,
-  "title": "您可以使用什麼確保特定群組中的所有使用者，在登入 Azure Active Directory (Azure AD) 時都必須使用多重要素驗證 (MFA)？",
+  "title": "您可以使用什麼確保特定群組中的所有使用者，在登入 Microsoft Entra ID 時都必須使用多重要素驗證 (MFA)？",
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
    "Azure 原則 (Azure Policy)",
@@ -3081,23 +3081,23 @@
   "title": "針對下列每項陳述，如果陳述為真，請選取「是」。否則，選取「否」：",
   "instruction": "注意：每個正確選取項目均可獲得一分。",
   "statements": [
-   "您可以在內部部署 Active Directory 中建立與 Azure AD 同步的混合式身分識別 (hybrid identity)。",
-   "在 Azure AD 中建立的使用者帳戶會自動同步至內部部署 Active Directory。",
-   "使用混合式模型時，驗證可透過 Azure AD 或其他身分識別提供者 (identity provider) 完成。"
+   "您可以在內部部署 Active Directory 中建立與 Microsoft Entra ID 同步的混合式身分識別 (hybrid identity)。",
+   "在 Microsoft Entra ID 中建立的使用者帳戶會自動同步至內部部署 Active Directory。",
+   "使用混合式模型時，驗證可透過 Microsoft Entra ID 或其他身分識別提供者 (identity provider) 完成。"
   ],
   "correctAnswers": [
    "Yes",
    "No",
    "Yes"
   ],
-  "explanation": "您可以在內部部署 Active Directory 建立身分識別，並透過 Azure AD Connect 同步至 Azure AD，形成混合式身分識別 (hybrid identity)；但同步方向是單向的，在 Azure AD 中建立的帳戶並不會自動同步回內部部署 Active Directory；混合式模型下的驗證可透過 Azure AD 本身，也可透過其他身分識別提供者（如 AD FS）完成。",
+  "explanation": "您可以在內部部署 Active Directory 建立身分識別，並透過 Microsoft Entra Connect 同步至 Microsoft Entra ID，形成混合式身分識別 (hybrid identity)；但同步方向是單向的，在 Microsoft Entra ID 中建立的帳戶並不會自動同步回內部部署 Active Directory；混合式模型下的驗證可透過 Microsoft Entra ID 本身，也可透過其他身分識別提供者（如 AD FS）完成。",
   "reference": "https://learn.microsoft.com/azure/active-directory/hybrid/whatis-hybrid-identity"
  },
  {
   "id": 138,
   "type": "multiple",
   "isCorrected": false,
-  "title": "Azure AD 使用者可以使用下列哪三種驗證方法來重設密碼？每個正確答案皆為完整解答。",
+  "title": "Microsoft Entra 使用者可以使用下列哪三種驗證方法來重設密碼？每個正確答案皆為完整解答。",
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
    "行動應用程式通知",
@@ -3111,7 +3111,7 @@
    1,
    2
   ],
-  "explanation": "Azure AD 自助服務密碼重設 (SSPR) 支援的驗證方法包括行動應用程式通知、簡訊，以及安全性問題，因此正確答案為 A、B、C。",
+  "explanation": "Microsoft Entra 自助服務密碼重設 (SSPR) 支援的驗證方法包括行動應用程式通知、簡訊，以及安全性問題，因此正確答案為 A、B、C。",
   "reference": "https://learn.microsoft.com/azure/active-directory/authentication/concept-sspr-howitworks"
  },
  {
@@ -3122,7 +3122,7 @@
   "instruction": "注意：每個正確選取項目均可獲得一分。",
   "statements": [
    "Azure AD B2C 可讓外部使用者使用其偏好的社交或企業帳戶身分識別登入。",
-   "外部 Azure AD B2C 使用者與 Azure AD 組織中的使用者是在同一個目錄中進行管理。",
+   "外部 Azure AD B2C 使用者與 Microsoft Entra ID 組織中的使用者是在同一個目錄中進行管理。",
    "自訂品牌可套用至 Azure AD B2C 的驗證流程。"
   ],
   "correctAnswers": [
@@ -3212,7 +3212,7 @@
   "beforeText": "",
   "afterText": "是一種用來儲存應用程式秘密 (secrets) 的雲端服務。",
   "options": [
-   "Azure Active Directory (Azure AD) Password Protection",
+   "Microsoft Entra Password Protection",
    "Azure Bastion",
    "Azure 資訊保護 (AIP)",
    "Azure Key Vault"
@@ -3567,10 +3567,10 @@
   "title": "您應該使用下列何者，將相同的身分識別關聯至多部 Azure 虛擬機器？",
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
-   "Azure AD 使用者帳戶",
+   "Microsoft Entra 使用者帳戶",
    "使用者指派的受控識別 (user-assigned managed identity)",
    "系統指派的受控識別 (system-assigned managed identity)",
-   "Azure AD 安全性群組"
+   "Microsoft Entra 安全性群組"
   ],
   "correctIndex": 1,
   "explanation": "使用者指派的受控識別 (user-assigned managed identity) 可獨立建立，並同時關聯至多個 Azure 資源（例如多部虛擬機器），而系統指派的受控識別 (system-assigned managed identity) 則與單一資源的生命週期綁定，僅能供該資源使用。",
@@ -3583,8 +3583,8 @@
   "title": "針對下列每項陳述，如果陳述為真，請選取「是」。否則，選取「否」：",
   "instruction": "注意：每個正確選取項目均可獲得一分。",
   "statements": [
-   "安全性預設值 (security defaults) 需要 Azure AD Premium 授權。",
-   "安全性預設值 (security defaults) 可僅針對單一 Azure AD 使用者啟用。",
+   "安全性預設值 (security defaults) 需要 Microsoft Entra ID P1 或 P2 授權。",
+   "安全性預設值 (security defaults) 可僅針對單一 Microsoft Entra 使用者啟用。",
    "啟用安全性預設值 (security defaults) 後，所有系統管理員都必須使用多重要素驗證 (MFA)。"
   ],
   "correctAnswers": [
@@ -3592,14 +3592,14 @@
    "No",
    "Yes"
   ],
-  "explanation": "安全性預設值 (security defaults) 可供所有 Azure AD 租用戶免費使用，不需要 Premium 授權；安全性預設值 (security defaults) 是以整個租用戶為單位啟用，無法僅套用於單一使用者；啟用後，所有系統管理員都必須使用多重要素驗證 (MFA)。",
+  "explanation": "安全性預設值 (security defaults) 可供所有 Microsoft Entra 租用戶免費使用，不需要 Premium 授權；安全性預設值 (security defaults) 是以整個租用戶為單位啟用，無法僅套用於單一使用者；啟用後，所有系統管理員都必須使用多重要素驗證 (MFA)。",
   "reference": "https://learn.microsoft.com/azure/active-directory/fundamentals/concept-fundamentals-security-defaults"
  },
  {
   "id": 165,
   "type": "multiple",
   "isCorrected": false,
-  "title": "Azure AD 多重要素驗證 (MFA) 可以搭配使用下列哪三種驗證形式？每個正確答案皆為完整解答。",
+  "title": "Microsoft Entra 多重要素驗證 (MFA) 可以搭配使用下列哪三種驗證形式？每個正確答案皆為完整解答。",
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
    "安全性問題",
@@ -3613,7 +3613,7 @@
    2,
    4
   ],
-  "explanation": "Azure AD MFA 支援的驗證形式包括 Microsoft Authenticator 應用程式、簡訊，以及 Windows Hello for Business，因此正確答案為 B、C、E。",
+  "explanation": "Microsoft Entra MFA 支援的驗證形式包括 Microsoft Authenticator 應用程式、簡訊，以及 Windows Hello for Business，因此正確答案為 B、C、E。",
   "reference": "https://learn.microsoft.com/azure/active-directory/authentication/concept-authentication-methods"
  },
  {
@@ -3625,7 +3625,7 @@
   "statements": [
    "外部電子郵件地址可用來驗證自助服務密碼重設 (SSPR)。",
    "傳送至 Microsoft Authenticator 應用程式的通知可用來驗證自助服務密碼重設 (SSPR)。",
-   "要執行自助服務密碼重設 (SSPR)，使用者必須已登入並通過 Azure AD 驗證。"
+   "要執行自助服務密碼重設 (SSPR)，使用者必須已登入並通過 Microsoft Entra 驗證。"
   ],
   "correctAnswers": [
    "Yes",
@@ -3768,7 +3768,7 @@
    "可與多個 Azure 資源共用。",
    "與使用它的資源分開管理。",
    "與使用它的資源生命週期綁定。",
-   "必須手動向 Azure AD 註冊。"
+   "必須手動向 Microsoft Entra 註冊。"
   ],
   "correctAnswer": "與使用它的資源生命週期綁定。",
   "explanation": "系統指派的受控識別 (system-assigned managed identity) 與其所屬的單一 Azure 資源生命週期綁定，當該資源被刪除時，此受控識別 (managed identity) 也會一併被刪除。",
@@ -3781,7 +3781,7 @@
   "title": "針對下列每項陳述，如果陳述為真，請選取「是」。否則，選取「否」：",
   "instruction": "注意：每個正確選取項目均可獲得一分。",
   "statements": [
-   "裝置身分識別可以儲存在 Azure AD 中。",
+   "裝置身分識別可以儲存在 Microsoft Entra ID 中。",
    "單一系統指派的受控識別 (system-assigned managed identity) 可供多個 Azure 資源使用。",
    "如果您刪除具有使用者指派受控識別 (managed identity) 的 Azure 資源，該受控識別 (managed identity) 會自動被刪除。"
   ],
@@ -3790,7 +3790,7 @@
    "No",
    "No"
   ],
-  "explanation": "裝置身分識別可以儲存在 Azure AD 中；系統指派的受控識別 (system-assigned managed identity) 僅能供單一資源使用，無法由多個資源共用（多資源共用需使用使用者指派的受控識別 (user-assigned managed identity)）；使用者指派的受控識別 (user-assigned managed identity) 是獨立建立的資源，其生命週期不與任何單一資源綁定，因此刪除使用它的資源並不會自動刪除該受控識別 (managed identity)。",
+  "explanation": "裝置身分識別可以儲存在 Microsoft Entra ID 中；系統指派的受控識別 (system-assigned managed identity) 僅能供單一資源使用，無法由多個資源共用（多資源共用需使用使用者指派的受控識別 (user-assigned managed identity)）；使用者指派的受控識別 (user-assigned managed identity) 是獨立建立的資源，其生命週期不與任何單一資源綁定，因此刪除使用它的資源並不會自動刪除該受控識別 (managed identity)。",
   "reference": "https://learn.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview"
  },
  {
@@ -3886,7 +3886,7 @@
   "title": "選取正確完成句子的答案：",
   "instruction": "請從下拉選單中選取最符合敘述的項目。",
   "beforeText": "您可以將",
-  "afterText": "指派給 Azure AD 角色。",
+  "afterText": "指派給 Microsoft Entra 角色。",
   "options": [
    "管理群組 (a management group)",
    "資源群組 (a resource group)",
@@ -3894,7 +3894,7 @@
    "系統管理單位 (an administrative unit)"
   ],
   "correctAnswer": "安全性主體 (a security principal)",
-  "explanation": "Azure AD 角色是指派給安全性主體（使用者、群組或服務主體 (service principal)），而非管理群組或資源群組（這些屬於 Azure 資源管理 RBAC 的範疇）；系統管理單位則是用來限縮角色套用範圍的容器，並非角色的指派對象本身。",
+  "explanation": "Microsoft Entra 角色是指派給安全性主體（使用者、群組或服務主體 (service principal)），而非管理群組或資源群組（這些屬於 Azure 資源管理 RBAC 的範疇）；系統管理單位則是用來限縮角色套用範圍的容器，並非角色的指派對象本身。",
   "reference": "https://learn.microsoft.com/azure/active-directory/roles/concept-understand-roles"
  },
  {
@@ -3904,13 +3904,13 @@
   "title": "您有一個 Azure 訂用帳戶。您需要實作以核准為基礎、限時的角色啟用機制。您應該使用下列何者？",
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
-   "Azure AD 中的存取權檢閱 (access reviews)",
-   "Azure AD Privileged Identity Management (PIM)",
-   "Azure AD Identity Protection",
-   "Azure AD 中的條件式存取 (Conditional Access)"
+   "Microsoft Entra ID 中的存取權檢閱 (access reviews)",
+   "Microsoft Entra Privileged Identity Management (PIM)",
+   "Microsoft Entra ID Protection",
+   "Microsoft Entra 條件式存取 (Conditional Access)"
   ],
   "correctIndex": 1,
-  "explanation": "Azure AD Privileged Identity Management (PIM) 可設定角色啟用需要核准，並提供限時的角色指派。",
+  "explanation": "Microsoft Entra Privileged Identity Management (PIM) 可設定角色啟用需要核准，並提供限時的角色指派。",
   "reference": "https://learn.microsoft.com/azure/active-directory/privileged-identity-management/pim-configure"
  },
  {
@@ -4044,7 +4044,7 @@
   "isCorrected": false,
   "title": "選取正確完成句子的答案：",
   "instruction": "請從下拉選單中選取最符合敘述的項目。",
-  "beforeText": "您可以在 Azure AD 中使用動態群組，自動化",
+  "beforeText": "您可以在 Microsoft Entra ID 中使用動態群組，自動化",
   "afterText": "生命週期程序。",
   "options": [
    "存取 (access)",
@@ -4052,14 +4052,14 @@
    "特殊權限存取 (privileged access)"
   ],
   "correctAnswer": "存取 (access)",
-  "explanation": "Azure AD 動態群組可根據使用者或裝置屬性自動更新成員資格，藉此自動化「存取」生命週期程序（例如自動授予或移除對資源的存取權）。",
+  "explanation": "Microsoft Entra 動態群組可根據使用者或裝置屬性自動更新成員資格，藉此自動化「存取」生命週期程序（例如自動授予或移除對資源的存取權）。",
   "reference": "https://learn.microsoft.com/azure/active-directory/enterprise-users/groups-create-rule"
  },
  {
   "id": 189,
   "type": "single",
   "isCorrected": false,
-  "title": "當您啟用 Azure AD 多重要素驗證 (MFA) 時，驗證需要使用幾種要素？",
+  "title": "當您啟用 Microsoft Entra 多重要素驗證 (MFA) 時，驗證需要使用幾種要素？",
   "instruction": "請根據題目說明選取適當答案。",
   "options": [
    "1",
@@ -4207,7 +4207,7 @@
    "Yes",
    "Yes"
   ],
-  "explanation": "條件式存取 (Conditional Access) 是透過 Microsoft Entra ID（原 Azure AD）中的原則實作；原則可根據裝置平台（如 Android、iOS）封鎖或允許連線；原則也可套用至 Microsoft 365 群組。",
+  "explanation": "條件式存取 (Conditional Access) 是透過 Microsoft Entra ID（原 Microsoft Entra ID）中的原則實作；原則可根據裝置平台（如 Android、iOS）封鎖或允許連線；原則也可套用至 Microsoft 365 群組。",
   "reference": "https://learn.microsoft.com/azure/active-directory/conditional-access/overview"
  },
  {
@@ -4754,6 +4754,25 @@
     let isChecked = {};
     let score = 0;
     let wrongQuestions = []; // 上一次測驗中答錯（或未作答）的題目，供「重做錯題」使用
+    let optionOrderCache = {}; // 每題選項的隨機顯示順序快取（同一次測驗期間維持穩定，不會每次切換題目就重排）
+
+    // 取得（或建立並快取）某題單選/多選選項的隨機顯示順序，回傳「原始索引」的陣列
+    function getShuffledIndexOrder(qId, length) {
+        const cacheKey = `idx_${qId}`;
+        if (!optionOrderCache[cacheKey]) {
+            optionOrderCache[cacheKey] = shuffleArray([...Array(length).keys()]);
+        }
+        return optionOrderCache[cacheKey];
+    }
+
+    // 取得（或建立並快取）某題下拉式選單 / 拖曳配對選項的隨機顯示順序（以文字比對，順序不影響對錯判斷）
+    function getShuffledOptionList(qId, subKey, options) {
+        const cacheKey = `list_${qId}_${subKey}`;
+        if (!optionOrderCache[cacheKey]) {
+            optionOrderCache[cacheKey] = shuffleArray(options);
+        }
+        return optionOrderCache[cacheKey];
+    }
 
     async function loadQuestions() {
         try {
@@ -4834,6 +4853,7 @@
         userAnswers = {};
         isChecked = {};
         score = 0;
+        optionOrderCache = {}; // 每次開始新的一輪測驗，重新隨機排列選項順序
 
         document.getElementById('mode-select-wrapper').style.display = 'none';
         document.getElementById('layout-container').style.display = 'grid';
@@ -4949,7 +4969,9 @@
         if (q.type === 'single') {
             const list = document.createElement('div');
             list.className = 'options-list';
-            q.options.forEach((opt, idx) => {
+            const order = getShuffledIndexOrder(q.id, q.options.length);
+            order.forEach(idx => {
+                const opt = q.options[idx];
                 const checked = userAnswers[q.id] === idx ? 'checked' : '';
                 list.innerHTML += `
                     <label class="option-item">
@@ -4963,7 +4985,9 @@
             const list = document.createElement('div');
             list.className = 'options-list';
             const selected = userAnswers[q.id] || [];
-            q.options.forEach((opt, idx) => {
+            const order = getShuffledIndexOrder(q.id, q.options.length);
+            order.forEach(idx => {
+                const opt = q.options[idx];
                 const checked = selected.includes(idx) ? 'checked' : '';
                 list.innerHTML += `
                     <label class="option-item">
@@ -5016,7 +5040,8 @@
                     ${q.items.map((item, mIdx) => {
                         const val = (userAnswers[q.id] && userAnswers[q.id][mIdx]) || '';
                         let optsHtml = `<option value="" disabled ${!val ? 'selected' : ''}>-- 請選取 --</option>`;
-                        item.options.forEach(opt => {
+                        const shuffledOpts = getShuffledOptionList(q.id, `match_${mIdx}`, item.options);
+                        shuffledOpts.forEach(opt => {
                             optsHtml += `<option value="${opt}" ${val === opt ? 'selected' : ''}>${opt}</option>`;
                         });
                         return `
@@ -5039,7 +5064,8 @@
             const selectedVal = userAnswers[q.id] || '';
             
             let optionsHtml = `<option value="" disabled ${!selectedVal ? 'selected' : ''}>-- 請選取答案 --</option>`;
-            q.options.forEach(opt => {
+            const shuffledOpts = getShuffledOptionList(q.id, 'dropdown', q.options);
+            shuffledOpts.forEach(opt => {
                 optionsHtml += `<option value="${opt}" ${selectedVal === opt ? 'selected' : ''}>${opt}</option>`;
             });
 
